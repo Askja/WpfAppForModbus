@@ -27,8 +27,84 @@
         <Grid Grid.Column="1">
             <!-- Контент для каждого пункта меню -->
             <Grid x:Name="PortsContent" Visibility="Collapsed">
-                <Label Content="Контент для пункта 'Порты'" HorizontalAlignment="Center"
-                       VerticalAlignment="Center"/>
+                <StackPanel>
+                    <ScrollViewer HorizontalScrollBarVisibility="Auto" Margin="16">
+                        <StackPanel>
+                            <Border Background="#F5F5F5" BorderBrush="#D3D3D3" BorderThickness="1" CornerRadius="8" Margin="0 0 0 16">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+
+                                    <!-- Заголовок карточки -->
+                                    <TextBlock Text="Датчик освещения" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="16" FontWeight="Bold" Margin="16" Grid.Row="0" />
+
+                                    <!-- Порт -->
+                                    <StackPanel Orientation="Horizontal" Grid.Row="1" Margin="16">
+                                        <TextBlock Text="Порт:" VerticalAlignment="Center" Margin="0 0 8 0" />
+                                        <ComboBox Width="120" />
+                                    </StackPanel>
+
+                                    <!-- Количество бит -->
+                                    <StackPanel Orientation="Horizontal" Grid.Row="2" Margin="16">
+                                        <TextBlock Text="Количество бит:" VerticalAlignment="Center" Margin="0 0 8 0" />
+                                        <ComboBox Width="120" />
+                                    </StackPanel>
+
+                                    <!-- Количество стоп-битов -->
+                                    <StackPanel Orientation="Horizontal" Grid.Row="3" Margin="16">
+                                        <TextBlock Text="Количество стоп-битов:" VerticalAlignment="Center" Margin="0 0 8 0" />
+                                        <ComboBox Width="120" />
+                                    </StackPanel>
+
+                                    <!-- Скорость передачи данных -->
+                                    <StackPanel Orientation="Horizontal" Grid.Row="4" Margin="16">
+                                        <TextBlock Text="Скорость передачи данных:" VerticalAlignment="Center" Margin="0 0 8 0" />
+                                        <ComboBox Width="120" />
+                                    </StackPanel>
+
+                                    <!-- Тип паритетности -->
+                                    <StackPanel Orientation="Horizontal" Grid.Row="5" Margin="16">
+                                        <TextBlock Text="Тип паритетности:" VerticalAlignment="Center" Margin="0 0 8 0" />
+                                        <ComboBox Width="120" />
+                                    </StackPanel>
+
+                                    <!-- Тип рукопожатия -->
+                                    <StackPanel Orientation="Horizontal" Grid.Row="6" Margin="16">
+                                        <TextBlock Text="Тип рукопожатия:" VerticalAlignment="Center" Margin="0 0 8 0" />
+                                        <ComboBox Width="120" />
+                                    </StackPanel>
+
+                                    <!-- Интервал передачи и получения данных -->
+                                    <StackPanel Orientation="Horizontal" Grid.Row="7" Margin="16">
+                                        <TextBlock Text="Интервал передачи и получения данных:" VerticalAlignment="Center" Margin="0 0 8 0" />
+                                        <ComboBox Width="120" />
+                                    </StackPanel>
+
+                                    <!-- Группа кнопок -->
+                                    <StackPanel Grid.Row="8" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,12">
+                                        <Button Content="Начать" Margin="0,0,8,0" Width="100" />
+                                        <Button Content="Остановить" Width="100" />
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+
+                            <!-- Добавьте остальные карточки с аналогичной разметкой для других датчиков -->
+                            <!-- Датчик освещения №2 -->
+                            <!-- Датчик температуры -->
+                            <!-- Датчик воздуха -->
+                        </StackPanel>
+                    </ScrollViewer>
+                </StackPanel>
             </Grid>
 
             <Grid x:Name="LogContent" Visibility="Collapsed">
