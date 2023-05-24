@@ -1,40 +1,73 @@
 ﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Windows;
-using WpfAppForModbus.Const;
+using System.Windows.Controls;
+using System.Windows.Input;
+using WpfAppForModbus.Hooks;
 using WpfAppForModbus.Models;
+using MaterialDesignThemes.Wpf;
+using WpfAppForModbus.Const;
+using System.Windows.Media;
 
 namespace WpfAppForModbus {
     public partial class MainWindow : Window {
-        public DateTime now = DateTime.Now;
         public ComPort? ActivePort {
             get; set;
         }
-        public ComPort? ActivePort2 {
-            get; set;
-        }
+
+        private AsyncTimer? Timer { get; set; } = null;
 
         public MainWindow() {
             InitializeComponent();
 
-            //FillBoxes();
+            UIHooks.ClickElement(PortsMenuItemText);
+
+            FillBoxes();
         }
 
-        /*public void FillBoxes() {
+        private void MenuItem_Click(object sender, MouseButtonEventArgs e) {
+            PortsContent.Visibility = Visibility.Collapsed;
+            LogContent.Visibility = Visibility.Collapsed;
+            AnalyzeContent.Visibility = Visibility.Collapsed;
+
+            TextBlock? selectedMenuItem = sender as TextBlock;
+
+            if (selectedMenuItem == PortsMenuItemText) {
+                PortsContent.Visibility = Visibility.Visible;
+            } else if (selectedMenuItem == LogMenuItemText) {
+                LogContent.Visibility = Visibility.Visible;
+            } else if (selectedMenuItem == AnalyzeMenuItemText) {
+                AnalyzeContent.Visibility = Visibility.Visible;
+            }
+
+            foreach (var menuItem in LeftMenuStackPanel.Children.OfType<TextBlock>()) {
+                menuItem.FontWeight = menuItem == selectedMenuItem ? FontWeights.Bold : FontWeights.Normal;
+                menuItem.TextDecorations = menuItem == selectedMenuItem ? TextDecorations.Underline : null;
+            }
+        }
+
+        public void FillBoxes() {
             ComboBoxHelper.AddRange<string>(comboBoxParity, Helpers.GetNames(ParityList.Parities));
             ComboBoxHelper.AddRange<string>(comboBoxHandshake, Helpers.GetNames(HandshakeList.Handshakes));
             ComboBoxHelper.AddRange<string>(comboBoxStopBit, Helpers.GetNames(StopBitsList.StopBits));
             ComboBoxHelper.AddRange(comboBoxBaudRate, BaudRateList.BaudRate);
             ComboBoxHelper.AddRange(comboBoxDataBits, DataBitsList.DataBits);
-        }*/
+        }
+
+        private string LoadResource(string Key) {
+            return Helpers.GetString(this, Key);
+        }
 
         public bool IsConnected(ComPort? Port) => (Port != null && Port.IsOpened());
 
-        public void ShowMessage(string Text) => MessageBox.Show(Text);
+        public void ShowMessage(string message) => MessageBox.Show(message);
 
-        public void SuccessfullyConnected() => ShowMessage("Подключение успешно установлено");
+        public void SuccessfullyConnected() => ShowMessage(LoadResource("SuccessfulConnected"));
 
-        public void AlreadyConnected() => ShowMessage("На данном порту уже установлено подключение");
+        public void SuccessfullyStopped() => ShowMessage(LoadResource("SuccessfulStopped"));
+
+        public void AlreadyConnected() => ShowMessage(LoadResource("AlreadyConnected"));
 
         private void Button_Connect(object sender, RoutedEventArgs e) {
             try {
@@ -46,16 +79,16 @@ namespace WpfAppForModbus {
 
                 ActivePort = new ComPort();
 
-                /*ComPortOptions Options = new() {
+                ComPortOptions Options = new() {
                     SelectedParity = ComboBoxHelper.GetSelectedItem(comboBoxParity, ParityList.Parities),
                     SelectedHandshake = ComboBoxHelper.GetSelectedItem(comboBoxHandshake, HandshakeList.Handshakes),
                     SelectedBaudRate = ComboBoxHelper.GetSelectedItem(comboBoxBaudRate, BaudRateList.BaudRate),
                     SelectedDataBits = ComboBoxHelper.GetSelectedItem(comboBoxDataBits, DataBitsList.DataBits),
-                    SelectedPort = ComboBoxHelper.GetSelectedItem(comboBoxDataBits, Helpers.GetAvailablePorts()),
+                    SelectedPort = ComboBoxHelper.GetSelectedItem(comboBoxPorts, Helpers.GetAvailablePorts()),
                     SelectedStopBits = ComboBoxHelper.GetSelectedItem(comboBoxStopBit, StopBitsList.StopBits)
                 };
 
-                ActivePort?.Open(Options);*/
+                ActivePort?.Open(Options);
 
                 if (IsConnected(ActivePort)) {
                     SuccessfullyConnected();
@@ -140,6 +173,10 @@ namespace WpfAppForModbus {
             } catch (Exception ex) {
                 MessageBox.Show(ex.Message);
             }
+        }
+
+        private void StopHandle_Click(object sender, RoutedEventArgs e) {
+
         }
     }
 }

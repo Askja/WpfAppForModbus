@@ -1,0 +1,8 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:system="clr-namespace:System;assembly=System.Runtime">
+    <system:String x:Key="AlreadyConnected">На данном порту уже установлено подключение</system:String>
+    <system:String x:Key="SuccessfulConnected">Подключение успешно установлено</system:String>
+    <system:String x:Key="SuccessfulStopped">Подключение успешно остановлено</system:String>
+    <system:String x:Key="IncorrectConnectionData">Неверные параметры подключения</system:String>
+    <system:String x:Key="AppVersion">Версия: 1.1.2405</system:String>
+</ResourceDictionary>
