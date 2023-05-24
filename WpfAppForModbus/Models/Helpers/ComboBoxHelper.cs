@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Windows.Controls;
 
-namespace WpfAppForModbus.Models {
+namespace WpfAppForModbus.Models.Helpers {
     public class ComboBoxHelper {
         public static void AddRange<T>(ComboBox comboBox, IEnumerable<T> items) {
             foreach (T item in items) {

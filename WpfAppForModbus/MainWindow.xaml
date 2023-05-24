@@ -126,8 +126,16 @@
             </Grid>
 
             <Grid x:Name="LogContent" Visibility="Collapsed">
-                <Label Content="Контент для пункта 'Лог'" HorizontalAlignment="Center"
-                       VerticalAlignment="Center"/>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBox Margin="10" Name="Log" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"/>
+                </Grid>
             </Grid>
 
             <Grid x:Name="AnalyzeContent" Visibility="Collapsed">

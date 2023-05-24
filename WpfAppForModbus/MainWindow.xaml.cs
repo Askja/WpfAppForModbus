@@ -4,11 +4,10 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using WpfAppForModbus.Const;
 using WpfAppForModbus.Hooks;
 using WpfAppForModbus.Models;
-using MaterialDesignThemes.Wpf;
-using WpfAppForModbus.Const;
-using System.Windows.Media;
+using WpfAppForModbus.Models.Helpers;
 
 namespace WpfAppForModbus {
     public partial class MainWindow : Window {
@@ -18,8 +17,12 @@ namespace WpfAppForModbus {
 
         private AsyncTimer? Timer { get; set; } = null;
 
+        private Logger? AppLog { get; set; } = null;
+
         public MainWindow() {
             InitializeComponent();
+
+            AppLog = new(Log);
 
             UIHooks.ClickElement(PortsMenuItemText);
 
@@ -48,15 +51,23 @@ namespace WpfAppForModbus {
         }
 
         public void FillBoxes() {
-            ComboBoxHelper.AddRange<string>(comboBoxParity, Helpers.GetNames(ParityList.Parities));
-            ComboBoxHelper.AddRange<string>(comboBoxHandshake, Helpers.GetNames(HandshakeList.Handshakes));
-            ComboBoxHelper.AddRange<string>(comboBoxStopBit, Helpers.GetNames(StopBitsList.StopBits));
+            AppLog?.AddDatedLog(LoadResource("StartLoadingData"));
+
+            ComboBoxHelper.AddRange<string>(comboBoxParity, Shared.GetNames(ParityList.Parities));
+            ComboBoxHelper.AddRange<string>(comboBoxHandshake, Shared.GetNames(HandshakeList.Handshakes));
+            ComboBoxHelper.AddRange<string>(comboBoxStopBit, Shared.GetNames(StopBitsList.StopBits));
+
+            AppLog?.AddDatedLog(LoadResource("StartLoadingPorts"));
+
+            ComboBoxHelper.AddRange<string>(comboBoxPorts, Shared.GetAvailablePorts());
             ComboBoxHelper.AddRange(comboBoxBaudRate, BaudRateList.BaudRate);
             ComboBoxHelper.AddRange(comboBoxDataBits, DataBitsList.DataBits);
+
+            AppLog?.AddDatedLog(LoadResource("LoadedData"));
         }
 
         private string LoadResource(string Key) {
-            return Helpers.GetString(this, Key);
+            return Shared.GetString(this, Key);
         }
 
         public bool IsConnected(ComPort? Port) => (Port != null && Port.IsOpened());
@@ -84,7 +95,7 @@ namespace WpfAppForModbus {
                     SelectedHandshake = ComboBoxHelper.GetSelectedItem(comboBoxHandshake, HandshakeList.Handshakes),
                     SelectedBaudRate = ComboBoxHelper.GetSelectedItem(comboBoxBaudRate, BaudRateList.BaudRate),
                     SelectedDataBits = ComboBoxHelper.GetSelectedItem(comboBoxDataBits, DataBitsList.DataBits),
-                    SelectedPort = ComboBoxHelper.GetSelectedItem(comboBoxPorts, Helpers.GetAvailablePorts()),
+                    SelectedPort = ComboBoxHelper.GetSelectedItem(comboBoxPorts, Shared.GetAvailablePorts()),
                     SelectedStopBits = ComboBoxHelper.GetSelectedItem(comboBoxStopBit, StopBitsList.StopBits)
                 };
 
@@ -93,28 +104,11 @@ namespace WpfAppForModbus {
                 if (IsConnected(ActivePort)) {
                     SuccessfullyConnected();
                 }
-            } catch (Exception ex) {
-                MessageBox.Show(ex.Message);
+            } catch (ArgumentException) {
+                ShowMessage(LoadResource("IncorrectConnectionData"));
             }
         }
 
-        private void ButtonUpdatePorts_Click(object sender, RoutedEventArgs e) {
-            try {
-                string[] availablePorts = Helpers.GetAvailablePorts();
-
-                /*comboBoxPorts.Items.Clear();
-
-                if (availablePorts.Length > 0) {
-                    foreach (string Port in availablePorts) {
-                        comboBoxPorts.Items.Add(Port);
-                    }
-                }*/
-
-            } catch (Exception ex) {
-                MessageBox.Show(ex.Message);
-            }
-
-        }
         private void Button_CloseConnect(object sender, RoutedEventArgs e) {
             try {
                 ActivePort?.Close();
