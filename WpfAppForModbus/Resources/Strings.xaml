@@ -3,4 +3,5 @@
     <system:String x:Key="AlreadyConnected">На данном порту уже установлено подключение</system:String>
     <system:String x:Key="SuccessfulConnected">Подключение успешно установлено</system:String>
     <system:String x:Key="SuccessfulStopped">Подключение успешно остановлено</system:String>
+    <system:String x:Key="IncorrectConnectionData">Неверные параметры подключения</system:String>
 </ResourceDictionary>

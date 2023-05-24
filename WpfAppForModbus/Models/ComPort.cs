@@ -8,7 +8,7 @@ namespace WpfAppForModbus.Models {
 
         protected SerialPort? Port { get; set; } = null;
 
-        private ComPortOptions? Options { get; set; } = null;
+        private ComPortOptions Options { get; set; } = null!;
 
         protected int DefaultTimeout = 500;
 
@@ -30,22 +30,22 @@ namespace WpfAppForModbus.Models {
             try {
                 if (Options != null && Options.IsValid()) {
                     Port = new SerialPort(
-                        Options?.SelectedPort,
-                        (int)Options?.SelectedBaudRate,
-                        (Parity)(Options?.SelectedParity.Type),
+                        Options.SelectedPort,
+                        (int)Options.SelectedBaudRate,
+                        (Parity)(Options.SelectedParity.Type),
                         (int)Options.SelectedDataBits,
-                        (StopBits)(Options?.SelectedStopBits.Type)
+                        (StopBits)(Options.SelectedStopBits.Type)
                     ) {
                         ReadTimeout = DefaultTimeout,
                         WriteTimeout = DefaultTimeout,
-                        Handshake = (Handshake)(Options?.SelectedHandshake.Type)
+                        Handshake = (Handshake)(Options.SelectedHandshake.Type)
                     };
 
                     Port.Open();
 
                     return IsOpened();
                 } else {
-                    throw new ArgumentNullException("Неверные параметры подключения");
+                    throw new ArgumentNullException();
                 }
             } catch (Exception exception) {
                 MessageBox.Show(exception.Message);
