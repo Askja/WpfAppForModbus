@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.IO;
 using System.Windows.Controls;
 using System.Xml.Serialization;
 
-namespace WpfAppForModbus.Models
-{
+namespace WpfAppForModbus.Models {
     public class Settings {
         public bool SaveLogs { get; set; }
 

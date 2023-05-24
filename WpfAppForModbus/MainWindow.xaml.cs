@@ -14,7 +14,6 @@ using WpfAppForModbus.Domain.Models;
 using WpfAppForModbus.Hooks;
 using WpfAppForModbus.Models;
 using WpfAppForModbus.Models.Helpers;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace WpfAppForModbus {
     public partial class MainWindow : Window {
@@ -22,7 +21,9 @@ namespace WpfAppForModbus {
             get; set;
         }
 
-        private AsyncTimer? Timer { get; set; } = null;
+        protected Task? AsyncTimer { get; set; }
+
+        protected CancellationTokenSource? AsyncTimerToken { get; set; }
 
         private Logger? AppLog { get; set; } = null;
         private Logger? PortsLog { get; set; } = null;
@@ -103,7 +104,6 @@ namespace WpfAppForModbus {
 
             foreach (var menuItem in LeftMenuStackPanel.Children.OfType<TextBlock>()) {
                 menuItem.FontWeight = menuItem == selectedMenuItem ? FontWeights.Bold : FontWeights.Normal;
-                menuItem.TextDecorations = menuItem == selectedMenuItem ? TextDecorations.Underline : null;
                 menuItem.Background = menuItem == selectedMenuItem ? Brushes.Indigo : Brushes.Transparent;
             }
         }
@@ -135,8 +135,9 @@ namespace WpfAppForModbus {
                     PortsLog?.AddDatedLog(LoadResource("SuccessfulConnected"));
                     AppLog?.AddDatedLog(LoadResource("SuccessfulConnected"));
 
-                    Timer = new(5000, SendData);
-                    Timer.Start();
+                    AsyncTimerToken = new();
+
+                    AsyncTimer ??= RunPeriodicallyAsync(SendData, TimeSpan.FromMilliseconds(5000), AsyncTimerToken.Token);
                 }
 
                 StartHandle.IsEnabled = false;
@@ -177,7 +178,8 @@ namespace WpfAppForModbus {
                     AppLog?.AddDatedLog(LoadResource("SendingData") + ": " + Command);
                 }
             } else {
-                Timer?.StopAsync();
+                AsyncTimer = null;
+                AsyncTimerToken?.Cancel();
 
                 throw new ArgumentException("Не выбрано ни единого датчика");
             }
@@ -192,17 +194,14 @@ namespace WpfAppForModbus {
             }
         }
 
-        private async void StopHandle_Click(object sender, RoutedEventArgs e) {
+        private void StopHandle_Click(object sender, RoutedEventArgs e) {
             try {
                 ActivePort?.Close();
 
                 ActivePort = null;
 
-                if (Timer != null) {
-                    await Timer.StopAsync();
-                }
-
-                Timer = null;
+                AsyncTimer = null;
+                AsyncTimerToken?.Cancel();
 
                 if (!IsConnected(ActivePort)) {
                     PortsLog?.AddDatedLog(LoadResource("SuccessfulStopped"));
@@ -213,7 +212,7 @@ namespace WpfAppForModbus {
                 }
             } catch (Exception ex) {
                 AppLog?.AddDatedLog("Exception in StopHandle: " + ex.Message);
-                AppLog?.AddDatedLog(ex.StackTrace);
+                AppLog?.AddDatedLog(!string.IsNullOrEmpty(ex.StackTrace) ? ex.StackTrace : "No StackTrace");
                 PortsLog?.AddDatedLog("Exception in StopHandle: " + ex.Message);
             }
         }
@@ -227,6 +226,16 @@ namespace WpfAppForModbus {
             AppSettings?.SaveSettings(AppSettingsFile);
 
             AppLog?.AddDatedLog(LoadResource("SettingsUpdated"));
+        }
+        public async Task RunPeriodicallyAsync(
+            Func<Task> Callback,
+            TimeSpan interval,
+            CancellationToken cancellationToken
+        ) {
+            while (!cancellationToken.IsCancellationRequested) {
+                await Task.Delay(interval, cancellationToken);
+                await Callback();
+            }
         }
     }
 }
