@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.IO.Ports;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -14,6 +16,7 @@ using WpfAppForModbus.Domain.Models;
 using WpfAppForModbus.Hooks;
 using WpfAppForModbus.Models;
 using WpfAppForModbus.Models.Helpers;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace WpfAppForModbus {
     public partial class MainWindow : Window {
@@ -65,7 +68,7 @@ namespace WpfAppForModbus {
 
             ComboBoxHelper.AddRange<string>(comboBoxParity, Shared.GetNames(ParityList.Parities));
             ComboBoxHelper.AddRange<string>(comboBoxHandshake, Shared.GetNames(HandshakeList.Handshakes));
-            ComboBoxHelper.AddRange<string>(comboBoxStopBit, Shared.GetNames(StopBitsList.StopBits));
+            ComboBoxHelper.AddRange<string>(comboBoxStopBit, Shared.GetNames(StopBitsList.StopBitsTypes));
 
             AppLog?.AddDatedLog(LoadResource("StartLoadingPorts"));
 
@@ -125,9 +128,11 @@ namespace WpfAppForModbus {
                     SelectedBaudRate = ComboBoxHelper.GetSelectedItem(comboBoxBaudRate, BaudRateList.BaudRate),
                     SelectedDataBits = ComboBoxHelper.GetSelectedItem(comboBoxDataBits, DataBitsList.DataBits),
                     SelectedPort = ComboBoxHelper.GetSelectedItem(comboBoxPorts, Shared.GetAvailablePorts()),
-                    SelectedStopBits = ComboBoxHelper.GetSelectedItem(comboBoxStopBit, StopBitsList.StopBits),
+                    SelectedStopBits = ComboBoxHelper.GetSelectedItem(comboBoxStopBit, StopBitsList.StopBitsTypes),
                     Handler = ReceivedData
                 };
+
+                AppLog?.AddDatedLog(JsonConvert.SerializeObject(Options));
 
                 ActivePort?.Open(Options);
 
@@ -156,6 +161,7 @@ namespace WpfAppForModbus {
         }
 
         public void SendData() {
+            PortsLog?.AddDatedLog("Timer interval");
             string[] Senders = Array.Empty<string>();
 
             /*if (SensorBar != null && SensorBar.IsChecked == true) {
@@ -174,6 +180,7 @@ namespace WpfAppForModbus {
                 Senders.Append("01 05 00 11 00 00 0E 07");
             }
 
+            PortsLog?.AddDatedLog("Before IF statement");
             if (Senders.Any()) {
                 foreach (string Command in Senders) {
                     ActivePort?.Write(Command);
@@ -189,6 +196,7 @@ namespace WpfAppForModbus {
 
                 throw new ArgumentException("Не выбрано ни единого датчика");
             }
+            PortsLog?.AddDatedLog("after IF statement");
         }
 
         private void ReceivedData(object sender, SerialDataReceivedEventArgs e) {
