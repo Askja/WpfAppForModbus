@@ -125,7 +125,7 @@
                 </Border>
             </Grid>
 
-            <Grid x:Name="LogContent">
+            <Grid x:Name="LogContent" Visibility="Collapsed">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*"/>
