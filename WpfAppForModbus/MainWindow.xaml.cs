@@ -169,9 +169,17 @@ namespace WpfAppForModbus {
                 Senders.Append("01 0F 00 10 00 1F FF FF 8F 72");
             }*/
 
-            foreach (string Command in Senders) {
-                PortsLog?.AddDatedLog(LoadResource("SendingData") + ": " + Command);
-                AppLog?.AddDatedLog(LoadResource("SendingData") + ": " + Command);
+            if (Senders.Any()) {
+                foreach (string Command in Senders) {
+                    ActivePort?.Write(Command);
+
+                    PortsLog?.AddDatedLog(LoadResource("SendingData") + ": " + Command);
+                    AppLog?.AddDatedLog(LoadResource("SendingData") + ": " + Command);
+                }
+            } else {
+                Timer?.StopAsync();
+
+                throw new ArgumentException("Не выбрано ни единого датчика");
             }
 
             return Task.CompletedTask;
