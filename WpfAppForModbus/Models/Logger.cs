@@ -1,37 +1,46 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
 using System.Windows.Controls;
 using System.Windows.Threading;
 
-namespace WpfAppForModbus.Models
-{
+namespace WpfAppForModbus.Models {
     public class Logger {
         private TextBox LogElement { get; set; }
+        private CheckBox SaveToFile { get; set; } = null!;
 
-        public Logger(TextBox Element) {
-            LogElement = Element;
+        public Logger(TextBox element) {
+            LogElement = element;
         }
 
-        public Logger AddLog(string Text) {
-            Dispatcher.CurrentDispatcher.BeginInvoke(new Action(() => LogElement.AppendText(Text + "\r\n")));
+        public Logger(TextBox element, CheckBox saveToFile) {
+            LogElement = element;
+            SaveToFile = saveToFile;
+        }
+
+        public Logger AddLog(string text) {
+            Dispatcher.CurrentDispatcher.Invoke(() => LogElement.AppendText(text + "\r\n"));
+
+            if (SaveToFile != null && SaveToFile.IsChecked == true) {
+                if (!Directory.Exists("logs")) {
+                    Directory.CreateDirectory("logs");
+                }
+
+                File.AppendAllTextAsync("logs/" + DateTime.Now.ToString("dd.MM.yyyy") + ".log", text);
+            }
 
             return this;
         }
 
-        public Logger AddDatedLog(string Text) {
-            return AddLog("[" + DateTime.Now.ToString("HH:mm:ss") + "] " + Text);
+        public Logger AddDatedLog(string text) {
+            return AddLog("[" + DateTime.Now.ToString("HH:mm:ss") + "] " + text);
         }
 
-        public Logger AddCategorizedLog(string Category, string Text) {
-            return AddLog("[" + Category + "] " + Text);
+        public Logger AddCategorizedLog(string category, string text) {
+            return AddLog("[" + category + "] " + text);
         }
 
         public Logger ClearLog() {
             LogElement.Clear();
-
             return this;
         }
     }
