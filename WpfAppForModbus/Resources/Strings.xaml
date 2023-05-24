@@ -4,5 +4,8 @@
     <system:String x:Key="SuccessfulConnected">Подключение успешно установлено</system:String>
     <system:String x:Key="SuccessfulStopped">Подключение успешно остановлено</system:String>
     <system:String x:Key="IncorrectConnectionData">Неверные параметры подключения</system:String>
+    <system:String x:Key="StartLoadingData">Начало загрузки данных...</system:String>
+    <system:String x:Key="StartLoadingPorts">Загрузка портов...</system:String>
+    <system:String x:Key="LoadedData">Данные успешно загружены</system:String>
     <system:String x:Key="AppVersion">Версия: 1.1.2405</system:String>
 </ResourceDictionary>

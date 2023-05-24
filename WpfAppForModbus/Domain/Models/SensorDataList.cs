@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using WpfAppForModbus.Domain.Interfaces;
-using WpfAppForModbus.Models;
+using WpfAppForModbus.Models.Views;
 
 namespace WpfAppForModbus.Domain.Models {
     public class SensorDataList : ISensorDataList {

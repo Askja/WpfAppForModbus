@@ -2,6 +2,7 @@
 using System.IO.Ports;
 using System.Text;
 using System.Windows;
+using WpfAppForModbus.Models.Helpers;
 
 namespace WpfAppForModbus.Models {
     public class ComPort {
@@ -27,31 +28,25 @@ namespace WpfAppForModbus.Models {
         }
 
         public bool Open() {
-            try {
-                if (Options != null && Options.IsValid()) {
-                    Port = new SerialPort(
-                        Options.SelectedPort,
-                        (int)Options.SelectedBaudRate,
-                        (Parity)(Options.SelectedParity.Type),
-                        (int)Options.SelectedDataBits,
-                        (StopBits)(Options.SelectedStopBits.Type)
-                    ) {
-                        ReadTimeout = DefaultTimeout,
-                        WriteTimeout = DefaultTimeout,
-                        Handshake = (Handshake)(Options.SelectedHandshake.Type)
-                    };
+            if (Options != null && Options.IsValid()) {
+                Port = new SerialPort(
+                    Options.SelectedPort,
+                    (int)Options.SelectedBaudRate,
+                    (Parity)(Options.SelectedParity.Type),
+                    (int)Options.SelectedDataBits,
+                    (StopBits)(Options.SelectedStopBits.Type)
+                ) {
+                    ReadTimeout = DefaultTimeout,
+                    WriteTimeout = DefaultTimeout,
+                    Handshake = (Handshake)(Options.SelectedHandshake.Type)
+                };
 
-                    Port.Open();
+                Port.Open();
 
-                    return IsOpened();
-                } else {
-                    throw new ArgumentNullException();
-                }
-            } catch (Exception exception) {
-                MessageBox.Show(exception.Message);
+                return IsOpened();
+            } else {
+                throw new ArgumentNullException();
             }
-
-            return false;
         }
 
         public bool Open(ComPortOptions Options) {
@@ -81,7 +76,7 @@ namespace WpfAppForModbus.Models {
 
                     Port?.Read(buffer, 0, buffer.Length);
 
-                    return Helpers.ByteToHex(buffer);
+                    return Shared.ByteToHex(buffer);
                 } catch (TimeoutException) { }
             }
 
@@ -101,7 +96,7 @@ namespace WpfAppForModbus.Models {
         }
 
         public void Write(string buffer) {
-            byte[] bytes = Helpers.HexToByte(buffer);
+            byte[] bytes = Shared.HexToByte(buffer);
 
             Write(bytes, 0, bytes.Length);
         }

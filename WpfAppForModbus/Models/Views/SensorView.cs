@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace WpfAppForModbus.Models {
+namespace WpfAppForModbus.Models.Views {
     public class SensorView {
         public int RowId {
             get; set;

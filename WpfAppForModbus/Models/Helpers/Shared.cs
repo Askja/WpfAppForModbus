@@ -6,8 +6,8 @@ using System.Text;
 using System.Windows;
 using WpfAppForModbus.Interfaces;
 
-namespace WpfAppForModbus.Models {
-    public class Helpers {
+namespace WpfAppForModbus.Models.Helpers {
+    public class Shared {
         public static string[] GetAvailablePorts() {
             return SerialPort.GetPortNames();
         }
