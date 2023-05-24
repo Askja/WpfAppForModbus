@@ -29,7 +29,7 @@
                    HorizontalAlignment="Center" VerticalAlignment="Bottom"/>
 
         <Grid Grid.Column="1">
-            <Grid x:Name="PortsContent">
+            <Grid x:Name="PortsContent" Visibility="Collapsed">
                 <Border Padding="10">
                     <StackPanel>
                         <materialDesign:Card Margin="5" Background="WhiteSmoke">
@@ -147,8 +147,47 @@
             </Grid>
 
             <Grid x:Name="SettingsContent" Visibility="Collapsed">
-                <Label Content="Контент для пункта 'Настройки'" HorizontalAlignment="Center"
-                       VerticalAlignment="Center"/>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <Label Content="Настройки" FontSize="20" FontWeight="DemiBold" />
+
+                <materialDesign:Card Grid.Row="1" Margin="5" Padding="10" Background="WhiteSmoke">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <Label Grid.Row="0" Grid.Column="0" Content="Интервал запросов (мс):" VerticalAlignment="Center" />
+                        <TextBox Grid.Row="0" TextAlignment="Center" Text="5000" Grid.Column="1" Width="100" Margin="5" />
+
+                        <Label Grid.Row="1" Grid.Column="0" Content="Порог температуры:" VerticalAlignment="Center" />
+                        <TextBox Grid.Row="1" TextAlignment="Center" Text="5000" Grid.Column="1" Width="100" Margin="5" />
+
+                        <Label Grid.Row="2" Grid.Column="0" Content="Порог давления(мм):" VerticalAlignment="Center" />
+                        <TextBox Grid.Row="2" TextAlignment="Center" Text="799" Grid.Column="1" Width="100" Margin="5" />
+
+                        <Label Grid.Row="3" Grid.Column="0" Content="Порог влажности(%):" VerticalAlignment="Center" />
+                        <TextBox Grid.Row="3" TextAlignment="Center" Text="80" Grid.Column="1" Width="100" Margin="5" />
+
+                        <Label Grid.Row="4" Grid.Column="0" Content="Порог напряжения(Вт):" VerticalAlignment="Center" />
+                        <TextBox Grid.Row="4" TextAlignment="Center" Text="500" Grid.Column="1" Width="100" Margin="5" />
+                    </Grid>
+                </materialDesign:Card>
+
+                <Button VerticalAlignment="Bottom" Cursor="Hand" Grid.Row="2" HorizontalAlignment="Right" Content="Сохранить настройки" Style="{DynamicResource MaterialDesignRaisedLightButton}" Margin="10"/>
             </Grid>
         </Grid>
     </Grid>
