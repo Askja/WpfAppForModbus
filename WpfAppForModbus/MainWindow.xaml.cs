@@ -151,28 +151,30 @@ namespace WpfAppForModbus {
             }
         }
 
-        public Task SendData() {
+        public async Task<Task> SendData() {
             string[] Senders = Array.Empty<string>();
 
             /*if (SensorBar != null && SensorBar.IsChecked == true) {
-                Senders.Append("01 0F 00 10 00 1F FF FF 8F 72");
+                Senders.Append("01 0F 00 10 00 1F 00 00 8E C2");
             }*/
 
             if (SensorLight != null && SensorLight.IsChecked == true) {
                 Senders.Append("01 0F 00 10 00 1F FF FF 8F 72");
             }
 
-            /*if (SensorTemperature != null && SensorTemperature.IsChecked == true) {
-                Senders.Append("01 0F 00 10 00 1F FF FF 8F 72");
+            if (SensorTemperature != null && SensorTemperature.IsChecked == true) {
+                Senders.Append("01 0F 00 10 00 1F 00 00 8E C2");
             }
 
             if (SensorWater != null && SensorWater.IsChecked == true) {
-                Senders.Append("01 0F 00 10 00 1F FF FF 8F 72");
-            }*/
+                Senders.Append("01 05 00 11 00 00 0E 07");
+            }
 
             if (Senders.Any()) {
                 foreach (string Command in Senders) {
                     ActivePort?.Write(Command);
+
+                    await Task.Delay(800);
 
                     PortsLog?.AddDatedLog(LoadResource("SendingData") + ": " + Command);
                     AppLog?.AddDatedLog(LoadResource("SendingData") + ": " + Command);
