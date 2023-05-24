@@ -16,6 +16,7 @@ namespace WpfAppForModbus.Models {
 
         public void Start() {
             cancellationTokenSource = new CancellationTokenSource();
+
             timerTask = RunTimerAsync(cancellationTokenSource.Token);
         }
 
@@ -28,6 +29,7 @@ namespace WpfAppForModbus.Models {
         private async Task RunTimerAsync(CancellationToken cancellationToken) {
             while (!cancellationToken.IsCancellationRequested) {
                 await Task.Delay(interval, cancellationToken);
+
                 if (!cancellationToken.IsCancellationRequested) {
                     await callback();
                 }

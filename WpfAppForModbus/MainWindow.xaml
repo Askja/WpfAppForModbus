@@ -10,16 +10,16 @@
         </Grid.ColumnDefinitions>
 
         <StackPanel Name="LeftMenuStackPanel" Width="170" Grid.Column="0" Background="#303030" VerticalAlignment="Stretch">
-            <TextBlock Cursor="Hand" Name="PortsMenuItemText" Text="Датчики" Padding="15,8" Margin="5,10,5,5"
+            <TextBlock Cursor="Hand" Name="PortsMenuItemText" Text="Датчики" Padding="10"
                        Foreground="White" FontWeight="Normal" TextDecorations="{x:Null}"
                        MouseDown="MenuItem_Click"/>
-            <TextBlock Cursor="Hand" Name="LogMenuItemText" Text="Лог" Padding="15,8" Margin="5,10,5,5"
+            <TextBlock Cursor="Hand" Name="LogMenuItemText" Text="Лог" Padding="10"
                        Foreground="White" FontWeight="Normal" TextDecorations="{x:Null}"
                        MouseDown="MenuItem_Click"/>
-            <TextBlock Cursor="Hand" Name="AnalyzeMenuItemText" Text="Анализ" Padding="15,8" Margin="5,10,5,5"
+            <TextBlock Cursor="Hand" Name="AnalyzeMenuItemText" Text="Анализ" Padding="10"
                        Foreground="White" FontWeight="Normal" TextDecorations="{x:Null}"
                        MouseDown="MenuItem_Click"/>
-            <TextBlock Cursor="Hand" Name="SettingsMenuItemText" Text="Настройки" Padding="15,8" Margin="5,10,5,5"
+            <TextBlock Cursor="Hand" Name="SettingsMenuItemText" Text="Настройки" Padding="10"
                        Foreground="White" FontWeight="Normal" TextDecorations="{x:Null}"
                        MouseDown="MenuItem_Click"/>
         </StackPanel>
@@ -88,26 +88,26 @@
                                     <RowDefinition Height="*" />
                                 </Grid.RowDefinitions>
 
-                                <Label Grid.Column="0" Grid.Row="0" Content="Порт:" VerticalAlignment="Center" />
-                                <ComboBox Grid.Column="1" Grid.Row="0" Name="comboBoxPorts" Width="200"></ComboBox>
+                                <Label Margin="2" Grid.Column="0" Grid.Row="0" Content="Порт:" VerticalAlignment="Center" />
+                                <ComboBox Margin="2" Grid.Column="1" Grid.Row="0" Name="comboBoxPorts" Width="200"></ComboBox>
 
-                                <Label Grid.Column="2" Grid.Row="0" Content="Паритетность:" VerticalAlignment="Center" />
-                                <ComboBox Grid.Column="3" Grid.Row="0" Width="200" Name="comboBoxParity"></ComboBox>
+                                <Label Margin="2" Grid.Column="2" Grid.Row="0" Content="Паритетность:" VerticalAlignment="Center" />
+                                <ComboBox Margin="2" Grid.Column="3" Grid.Row="0" Width="200" Name="comboBoxParity"></ComboBox>
 
-                                <Label Grid.Column="0" Grid.Row="1" Content="Передаваемые биты:" VerticalAlignment="Center" />
-                                <ComboBox Grid.Column="1" Grid.Row="1" Width="200" Name="comboBoxDataBits"></ComboBox>
+                                <Label Margin="2" Grid.Column="0" Grid.Row="1" Content="Передаваемые биты:" VerticalAlignment="Center" />
+                                <ComboBox Margin="2" Grid.Column="1" Grid.Row="1" Width="200" Name="comboBoxDataBits"></ComboBox>
 
-                                <Label Grid.Column="2" Grid.Row="1" Content="Стоп-биты:" VerticalAlignment="Center" />
-                                <ComboBox Grid.Column="3" Grid.Row="1" Width="200" Name="comboBoxStopBit"></ComboBox>
+                                <Label Margin="2" Grid.Column="2" Grid.Row="1" Content="Стоп-биты:" VerticalAlignment="Center" />
+                                <ComboBox Margin="2" Grid.Column="3" Grid.Row="1" Width="200" Name="comboBoxStopBit"></ComboBox>
 
-                                <Label Grid.Column="0" Grid.Row="2" Content="Тип рукопожатия:" VerticalAlignment="Center" />
-                                <ComboBox Grid.Column="1" Grid.Row="2" Width="200" Name="comboBoxHandshake"></ComboBox>
+                                <Label Margin="2" Grid.Column="0" Grid.Row="2" Content="Тип рукопожатия:" VerticalAlignment="Center" />
+                                <ComboBox Margin="2" Grid.Column="1" Grid.Row="2" Width="200" Name="comboBoxHandshake"></ComboBox>
 
-                                <Label Grid.Column="2" Grid.Row="2" Content="Рейты:" VerticalAlignment="Center" />
-                                <ComboBox Grid.Column="3" Grid.Row="2" Width="200" Name="comboBoxBaudRate"></ComboBox>
+                                <Label Margin="2" Grid.Column="2" Grid.Row="2" Content="Рейты:" VerticalAlignment="Center" />
+                                <ComboBox Margin="2" Grid.Column="3" Grid.Row="2" Width="200" Name="comboBoxBaudRate"></ComboBox>
 
-                                <Button Grid.Column="0" Margin="5" Grid.ColumnSpan="2" Grid.Row="3" Content="Запуск обработки" Name="StartHandle" Click="Button_Connect" Style="{DynamicResource MaterialDesignFlatButton}" Cursor="Hand" Foreground="{StaticResource Green}"/>
-                                <Button Grid.Column="2" Margin="5" Grid.ColumnSpan="2" Grid.Row="3" Content="Остановить" IsEnabled="False" Name="StopHandle" Style="{DynamicResource MaterialDesignFlatButton}" Cursor="Hand" Foreground="{StaticResource Red}" Click="StopHandle_Click" />
+                                <Button Grid.Column="0" Margin="5,30,5,5" Grid.ColumnSpan="2" Grid.Row="3" Content="Запуск обработки" Name="StartHandle" Click="Button_Connect" Style="{DynamicResource MaterialDesignFlatButton}" Cursor="Hand" Foreground="{StaticResource Green}"/>
+                                <Button Grid.Column="2" Margin="5,30,5,5" Grid.ColumnSpan="2" Grid.Row="3" Content="Остановить" IsEnabled="False" Name="StopHandle" Style="{DynamicResource MaterialDesignFlatButton}" Cursor="Hand" Foreground="{StaticResource Red}" Click="StopHandle_Click" />
                             </Grid>
                         </materialDesign:Card>
 
