@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO.Ports;
 using System.Linq;
 using System.Text;
+using System.Windows;
 using WpfAppForModbus.Interfaces;
 
 namespace WpfAppForModbus.Models {
@@ -28,6 +29,16 @@ namespace WpfAppForModbus.Models {
                 builder.Append(Convert.ToString(data, 16).PadLeft(2, '0').
                     PadRight(3, ' '));
             return builder.ToString().ToUpper();
+        }
+
+        public static string GetString(Window window, string Key) {
+            object Resource = window.FindResource(Key);
+
+            if (Resource != null) {
+                return (string)Resource;
+            }
+
+            return "";
         }
     }
 }

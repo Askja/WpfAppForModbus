@@ -8,14 +8,12 @@ using WpfAppForModbus.Hooks;
 using WpfAppForModbus.Models;
 using MaterialDesignThemes.Wpf;
 using WpfAppForModbus.Const;
+using System.Windows.Media;
 
 namespace WpfAppForModbus {
     public partial class MainWindow : Window {
         public DateTime now = DateTime.Now;
         public ComPort? ActivePort {
-            get; set;
-        }
-        public ComPort? ActivePort2 {
             get; set;
         }
 
@@ -56,13 +54,19 @@ namespace WpfAppForModbus {
             ComboBoxHelper.AddRange(comboBoxDataBits, DataBitsList.DataBits);
         }
 
+        private string LoadResource(string Key) {
+            return Helpers.GetString(this, Key);
+        }
+
         public bool IsConnected(ComPort? Port) => (Port != null && Port.IsOpened());
 
-        public void ShowMessage(string Text) => MessageBox.Show(Text);
+        public void ShowMessage(string message) => MessageBox.Show(message);
 
-        public void SuccessfullyConnected() => ShowMessage("Подключение успешно установлено");
+        public void SuccessfullyConnected() => ShowMessage(LoadResource("SuccessfulConnected"));
 
-        public void AlreadyConnected() => ShowMessage("На данном порту уже установлено подключение");
+        public void SuccessfullyStopped() => ShowMessage(LoadResource("SuccessfulStopped"));
+
+        public void AlreadyConnected() => ShowMessage(LoadResource("AlreadyConnected"));
 
         private void Button_Connect(object sender, RoutedEventArgs e) {
             try {
@@ -168,6 +172,10 @@ namespace WpfAppForModbus {
             } catch (Exception ex) {
                 MessageBox.Show(ex.Message);
             }
+        }
+
+        private void StopHandle_Click(object sender, RoutedEventArgs e) {
+
         }
     }
 }
