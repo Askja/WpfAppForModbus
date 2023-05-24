@@ -137,7 +137,11 @@ namespace WpfAppForModbus {
 
                     AsyncTimerToken = new();
 
-                    AsyncTimer ??= RunPeriodicallyAsync(SendData, TimeSpan.FromMilliseconds(5000), AsyncTimerToken.Token);
+                    AsyncTimer ??= RunPeriodicallyAsync(() => {
+                        SendData();
+
+                        return Task.CompletedTask;
+                    }, TimeSpan.FromMilliseconds(5000), AsyncTimerToken.Token);
                 }
 
                 StartHandle.IsEnabled = false;
@@ -151,7 +155,7 @@ namespace WpfAppForModbus {
             }
         }
 
-        public async Task<Task> SendData() {
+        public void SendData() {
             string[] Senders = Array.Empty<string>();
 
             /*if (SensorBar != null && SensorBar.IsChecked == true) {
@@ -174,7 +178,7 @@ namespace WpfAppForModbus {
                 foreach (string Command in Senders) {
                     ActivePort?.Write(Command);
 
-                    await Task.Delay(800);
+                    Task.Delay(800);
 
                     PortsLog?.AddDatedLog(LoadResource("SendingData") + ": " + Command);
                     AppLog?.AddDatedLog(LoadResource("SendingData") + ": " + Command);
@@ -185,8 +189,6 @@ namespace WpfAppForModbus {
 
                 throw new ArgumentException("Не выбрано ни единого датчика");
             }
-
-            return Task.CompletedTask;
         }
 
         private void ReceivedData(object sender, SerialDataReceivedEventArgs e) {
