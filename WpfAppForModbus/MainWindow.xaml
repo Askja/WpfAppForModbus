@@ -15,9 +15,6 @@
             <TextBlock Cursor="Hand" Name="LogMenuItemText" Text="Лог" Padding="15,10" Margin="0,0,0,10"
                        Foreground="White" FontWeight="Normal" TextDecorations="{x:Null}"
                        MouseDown="MenuItem_Click"/>
-            <TextBlock Cursor="Hand" Name="SettingsMenuItemText" Text="Настройки" Padding="15,10" Margin="0,0,0,10"
-                       Foreground="White" FontWeight="Normal" TextDecorations="{x:Null}"
-                       MouseDown="MenuItem_Click"/>
         </StackPanel>
 
         <TextBlock x:Name="VersionText" Text="Версия 1.0.2405" Padding="5,10"
@@ -109,11 +106,6 @@
 
             <Grid x:Name="LogContent" Visibility="Collapsed">
                 <Label Content="Контент для пункта 'Лог'" HorizontalAlignment="Center"
-                       VerticalAlignment="Center"/>
-            </Grid>
-
-            <Grid x:Name="SettingsContent" Visibility="Collapsed">
-                <Label Content="Контент для пункта 'Настройки'" HorizontalAlignment="Center"
                        VerticalAlignment="Center"/>
             </Grid>
         </Grid>

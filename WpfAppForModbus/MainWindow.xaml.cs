@@ -6,6 +6,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using WpfAppForModbus.Hooks;
 using WpfAppForModbus.Models;
+using MaterialDesignThemes.Wpf;
 
 namespace WpfAppForModbus {
     public partial class MainWindow : Window {
@@ -26,24 +27,17 @@ namespace WpfAppForModbus {
         }
 
         private void MenuItem_Click(object sender, MouseButtonEventArgs e) {
-            // Скрываем все контейнеры с содержимым
             PortsContent.Visibility = Visibility.Collapsed;
             LogContent.Visibility = Visibility.Collapsed;
-            SettingsContent.Visibility = Visibility.Collapsed;
 
-            // Получаем выбранный пункт меню
-            TextBlock selectedMenuItem = sender as TextBlock;
+            TextBlock? selectedMenuItem = sender as TextBlock;
 
-            // Отображаем соответствующий контейнер и применяем стили к выбранному пункту меню
             if (selectedMenuItem == PortsMenuItemText) {
                 PortsContent.Visibility = Visibility.Visible;
             } else if (selectedMenuItem == LogMenuItemText) {
                 LogContent.Visibility = Visibility.Visible;
-            } else if (selectedMenuItem == SettingsMenuItemText) {
-                SettingsContent.Visibility = Visibility.Visible;
             }
 
-            // Применяем стили к выбранному пункту меню
             foreach (var menuItem in LeftMenuStackPanel.Children.OfType<TextBlock>()) {
                 menuItem.FontWeight = menuItem == selectedMenuItem ? FontWeights.Bold : FontWeights.Normal;
                 menuItem.TextDecorations = menuItem == selectedMenuItem ? TextDecorations.Underline : null;
