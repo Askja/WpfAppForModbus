@@ -2,7 +2,7 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-        Title="Монитор портов" Height="500" Width="800" ResizeMode="CanMinimize" Icon="/control-panel.png">
+        Title="Монитор портов" Height="500" Width="900" ResizeMode="CanMinimize" Icon="/control-panel.png">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
@@ -10,13 +10,16 @@
         </Grid.ColumnDefinitions>
 
         <StackPanel Name="LeftMenuStackPanel" Width="170" Grid.Column="0" Background="#303030" VerticalAlignment="Stretch">
-            <TextBlock Cursor="Hand" Name="PortsMenuItemText" Text="Датчики" Padding="15,5" Margin="5,10,5,5"
+            <TextBlock Cursor="Hand" Name="PortsMenuItemText" Text="Датчики" Padding="15,8" Margin="5,10,5,5"
                        Foreground="White" FontWeight="Normal" TextDecorations="{x:Null}"
                        MouseDown="MenuItem_Click"/>
-            <TextBlock Cursor="Hand" Name="LogMenuItemText" Text="Лог" Padding="15,5" Margin="5,10,5,5"
+            <TextBlock Cursor="Hand" Name="LogMenuItemText" Text="Лог" Padding="15,8" Margin="5,10,5,5"
                        Foreground="White" FontWeight="Normal" TextDecorations="{x:Null}"
                        MouseDown="MenuItem_Click"/>
-            <TextBlock Cursor="Hand" Name="AnalyzeMenuItemText" Text="Анализ" Padding="15,5" Margin="5,10,5,5"
+            <TextBlock Cursor="Hand" Name="AnalyzeMenuItemText" Text="Анализ" Padding="15,8" Margin="5,10,5,5"
+                       Foreground="White" FontWeight="Normal" TextDecorations="{x:Null}"
+                       MouseDown="MenuItem_Click"/>
+            <TextBlock Cursor="Hand" Name="SettingsMenuItemText" Text="Настройки" Padding="15,8" Margin="5,10,5,5"
                        Foreground="White" FontWeight="Normal" TextDecorations="{x:Null}"
                        MouseDown="MenuItem_Click"/>
         </StackPanel>
@@ -26,99 +29,95 @@
                    HorizontalAlignment="Center" VerticalAlignment="Bottom"/>
 
         <Grid Grid.Column="1">
-            <Grid x:Name="PortsContent" Visibility="Collapsed">
+            <Grid x:Name="PortsContent">
                 <Border Padding="10">
                     <StackPanel>
-                        <materialDesign:Card Margin="5">
+                        <materialDesign:Card Margin="5" Background="WhiteSmoke">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
 
-                                <Label Padding="10" VerticalAlignment="Center" FontSize="18"  FontWeight="Bold" Content="Датчик температуры"/>
+                                <Label Grid.Column="0" FontSize="16" Content="В обмене участвуют: "></Label>
 
-                                <Label Grid.Column="1" Padding="10" VerticalAlignment="Center" FontSize="14"  FontWeight="Bold" Content="70C"/>
-                            </Grid>
-                        </materialDesign:Card>
-
-                        <materialDesign:Card Margin="5">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
-
-                                <Label Padding="10" VerticalAlignment="Center" FontSize="18"  FontWeight="Bold" Content="Датчик света"/>
-
-                                <Label Grid.Column="1" Padding="10" VerticalAlignment="Center" FontSize="14"  FontWeight="Bold" Content="700 люменов"/>
-                            </Grid>
-                        </materialDesign:Card>
-
-                        <materialDesign:Card Margin="5">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
-
-                                <Label Padding="10" VerticalAlignment="Center" FontSize="18"  FontWeight="Bold" Content="Датчик влажности"/>
-
-                                <Label Grid.Column="1" Padding="10" VerticalAlignment="Center" FontSize="14"  FontWeight="Bold" Content="70%"/>
-                            </Grid>
-                        </materialDesign:Card>
-
-                        <materialDesign:Card Margin="5">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
-
-                                <Label Padding="10" VerticalAlignment="Center" FontSize="18"  FontWeight="Bold" Content="Датчик давления"/>
-                                <Label Grid.Column="1" Padding="10" VerticalAlignment="Center" FontSize="14"  FontWeight="Bold" Content="700мм рт."/>
-                            </Grid>
-                        </materialDesign:Card>
-
-                        <materialDesign:Card Margin="5">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
-
-                                <StackPanel Grid.Column="0" Margin="10">
-                                    <StackPanel Orientation="Horizontal" Margin="10">
-                                        <Label Content="Порт:" VerticalAlignment="Center" />
-                                        <ComboBox Name="comboBoxPorts" Width="200"></ComboBox>
-                                    </StackPanel>
-                                    <StackPanel Orientation="Horizontal" Margin="10">
-                                        <Label Content="Паритетность:" VerticalAlignment="Center" />
-                                        <ComboBox Width="200" Name="comboBoxParity"></ComboBox>
-                                    </StackPanel>
-                                    <StackPanel Orientation="Horizontal" Margin="10">
-                                        <Label Content="Количество бит:" VerticalAlignment="Center" />
-                                        <ComboBox Width="200" Name="comboBoxDataBits"></ComboBox>
-                                    </StackPanel>
-                                    <StackPanel Orientation="Horizontal" Margin="10">
-                                        <Label Content="Количество стоп-бит:" VerticalAlignment="Center" />
-                                        <ComboBox Width="200" Name="comboBoxStopBit"></ComboBox>
-                                    </StackPanel>
+                                <StackPanel Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right" Orientation="Horizontal">
+                                    <CheckBox Foreground="IndianRed" Content="{materialDesign:PackIcon ThermometerCheck}" Name="SensorTemperature"></CheckBox>
+                                    <CheckBox Foreground="Indigo" Content="{materialDesign:PackIcon ThermometerWater}" Name="SensorWater"></CheckBox>
+                                    <CheckBox Foreground="Green" Content="{materialDesign:PackIcon Gauge}" Name="SensorBar"></CheckBox>
+                                    <CheckBox Foreground="Brown" Content="{materialDesign:PackIcon Brightness6}" Name="SensorLight"></CheckBox>
                                 </StackPanel>
+                            </Grid>
+                        </materialDesign:Card>
 
-                                <StackPanel Grid.Column="1" Margin="10">
-                                    <StackPanel Orientation="Horizontal" Margin="10">
-                                        <Label Content="Тип рукопожатия:" VerticalAlignment="Center" />
-                                        <ComboBox Width="200" Name="comboBoxHandshake"></ComboBox>
-                                    </StackPanel>
-                                    <StackPanel Orientation="Horizontal" Margin="10">
-                                        <Label Content="Рейты:" VerticalAlignment="Center" />
-                                        <ComboBox Width="200" Name="comboBoxBaudRate"></ComboBox>
-                                    </StackPanel>
+                        <Label Content="Статистика" FontSize="20" FontWeight="DemiBold" />
 
-                                    <Button Content="Запуск обработки" Margin="0,20,0,0" Name="StartHandle" Click="Button_Connect" Style="{DynamicResource MaterialDesignFlatButton}" Cursor="Hand" Foreground="{StaticResource Green}"/>
-                                    <Button Content="Остановить" IsEnabled="False" Name="StopHandle" Style="{DynamicResource MaterialDesignFlatButton}" Cursor="Hand" Foreground="{StaticResource Red}" Click="StopHandle_Click" />
-                                </StackPanel>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+
+                            <Label Grid.Column="0" Grid.Row="0" Content="Сообщений отправлено:"/>
+                            <Label Grid.Column="1" Grid.Row="0" Content="0" Name="StatCounterSend"/>
+
+                            <Label Grid.Column="0" Grid.Row="1" Content="Сообщений получено:"/>
+                            <Label Grid.Column="1" Grid.Row="1" Content="0" Name="StatCounterGet"/>
+                        </Grid>
+
+                        <Label Content="Настройки подключения" FontSize="20" FontWeight="DemiBold" />
+
+                        <materialDesign:Card Margin="5" Padding="10">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+
+                                <Label Grid.Column="0" Grid.Row="0" Content="Порт:" VerticalAlignment="Center" />
+                                <ComboBox Grid.Column="1" Grid.Row="0" Name="comboBoxPorts" Width="200"></ComboBox>
+
+                                <Label Grid.Column="2" Grid.Row="0" Content="Паритетность:" VerticalAlignment="Center" />
+                                <ComboBox Grid.Column="3" Grid.Row="0" Width="200" Name="comboBoxParity"></ComboBox>
+
+                                <Label Grid.Column="0" Grid.Row="1" Content="Передаваемые биты:" VerticalAlignment="Center" />
+                                <ComboBox Grid.Column="1" Grid.Row="1" Width="200" Name="comboBoxDataBits"></ComboBox>
+
+                                <Label Grid.Column="2" Grid.Row="1" Content="Стоп-биты:" VerticalAlignment="Center" />
+                                <ComboBox Grid.Column="3" Grid.Row="1" Width="200" Name="comboBoxStopBit"></ComboBox>
+
+                                <Label Grid.Column="0" Grid.Row="2" Content="Тип рукопожатия:" VerticalAlignment="Center" />
+                                <ComboBox Grid.Column="1" Grid.Row="2" Width="200" Name="comboBoxHandshake"></ComboBox>
+
+                                <Label Grid.Column="2" Grid.Row="2" Content="Рейты:" VerticalAlignment="Center" />
+                                <ComboBox Grid.Column="3" Grid.Row="2" Width="200" Name="comboBoxBaudRate"></ComboBox>
+
+                                <Button Grid.Column="0" Margin="5" Grid.ColumnSpan="2" Grid.Row="3" Content="Запуск обработки" Name="StartHandle" Click="Button_Connect" Style="{DynamicResource MaterialDesignFlatButton}" Cursor="Hand" Foreground="{StaticResource Green}"/>
+                                <Button Grid.Column="2" Margin="5" Grid.ColumnSpan="2" Grid.Row="3" Content="Остановить" IsEnabled="False" Name="StopHandle" Style="{DynamicResource MaterialDesignFlatButton}" Cursor="Hand" Foreground="{StaticResource Red}" Click="StopHandle_Click" />
+                            </Grid>
+                        </materialDesign:Card>
+
+                        <materialDesign:Card Height="110" Margin="5">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+
+                                <TextBox IsEnabled="False" Name="PortsLogBox" Margin="10" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"/>
                             </Grid>
                         </materialDesign:Card>
                     </StackPanel>
@@ -144,6 +143,11 @@
 
             <Grid x:Name="AnalyzeContent" Visibility="Collapsed">
                 <Label Content="Контент для пункта 'Анализ'" HorizontalAlignment="Center"
+                       VerticalAlignment="Center"/>
+            </Grid>
+
+            <Grid x:Name="SettingsContent" Visibility="Collapsed">
+                <Label Content="Контент для пункта 'Настройки'" HorizontalAlignment="Center"
                        VerticalAlignment="Center"/>
             </Grid>
         </Grid>
