@@ -12,10 +12,11 @@ using System.Windows.Media;
 
 namespace WpfAppForModbus {
     public partial class MainWindow : Window {
-        public DateTime now = DateTime.Now;
         public ComPort? ActivePort {
             get; set;
         }
+
+        private AsyncTimer? Timer { get; set; } = null;
 
         public MainWindow() {
             InitializeComponent();

@@ -21,7 +21,7 @@
                        MouseDown="MenuItem_Click"/>
         </StackPanel>
 
-        <TextBlock x:Name="VersionText" Text="Версия 1.0.2405" Padding="5,10"
+        <Label Content="{StaticResource AppVersion}" Padding="5,10"
                    Foreground="#BDBDBD" FontWeight="Normal"
                    HorizontalAlignment="Center" VerticalAlignment="Bottom"/>
 

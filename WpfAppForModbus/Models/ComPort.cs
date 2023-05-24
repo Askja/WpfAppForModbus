@@ -78,11 +78,11 @@ namespace WpfAppForModbus.Models {
             if (IsOpened()) {
                 try {
                     byte[] buffer = new byte[Port?.BytesToRead ?? 0];
+
                     Port?.Read(buffer, 0, buffer.Length);
+
                     return Helpers.ByteToHex(buffer);
                 } catch (TimeoutException) { }
-
-
             }
 
             return "";
@@ -99,6 +99,7 @@ namespace WpfAppForModbus.Models {
         public void Write(char[] buffer, int offset, int count) {
             Write(Encoding.GetEncoding("UTF-8").GetBytes(buffer), offset, count);
         }
+
         public void Write(string buffer) {
             byte[] bytes = Helpers.HexToByte(buffer);
 
