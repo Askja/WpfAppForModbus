@@ -41,6 +41,8 @@ namespace WpfAppForModbus.Models {
                     Handshake = (Handshake)(Options.SelectedHandshake.Type)
                 };
 
+                Port.DataReceived += Options.Handler;
+
                 Port.Open();
 
                 return IsOpened();
