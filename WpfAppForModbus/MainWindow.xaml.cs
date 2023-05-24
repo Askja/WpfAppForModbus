@@ -145,12 +145,12 @@ namespace WpfAppForModbus {
                 PortsLog?.AddDatedLog(LoadResource("IncorrectConnectionData"));
                 AppLog?.AddDatedLog(LoadResource("IncorrectConnectionData"));
             } catch (Exception ex) {
-                AppLog?.AddDatedLog("Exception: " + ex.Message);
-                PortsLog?.AddDatedLog("Exception: " + ex.Message);
+                AppLog?.AddDatedLog("Exception connect: " + ex.Message);
+                PortsLog?.AddDatedLog("Exception connect: " + ex.Message);
             }
         }
 
-        private Task SendData() {
+        public Task SendData() {
             string[] Senders = Array.Empty<string>();
 
             /*if (SensorBar != null && SensorBar.IsChecked == true) {
@@ -186,8 +186,10 @@ namespace WpfAppForModbus {
         }
 
         private void ReceivedData(object sender, SerialDataReceivedEventArgs e) {
-            PortsLog?.AddDatedLog("Получено: " + ActivePort?.Read());
-            AppLog?.AddDatedLog("Получено: " + ActivePort?.Read());
+            lock (this) {
+                PortsLog?.AddDatedLog("Получено: " + ActivePort?.Read());
+                AppLog?.AddDatedLog("Получено: " + ActivePort?.Read());
+            }
         }
 
         private async void StopHandle_Click(object sender, RoutedEventArgs e) {
@@ -210,8 +212,9 @@ namespace WpfAppForModbus {
                     StopHandle.IsEnabled = false;
                 }
             } catch (Exception ex) {
-                AppLog?.AddDatedLog("Exception: " + ex.Message);
-                PortsLog?.AddDatedLog("Exception: " + ex.Message);
+                AppLog?.AddDatedLog("Exception in StopHandle: " + ex.Message);
+                AppLog?.AddDatedLog(ex.StackTrace);
+                PortsLog?.AddDatedLog("Exception in StopHandle: " + ex.Message);
             }
         }
 
