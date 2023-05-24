@@ -19,35 +19,27 @@ namespace WpfAppForModbus {
 
         private Logger? AppLog { get; set; } = null;
 
+        private Settings? AppSettings { get; set; } = null;
+
+        private string AppSettingsFile { get; set; } = "settings.xml";
+
         public MainWindow() {
             InitializeComponent();
-
-            AppLog = new(Log);
-
-            UIHooks.ClickElement(PortsMenuItemText);
-
-            FillBoxes();
+            InitializeSettings();
+            InitializeUI();
         }
 
-        private void MenuItem_Click(object sender, MouseButtonEventArgs e) {
-            PortsContent.Visibility = Visibility.Collapsed;
-            LogContent.Visibility = Visibility.Collapsed;
-            AnalyzeContent.Visibility = Visibility.Collapsed;
+        public void InitializeSettings() {
+            AppLog = new(Log, SaveLogsToFile);
+            AppSettings = Settings.LoadSettings("settings.xml");
 
-            TextBlock? selectedMenuItem = sender as TextBlock;
+            AppSettings?.ApplyToControls(SaveLogsToFile);
+        }
 
-            if (selectedMenuItem == PortsMenuItemText) {
-                PortsContent.Visibility = Visibility.Visible;
-            } else if (selectedMenuItem == LogMenuItemText) {
-                LogContent.Visibility = Visibility.Visible;
-            } else if (selectedMenuItem == AnalyzeMenuItemText) {
-                AnalyzeContent.Visibility = Visibility.Visible;
-            }
+        public void InitializeUI() {
+            FillBoxes();
 
-            foreach (var menuItem in LeftMenuStackPanel.Children.OfType<TextBlock>()) {
-                menuItem.FontWeight = menuItem == selectedMenuItem ? FontWeights.Bold : FontWeights.Normal;
-                menuItem.TextDecorations = menuItem == selectedMenuItem ? TextDecorations.Underline : null;
-            }
+            UIHooks.ClickElement(PortsMenuItemText);
         }
 
         public void FillBoxes() {
@@ -80,6 +72,27 @@ namespace WpfAppForModbus {
 
         public void AlreadyConnected() => ShowMessage(LoadResource("AlreadyConnected"));
 
+        private void MenuItem_Click(object sender, MouseButtonEventArgs e) {
+            PortsContent.Visibility = Visibility.Collapsed;
+            LogContent.Visibility = Visibility.Collapsed;
+            AnalyzeContent.Visibility = Visibility.Collapsed;
+
+            TextBlock? selectedMenuItem = sender as TextBlock;
+
+            if (selectedMenuItem == PortsMenuItemText) {
+                PortsContent.Visibility = Visibility.Visible;
+            } else if (selectedMenuItem == LogMenuItemText) {
+                LogContent.Visibility = Visibility.Visible;
+            } else if (selectedMenuItem == AnalyzeMenuItemText) {
+                AnalyzeContent.Visibility = Visibility.Visible;
+            }
+
+            foreach (var menuItem in LeftMenuStackPanel.Children.OfType<TextBlock>()) {
+                menuItem.FontWeight = menuItem == selectedMenuItem ? FontWeights.Bold : FontWeights.Normal;
+                menuItem.TextDecorations = menuItem == selectedMenuItem ? TextDecorations.Underline : null;
+            }
+        }
+
         private void Button_Connect(object sender, RoutedEventArgs e) {
             try {
                 if (IsConnected(ActivePort)) {
@@ -106,6 +119,8 @@ namespace WpfAppForModbus {
                 }
             } catch (ArgumentException) {
                 ShowMessage(LoadResource("IncorrectConnectionData"));
+            } catch (Exception ex) {
+                AppLog?.AddDatedLog("Exception: " + ex.Message);
             }
         }
 
@@ -171,6 +186,15 @@ namespace WpfAppForModbus {
 
         private void StopHandle_Click(object sender, RoutedEventArgs e) {
 
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e) {
+            AppLog?.ClearLog();
+        }
+
+        private void SaveLogsToFile_Checked(object sender, RoutedEventArgs e) {
+            AppSettings?.UpdateFromControls(SaveLogsToFile);
+            AppSettings?.SaveSettings(AppSettingsFile);
         }
     }
 }

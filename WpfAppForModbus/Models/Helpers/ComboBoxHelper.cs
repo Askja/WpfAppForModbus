@@ -13,14 +13,14 @@ namespace WpfAppForModbus.Models.Helpers {
             AddRange<int>(comboBox, items);
         }
 
-        public static T GetSelectedItem<T>(ComboBox comboBox, T[] items) {
+        public static T? GetSelectedItem<T>(ComboBox comboBox, T[] items) {
             int selectedIndex = comboBox.SelectedIndex;
 
-            if (selectedIndex >= 0) {
+            if (selectedIndex > -1) {
                 return items[selectedIndex];
             }
 
-            return items[0];
+            return items.Length > 0 ? items[0] : default;
         }
     }
 }
