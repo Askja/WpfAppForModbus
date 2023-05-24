@@ -7,6 +7,7 @@ using System.Windows.Input;
 using WpfAppForModbus.Hooks;
 using WpfAppForModbus.Models;
 using MaterialDesignThemes.Wpf;
+using WpfAppForModbus.Const;
 
 namespace WpfAppForModbus {
     public partial class MainWindow : Window {
@@ -23,12 +24,13 @@ namespace WpfAppForModbus {
 
             UIHooks.ClickElement(PortsMenuItemText);
 
-            //FillBoxes();
+            FillBoxes();
         }
 
         private void MenuItem_Click(object sender, MouseButtonEventArgs e) {
             PortsContent.Visibility = Visibility.Collapsed;
             LogContent.Visibility = Visibility.Collapsed;
+            AnalyzeContent.Visibility = Visibility.Collapsed;
 
             TextBlock? selectedMenuItem = sender as TextBlock;
 
@@ -36,6 +38,8 @@ namespace WpfAppForModbus {
                 PortsContent.Visibility = Visibility.Visible;
             } else if (selectedMenuItem == LogMenuItemText) {
                 LogContent.Visibility = Visibility.Visible;
+            } else if (selectedMenuItem == AnalyzeMenuItemText) {
+                AnalyzeContent.Visibility = Visibility.Visible;
             }
 
             foreach (var menuItem in LeftMenuStackPanel.Children.OfType<TextBlock>()) {
@@ -44,13 +48,13 @@ namespace WpfAppForModbus {
             }
         }
 
-        /*public void FillBoxes() {
+        public void FillBoxes() {
             ComboBoxHelper.AddRange<string>(comboBoxParity, Helpers.GetNames(ParityList.Parities));
             ComboBoxHelper.AddRange<string>(comboBoxHandshake, Helpers.GetNames(HandshakeList.Handshakes));
             ComboBoxHelper.AddRange<string>(comboBoxStopBit, Helpers.GetNames(StopBitsList.StopBits));
             ComboBoxHelper.AddRange(comboBoxBaudRate, BaudRateList.BaudRate);
             ComboBoxHelper.AddRange(comboBoxDataBits, DataBitsList.DataBits);
-        }*/
+        }
 
         public bool IsConnected(ComPort? Port) => (Port != null && Port.IsOpened());
 
@@ -70,16 +74,16 @@ namespace WpfAppForModbus {
 
                 ActivePort = new ComPort();
 
-                /*ComPortOptions Options = new() {
+                ComPortOptions Options = new() {
                     SelectedParity = ComboBoxHelper.GetSelectedItem(comboBoxParity, ParityList.Parities),
                     SelectedHandshake = ComboBoxHelper.GetSelectedItem(comboBoxHandshake, HandshakeList.Handshakes),
                     SelectedBaudRate = ComboBoxHelper.GetSelectedItem(comboBoxBaudRate, BaudRateList.BaudRate),
                     SelectedDataBits = ComboBoxHelper.GetSelectedItem(comboBoxDataBits, DataBitsList.DataBits),
-                    SelectedPort = ComboBoxHelper.GetSelectedItem(comboBoxDataBits, Helpers.GetAvailablePorts()),
+                    SelectedPort = ComboBoxHelper.GetSelectedItem(comboBoxPorts, Helpers.GetAvailablePorts()),
                     SelectedStopBits = ComboBoxHelper.GetSelectedItem(comboBoxStopBit, StopBitsList.StopBits)
                 };
 
-                ActivePort?.Open(Options);*/
+                ActivePort?.Open(Options);
 
                 if (IsConnected(ActivePort)) {
                     SuccessfullyConnected();
