@@ -13,6 +13,7 @@ using WpfAppForModbus.Const;
 using WpfAppForModbus.Domain;
 using WpfAppForModbus.Domain.Interfaces;
 using WpfAppForModbus.Domain.Models;
+using WpfAppForModbus.Enums;
 using WpfAppForModbus.Hooks;
 using WpfAppForModbus.Models;
 using WpfAppForModbus.Models.Helpers;
@@ -151,19 +152,19 @@ namespace WpfAppForModbus {
                     Senders = Array.Empty<string>();
 
                     /*if (SensorBar != null && SensorBar.IsChecked == true) {
-                        Senders.Append("01 0F 00 10 00 1F 00 00 8E C2");
+                        Senders = Senders.Append("01 0F 00 10 00 1F 00 00 8E C2").ToArray();
                     }*/
 
                     if (SensorLight != null && SensorLight.IsChecked == true) {
-                        Senders.Append("01 0F 00 10 00 1F FF FF 8F 72");
+                        Senders = Senders.Append("01 0F 00 10 00 1F FF FF 8F 72").ToArray();
                     }
 
                     if (SensorTemperature != null && SensorTemperature.IsChecked == true) {
-                        Senders.Append("01 0F 00 10 00 1F 00 00 8E C2");
+                        Senders = Senders.Append("01 0F 00 10 00 1F 00 00 8E C2").ToArray();
                     }
 
                     if (SensorWater != null && SensorWater.IsChecked == true) {
-                        Senders.Append("01 05 00 11 00 00 0E 07");
+                        Senders = Senders.Append("01 05 00 11 00 00 0E 07").ToArray();
                     }
 
                     if (Senders.Any()) {
@@ -174,6 +175,9 @@ namespace WpfAppForModbus {
 
                             return Task.CompletedTask;
                         }, TimeSpan.FromMilliseconds(5000), AsyncTimerToken.Token);
+
+                        StartHandle.IsEnabled = false;
+                        StopHandle.IsEnabled = true;
                     } else {
                         AsyncTimer = null;
                         AsyncTimerToken?.Cancel();
@@ -181,9 +185,6 @@ namespace WpfAppForModbus {
                         throw new ArgumentException("Не выбрано ни единого датчика");
                     }
                 }
-
-                StartHandle.IsEnabled = false;
-                StopHandle.IsEnabled = true;
             } catch (ArgumentException) {
                 PortsLog?.AddDatedLog(LoadResource("IncorrectConnectionData"));
                 AppLog?.AddDatedLog(LoadResource("IncorrectConnectionData"));
