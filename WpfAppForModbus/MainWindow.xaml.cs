@@ -71,7 +71,7 @@ namespace WpfAppForModbus {
             WaterLimit.Text = DictionaryHelper.GetValueOrDefault(AppSettings.TextBoxValues, "WaterLimit", "50");
             VoltageLimit.Text = DictionaryHelper.GetValueOrDefault(AppSettings.TextBoxValues, "VoltageLimit", "500");
             BarLimit.Text = DictionaryHelper.GetValueOrDefault(AppSettings.TextBoxValues, "BarLimit", "700");
-            SendInterval.Text = DictionaryHelper.GetValueOrDefault(AppSettings.TextBoxValues, "SendInterval", "5000");
+            SendInterval.Text = DictionaryHelper.GetValueOrDefault(AppSettings.TextBoxValues, "SendInterval", "500");
 
             SaveLogsToFile.IsChecked = DictionaryHelper.GetValueOrDefault(AppSettings.CheckBoxValues, "SaveLogsToFile", false);
 
@@ -285,7 +285,9 @@ namespace WpfAppForModbus {
                 }
 
                 if (IsLaunched) {
-                    int Interval = int.Parse(SendInterval.Text);
+                    int Interval = 500;
+
+                    GetCurrentDispatcher().Invoke(() => Interval = int.Parse(SendInterval.Text));
 
                     if (Interval > int.MaxValue) {
                         Interval = int.MaxValue;
