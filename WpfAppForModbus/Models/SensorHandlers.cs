@@ -20,7 +20,7 @@ namespace WpfAppForModbus.Models
         }
 
         public SensorData Next() {
-            CurrentPosition = CurrentPosition < Sensors.Count ? CurrentPosition + 1 : 0;
+            CurrentPosition = CurrentPosition < Sensors.Count - 1 ? CurrentPosition + 1 : 0;
 
             return Current();
         }
