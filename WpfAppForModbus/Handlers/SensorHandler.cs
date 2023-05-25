@@ -15,7 +15,7 @@ namespace WpfAppForModbus.Handlers
         public static double CountTemperature(string Result) {
             string[] Registers = SplitCommand(Result);
 
-            byte Response = byte.Parse("4" + Registers[4]);
+            byte Response = Convert.ToByte("4" + Registers[4]);
 
             return 4095 / int.Parse(Convert.ToString(Response, 10));
         }
@@ -23,7 +23,7 @@ namespace WpfAppForModbus.Handlers
         public static double CountBar(string Result) {
             string[] Registers = SplitCommand(Result);
 
-            byte Response = byte.Parse("4" + Registers[4]);
+            byte Response = Convert.ToByte("4" + Registers[4]);
 
             return 4095 / int.Parse(Convert.ToString(Response, 10));
         }
@@ -31,7 +31,7 @@ namespace WpfAppForModbus.Handlers
         public static double CountWater(string Result) {
             string[] Registers = SplitCommand(Result);
 
-            byte Response = byte.Parse("4" + Registers[4]);
+            byte Response = Convert.ToByte("4" + Registers[4]);
 
             return 4095 / int.Parse(Convert.ToString(Response, 10));
         }
@@ -39,7 +39,7 @@ namespace WpfAppForModbus.Handlers
         public static double CountVoltage(string Result) {
             string[] Registers = SplitCommand(Result);
 
-            byte Response = byte.Parse("4" + Registers[4]);
+            byte Response = Convert.ToByte("4" + Registers[4]);
 
             return 4095 / int.Parse(Convert.ToString(Response, 10));
         }

@@ -26,7 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="control-panel.png" />
+    <Resource Include="Resources\control-panel.png" />
   </ItemGroup>
 
 </Project>
