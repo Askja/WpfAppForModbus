@@ -115,6 +115,10 @@ namespace WpfAppForModbus {
             if (Sensor != null && Sensor.IsChecked == true) {
                 Sensors.AddSensor(sensorHandler);
             }
+
+            if (!SensorDataListDb.SensorExist(sensorHandler.Id)) {
+                SensorDataListDb.AddSensor(sensorHandler.Id, sensorHandler.Name);
+            }
         }
 
         private string LoadResource(string Key) {
@@ -237,6 +241,8 @@ namespace WpfAppForModbus {
                     });
 
                     if (Sensors.Any()) {
+                        SensorDataListDb.SaveAll();
+
                         IsLaunched = true;
 
                         AppAndPortsLog(LoadResource("StartConnection"));
@@ -280,8 +286,13 @@ namespace WpfAppForModbus {
                 string? Answer = ActivePort?.Read();
 
                 if (!string.IsNullOrEmpty(Answer)) {
+                    double Result = Sensors.Current().Handler(Answer);
+
                     AppAndPortsLog(LoadResource("DataHandling") + ": " + Answer);
-                    AppAndPortsLog(LoadResource("InDecryptedView") + ": " + Sensors.Current().Handler(Answer));
+                    AppAndPortsLog(LoadResource("InDecryptedView") + ": " + Result);
+
+                    SensorDataListDb.AddSensorData(Sensors.Current().Id, Result.ToString());
+                    SensorDataListDb.SaveAll();
 
                     IncrementGetStat();
                 } else {
