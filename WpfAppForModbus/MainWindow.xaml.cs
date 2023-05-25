@@ -229,11 +229,16 @@ namespace WpfAppForModbus {
         }
 
         private void ReceivedData(object sender, SerialDataReceivedEventArgs e) {
-            lock (this) {
+            //lock (this) {
+            try {
                 AppAndPortsLog("Получено: " + ActivePort?.Read());
 
                 IncrementGetStat();
+            } catch (Exception ex) {
+                AppAndPortsLog("Exception in StopHandle: " + ex.Message);
+                OnlyPortsLog(!string.IsNullOrEmpty(ex.StackTrace) ? ex.StackTrace : "No StackTrace");
             }
+            //}
         }
 
         private void StopHandle_Click(object sender, RoutedEventArgs e) {
