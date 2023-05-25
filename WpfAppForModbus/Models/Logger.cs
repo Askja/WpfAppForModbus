@@ -18,7 +18,10 @@ namespace WpfAppForModbus.Models {
         }
 
         public Logger AddLog(string text) {
-            Dispatcher.CurrentDispatcher.Invoke(() => LogElement.AppendText(text + "\r\n"));
+            Dispatcher.CurrentDispatcher.Invoke(() => {
+                LogElement.AppendText(text + "\r\n");
+                LogElement.ScrollToEnd();
+            });
 
             if (SaveToFile != null && SaveToFile.IsChecked == true) {
                 if (!Directory.Exists("logs")) {
