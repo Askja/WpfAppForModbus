@@ -132,7 +132,7 @@ namespace WpfAppForModbus {
                     Handler = ReceivedData
                 };
 
-                AppLog?.AddDatedLog(JsonConvert.SerializeObject(Options));
+                //AppLog?.AddDatedLog(JsonConvert.SerializeObject(Options));
 
                 ActivePort?.Open(Options);
 
@@ -156,6 +156,7 @@ namespace WpfAppForModbus {
                 AppLog?.AddDatedLog(LoadResource("IncorrectConnectionData"));
             } catch (Exception ex) {
                 AppLog?.AddDatedLog("Exception connect: " + ex.Message);
+                AppLog?.AddDatedLog(ex.StackTrace);
                 PortsLog?.AddDatedLog("Exception connect: " + ex.Message);
             }
         }
