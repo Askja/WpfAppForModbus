@@ -271,7 +271,7 @@ namespace WpfAppForModbus {
             IncrementSendStat();
         }
 
-        private void ReceivedData(object sender, SerialDataReceivedEventArgs e) {
+        private async void ReceivedData(object sender, SerialDataReceivedEventArgs e) {
             try {
                 string? Answer = ActivePort?.Read();
 
@@ -299,7 +299,7 @@ namespace WpfAppForModbus {
 
                     AppAndPortsLog(LoadResource("IntervalWaiting") + ": " + Interval);
 
-                    Task.Delay(Interval);
+                    await Task.Delay(Interval);
 
                     Sensors.Next();
 
