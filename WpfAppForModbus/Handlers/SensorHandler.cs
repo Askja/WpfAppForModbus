@@ -16,33 +16,33 @@ namespace WpfAppForModbus.Handlers
         public static double CountTemperature(string Result) {
             string[] Registers = SplitCommand(Result);
 
-            int DecimalNumber = Convert.ToInt32("4" + Registers[4], 16);
+            int DecimalNumber = Convert.ToInt32("4" + Registers[4], 16) * 5;
 
-            return DecimalNumber > 0 ? 4095.0 / (double)DecimalNumber * 5.0 : 0;
+            return DecimalNumber > 0 ? 4095.0 / (double)DecimalNumber : 0;
         }
 
         public static double CountBar(string Result) {
             string[] Registers = SplitCommand(Result);
 
-            int DecimalNumber = Convert.ToInt32("4" + Registers[4], 16);
+            int DecimalNumber = Convert.ToInt32("4" + Registers[4], 16) * 5;
 
-            return DecimalNumber > 0 ? 4095.0 / (double)DecimalNumber * 5.0 : 0;
+            return DecimalNumber > 0 ? 4095.0 / (double)DecimalNumber : 0;
         }
 
         public static double CountWater(string Result) {
             string[] Registers = SplitCommand(Result);
 
-            int DecimalNumber = Convert.ToInt32("4" + Registers[4], 16);
+            int DecimalNumber = Convert.ToInt32("4" + Registers[4], 16) * 5;
 
-            return DecimalNumber > 0 ? 4095.0 / (double)DecimalNumber * 5.0 : 0;
+            return DecimalNumber > 0 ? 4095.0 / (double)DecimalNumber : 0;
         }
 
         public static double CountVoltage(string Result) {
             string[] Registers = SplitCommand(Result);
 
-            int DecimalNumber = Convert.ToInt32("4" + Registers[4], 16);
+            int DecimalNumber = Convert.ToInt32("4" + Registers[4], 16) * 5;
 
-            return DecimalNumber > 0 ? 4095.0 / (double)DecimalNumber * 5.0 : 0;
+            return DecimalNumber > 0 ? 4095.0 / (double)DecimalNumber : 0;
         }
     }
 }
