@@ -7,18 +7,21 @@ namespace WpfAppForModbus.Models {
     public class Logger {
         private TextBox LogElement { get; set; }
         private CheckBox SaveToFile { get; set; } = null!;
+        private Dispatcher CurrentDispatcher { get; set; } = null!;
 
-        public Logger(TextBox element) {
+        public Logger(Dispatcher currentDispatcher, TextBox element) {
             LogElement = element;
+            CurrentDispatcher = currentDispatcher;
         }
 
-        public Logger(TextBox element, CheckBox saveToFile) {
+        public Logger(Dispatcher currentDispatcher, TextBox element, CheckBox saveToFile) {
             LogElement = element;
             SaveToFile = saveToFile;
+            CurrentDispatcher = currentDispatcher;
         }
 
         public Logger AddLog(string text) {
-            Dispatcher.CurrentDispatcher.Invoke(() => {
+            CurrentDispatcher.Invoke(() => {
                 LogElement.AppendText(text + "\r\n");
                 LogElement.ScrollToEnd();
             });
@@ -28,7 +31,7 @@ namespace WpfAppForModbus.Models {
                     Directory.CreateDirectory("logs");
                 }
 
-                File.AppendAllTextAsync("logs/" + DateTime.Now.ToString("dd.MM.yyyy") + ".log", text);
+                File.AppendAllTextAsync("logs/" + DateTime.Now.ToString("dd.MM.yyyy") + ".log", text + "\r\n");
             }
 
             return this;
@@ -44,6 +47,7 @@ namespace WpfAppForModbus.Models {
 
         public Logger ClearLog() {
             LogElement.Clear();
+
             return this;
         }
     }
