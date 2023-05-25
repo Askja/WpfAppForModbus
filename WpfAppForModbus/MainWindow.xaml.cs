@@ -263,7 +263,7 @@ namespace WpfAppForModbus {
 
             SensorData CurrentSensor = Sensors.Current();
 
-            AppAndPortsLog("Датчик: " + CurrentSensor.Name);
+            AppAndPortsLog(LoadResource("CurrentSensor") + ": " + CurrentSensor.Name);
             AppAndPortsLog(LoadResource("SendingData") + ": " + CurrentSensor.Command);
 
             ActivePort?.Write(CurrentSensor.Command);
@@ -276,15 +276,29 @@ namespace WpfAppForModbus {
                 string? Answer = ActivePort?.Read();
 
                 if (!string.IsNullOrEmpty(Answer)) {
-                    AppAndPortsLog("Обработка данных: " + Answer);
-                    AppAndPortsLog("В расшифрованном виде: " + Sensors.Current().Handler(Answer));
+                    AppAndPortsLog(LoadResource("DataHandling") + ": " + Answer);
+                    AppAndPortsLog(LoadResource("InDecryptedView") + ": " + Sensors.Current().Handler(Answer));
 
                     IncrementGetStat();
                 } else {
-                    AppAndPortsLog("Пришёл пустой ответ с датчика...");
+                    AppAndPortsLog(LoadResource("EmptyAnswer"));
                 }
 
                 if (IsLaunched) {
+                    int Interval = int.Parse(SendInterval.Text);
+
+                    if (Interval > int.MaxValue) {
+                        Interval = int.MaxValue;
+                    }
+
+                    if (Interval < 100) {
+                        Interval = 100;
+                    }
+
+                    AppAndPortsLog(LoadResource("IntervalWaiting") + ": " + Interval);
+
+                    Task.Delay(Interval);
+
                     Sensors.Next();
 
                     SendData();

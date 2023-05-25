@@ -8,6 +8,11 @@
     <system:String x:Key="StartLoadingPorts">Загрузка портов...</system:String>
     <system:String x:Key="SettingsLoading">Загрука настроек</system:String>
     <system:String x:Key="SettingsLoaded">Настройки загружены</system:String>
+    <system:String x:Key="DataHandling">Обработка данных</system:String>
+    <system:String x:Key="InDecryptedView">В расшифрованном виде</system:String>
+    <system:String x:Key="IntervalWaiting">Время ожидания перед отправкой</system:String>
+    <system:String x:Key="EmptyAnswer">Пришёл пустой ответ с датчика</system:String>
+    <system:String x:Key="CurrentSensor">Текущий датчик</system:String>
     <system:String x:Key="SettingsUpdated">Настройки обновлены</system:String>
     <system:String x:Key="LoadedData">Данные успешно загружены</system:String>
     <system:String x:Key="SendingData">Отправляю посылку</system:String>
