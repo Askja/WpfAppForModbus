@@ -39,87 +39,99 @@
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
 
-                                <Label Grid.Column="0" FontSize="16" Content="В обмене участвуют: "></Label>
+                                <Label Padding="10" VerticalAlignment="Center" Grid.Column="0" FontSize="16" Content="Использовать датчики: "></Label>
 
-                                <StackPanel Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right" Orientation="Horizontal">
-                                    <CheckBox Foreground="IndianRed" Content="{materialDesign:PackIcon ThermometerCheck}" Name="SensorTemperature"></CheckBox>
-                                    <CheckBox Foreground="Indigo" Content="{materialDesign:PackIcon ThermometerWater}" Name="SensorWater"></CheckBox>
-                                    <CheckBox Foreground="Green" Content="{materialDesign:PackIcon Gauge}" Name="SensorBar"></CheckBox>
-                                    <CheckBox Foreground="Brown" Content="{materialDesign:PackIcon Brightness6}" Name="SensorLight"></CheckBox>
+                                <StackPanel Margin="10" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right" Orientation="Horizontal">
+                                    <ToggleButton ToolTip="Датчик температуры" Cursor="Hand" Name="SensorTemperature" Checked="SaveSettings" Unchecked="SaveSettings" Margin="0,0,10,0" Style="{StaticResource MaterialDesignFlatPrimaryToggleButton}">
+                                        <materialDesign:PackIcon Width="21" Height="21" Kind="ThermometerCheck"  Foreground="IndianRed" />
+                                    </ToggleButton>
+
+                                    <ToggleButton ToolTip="Датчик влажности" Cursor="Hand" Name="SensorWater" Checked="SaveSettings" Unchecked="SaveSettings" Margin="0,0,10,0" Style="{StaticResource MaterialDesignFlatPrimaryToggleButton}">
+                                        <materialDesign:PackIcon Width="21" Height="21" Kind="ThermometerWater"  Foreground="Blue" />
+                                    </ToggleButton>
+
+                                    <ToggleButton ToolTip="Датчик давления" Cursor="Hand" Name="SensorBar" Checked="SaveSettings" Unchecked="SaveSettings" Margin="0,0,10,0" Style="{StaticResource MaterialDesignFlatPrimaryToggleButton}">
+                                        <materialDesign:PackIcon Width="21" Height="21" Kind="Gauge"  Foreground="Green" />
+                                    </ToggleButton>
+
+                                    <ToggleButton ToolTip="Датчик света" Cursor="Hand" Name="SensorLight" Checked="SaveSettings" Unchecked="SaveSettings" Style="{StaticResource MaterialDesignFlatPrimaryToggleButton}">
+                                        <materialDesign:PackIcon Width="21" Height="21" Kind="Brightness6"  Foreground="Coral" />
+                                    </ToggleButton>
                                 </StackPanel>
                             </Grid>
                         </materialDesign:Card>
-
-                        <Label Content="Статистика" FontSize="20" FontWeight="DemiBold" />
-
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
-
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="*" />
-                            </Grid.RowDefinitions>
-
-                            <Label Grid.Column="0" Grid.Row="0" Content="Сообщений отправлено:"/>
-                            <Label Grid.Column="1" Grid.Row="0" Content="0" Name="StatCounterSend"/>
-
-                            <Label Grid.Column="0" Grid.Row="1" Content="Сообщений получено:"/>
-                            <Label Grid.Column="1" Grid.Row="1" Content="0" Name="StatCounterGet"/>
-                        </Grid>
 
                         <Label Content="Настройки подключения" FontSize="20" FontWeight="DemiBold" />
 
                         <materialDesign:Card Margin="5" Padding="10">
                             <Grid>
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
+                                
+                                <Grid Grid.Column="0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
 
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="*" />
-                                </Grid.RowDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="*" />
+                                    </Grid.RowDefinitions>
 
-                                <Label Margin="2" Grid.Column="0" Grid.Row="0" Content="Порт:" VerticalAlignment="Center" />
-                                <ComboBox Margin="2" Grid.Column="1" Grid.Row="0" Name="comboBoxPorts" Width="200"></ComboBox>
+                                    <Label Margin="2" Grid.Column="0" Grid.Row="0" Content="Порт:" VerticalAlignment="Center" />
+                                    <ComboBox Margin="2" Grid.Column="1" Grid.Row="0" Name="comboBoxPorts" Width="100"></ComboBox>
 
-                                <Label Margin="2" Grid.Column="2" Grid.Row="0" Content="Паритетность:" VerticalAlignment="Center" />
-                                <ComboBox Margin="2" Grid.Column="3" Grid.Row="0" Width="200" Name="comboBoxParity"></ComboBox>
+                                    <Label Margin="2" Grid.Column="0" Grid.Row="1" Content="Чётность:" VerticalAlignment="Center" />
+                                    <ComboBox Margin="2" Grid.Column="1" Grid.Row="1" Width="100" Name="comboBoxParity"></ComboBox>
 
-                                <Label Margin="2" Grid.Column="0" Grid.Row="1" Content="Передаваемые биты:" VerticalAlignment="Center" />
-                                <ComboBox Margin="2" Grid.Column="1" Grid.Row="1" Width="200" Name="comboBoxDataBits"></ComboBox>
+                                    <Label Margin="2" Grid.Column="0" Grid.Row="2" Content="Передаваемые биты:" VerticalAlignment="Center" />
+                                    <ComboBox Margin="2" Grid.Column="1" Grid.Row="2" Width="100" Name="comboBoxDataBits"></ComboBox>
 
-                                <Label Margin="2" Grid.Column="2" Grid.Row="1" Content="Стоп-биты:" VerticalAlignment="Center" />
-                                <ComboBox Margin="2" Grid.Column="3" Grid.Row="1" Width="200" Name="comboBoxStopBit"></ComboBox>
+                                    <Label Margin="2" Grid.Column="0" Grid.Row="3" Content="Стоп-биты:" VerticalAlignment="Center" />
+                                    <ComboBox Margin="2" Grid.Column="1" Grid.Row="3" Width="100" Name="comboBoxStopBit"></ComboBox>
 
-                                <Label Margin="2" Grid.Column="0" Grid.Row="2" Content="Тип рукопожатия:" VerticalAlignment="Center" />
-                                <ComboBox Margin="2" Grid.Column="1" Grid.Row="2" Width="200" Name="comboBoxHandshake"></ComboBox>
+                                    <Label Margin="2" Grid.Column="0" Grid.Row="4" Content="Тип рукопожатия:" VerticalAlignment="Center" />
+                                    <ComboBox Margin="2" Grid.Column="1" Grid.Row="4" Width="100" Name="comboBoxHandshake"></ComboBox>
 
-                                <Label Margin="2" Grid.Column="2" Grid.Row="2" Content="Рейты:" VerticalAlignment="Center" />
-                                <ComboBox Margin="2" Grid.Column="3" Grid.Row="2" Width="200" Name="comboBoxBaudRate"></ComboBox>
+                                    <Label Margin="2" Grid.Column="0" Grid.Row="5" Content="Рейты:" VerticalAlignment="Center" />
+                                    <ComboBox Margin="2" Grid.Column="1" Grid.Row="5" Width="100" Name="comboBoxBaudRate"></ComboBox>
 
-                                <Button Grid.Column="0" Margin="5,30,5,5" Grid.ColumnSpan="2" Grid.Row="3" Content="Запуск обработки" Name="StartHandle" Click="Button_Connect" Style="{DynamicResource MaterialDesignFlatButton}" Cursor="Hand" Foreground="{StaticResource Green}"/>
-                                <Button Grid.Column="2" Margin="5,30,5,5" Grid.ColumnSpan="2" Grid.Row="3" Content="Остановить" IsEnabled="False" Name="StopHandle" Style="{DynamicResource MaterialDesignFlatButton}" Cursor="Hand" Foreground="{StaticResource Red}" Click="StopHandle_Click" />
+                                    <Button Grid.Column="0" Margin="5" Grid.Row="6" Content="Запуск обработки" Name="StartHandle" Click="Button_Connect" Style="{DynamicResource MaterialDesignFlatButton}" Cursor="Hand" Foreground="{StaticResource Green}"/>
+                                    <Button Grid.Column="1" Margin="5" Grid.Row="6" Content="Остановить" IsEnabled="False" Name="StopHandle" Style="{DynamicResource MaterialDesignFlatButton}" Cursor="Hand" Foreground="{StaticResource Red}" Click="StopHandle_Click" />
+                                </Grid>
+
+                                <Grid Grid.Column="1">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <Label Grid.Column="0" Grid.Row="0" Content="Отправлено:"/>
+                                    <Label Grid.Column="1" HorizontalAlignment="Right" Grid.Row="0" Content="0" Name="StatCounterSend"/>
+
+                                    <Label Grid.Column="0" Grid.Row="1" Content="Получено:"/>
+                                    <Label Grid.Column="1" HorizontalAlignment="Right" Grid.Row="1" Content="0" Name="StatCounterGet"/>
+
+                                    <TextBox Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" IsEnabled="False" Name="PortsLogBox" Margin="10" TextWrapping="Wrap" VerticalScrollBarVisibility="Visible"/>
+                                </Grid>
                             </Grid>
                         </materialDesign:Card>
 
-                        <materialDesign:Card Height="110" Margin="5">
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="*"/>
-                                </Grid.RowDefinitions>
-
-                                <TextBox IsEnabled="False" Name="PortsLogBox" Margin="10" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"/>
-                            </Grid>
-                        </materialDesign:Card>
+                        
                     </StackPanel>
                 </Border>
             </Grid>
@@ -131,10 +143,10 @@
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
-                    <TextBox Name="Log" Grid.Row="0" Margin="10" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" IsEnabled="False"/>
+                    <TextBox Name="Log" Grid.Row="0" Margin="10" TextWrapping="Wrap" VerticalScrollBarVisibility="Visible" IsEnabled="False"/>
 
                     <Grid Grid.Row="1" Margin="10">
-                        <CheckBox Grid.Column="0" Content="Попутно сохранять журнал в файл" Name="SaveLogsToFile" IsChecked="False" Checked="SaveLogsToFile_Checked" />
+                        <CheckBox Grid.Column="0" Content="Попутно сохранять журнал в файл" Name="SaveLogsToFile" Checked="SaveSettings" Unchecked="SaveSettings" />
                         <Button Grid.Column="1" HorizontalAlignment="Right" Content="Очистить лог" Style="{DynamicResource MaterialDesignToolButton}" Margin="10" Click="Button_Click"/>
                     </Grid>
                 </Grid>
@@ -149,45 +161,40 @@
             <Grid x:Name="SettingsContent" Visibility="Collapsed">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
 
-                <Label Content="Настройки" FontSize="20" FontWeight="DemiBold" />
+                <Grid Grid.Row="0" Margin="15">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
 
-                <materialDesign:Card Grid.Row="1" Margin="5" Padding="10" Background="WhiteSmoke">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
 
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                        </Grid.RowDefinitions>
+                    <Label Grid.Row="0" Grid.Column="0" Content="Интервал запросов (мс):" VerticalAlignment="Center" />
+                    <TextBox Name="SendInterval" Grid.Row="0" TextAlignment="Center" Text="5000" Grid.Column="1" Width="100" Margin="5" />
 
-                        <Label Grid.Row="0" Grid.Column="0" Content="Интервал запросов (мс):" VerticalAlignment="Center" />
-                        <TextBox Grid.Row="0" TextAlignment="Center" Text="5000" Grid.Column="1" Width="100" Margin="5" />
+                    <Label Grid.Row="1" Grid.Column="0" Content="Порог температуры:" VerticalAlignment="Center" />
+                    <TextBox Name="TemperatureLimit" Grid.Row="1" TextAlignment="Center" Text="5000" Grid.Column="1" Width="100" Margin="5" />
 
-                        <Label Grid.Row="1" Grid.Column="0" Content="Порог температуры:" VerticalAlignment="Center" />
-                        <TextBox Grid.Row="1" TextAlignment="Center" Text="5000" Grid.Column="1" Width="100" Margin="5" />
+                    <Label Grid.Row="2" Grid.Column="0" Content="Порог давления(мм):" VerticalAlignment="Center" />
+                    <TextBox Name="BarLimit" Grid.Row="2" TextAlignment="Center" Text="799" Grid.Column="1" Width="100" Margin="5" />
 
-                        <Label Grid.Row="2" Grid.Column="0" Content="Порог давления(мм):" VerticalAlignment="Center" />
-                        <TextBox Grid.Row="2" TextAlignment="Center" Text="799" Grid.Column="1" Width="100" Margin="5" />
+                    <Label Grid.Row="3" Grid.Column="0" Content="Порог влажности(%):" VerticalAlignment="Center" />
+                    <TextBox Name="WaterLimit" Grid.Row="3" TextAlignment="Center" Text="80" Grid.Column="1" Width="100" Margin="5" />
 
-                        <Label Grid.Row="3" Grid.Column="0" Content="Порог влажности(%):" VerticalAlignment="Center" />
-                        <TextBox Grid.Row="3" TextAlignment="Center" Text="80" Grid.Column="1" Width="100" Margin="5" />
+                    <Label Grid.Row="4" Grid.Column="0" Content="Порог напряжения(Вт):" VerticalAlignment="Center" />
+                    <TextBox Name="VoltageLimit" Grid.Row="4" TextAlignment="Center" Text="500" Grid.Column="1" Width="100" Margin="5" />
+                </Grid>
 
-                        <Label Grid.Row="4" Grid.Column="0" Content="Порог напряжения(Вт):" VerticalAlignment="Center" />
-                        <TextBox Grid.Row="4" TextAlignment="Center" Text="500" Grid.Column="1" Width="100" Margin="5" />
-                    </Grid>
-                </materialDesign:Card>
-
-                <Button VerticalAlignment="Bottom" Cursor="Hand" Grid.Row="2" HorizontalAlignment="Right" Content="Сохранить настройки" Style="{DynamicResource MaterialDesignRaisedLightButton}" Margin="10"/>
+                <Button VerticalAlignment="Bottom" Cursor="Hand" Grid.Row="1" HorizontalAlignment="Right" Content="Сохранить настройки" Style="{DynamicResource MaterialDesignFlatButton}" Margin="10" Click="Button_Click_1"/>
             </Grid>
         </Grid>
     </Grid>

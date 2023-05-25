@@ -1,35 +1,40 @@
-﻿using System.IO;
-using System.Windows.Controls;
-using System.Xml.Serialization;
+﻿using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.IO;
 
 namespace WpfAppForModbus.Models {
     public class Settings {
-        public bool SaveLogs { get; set; }
+        [JsonProperty("comboBoxValues")]
+        public Dictionary<string, int> ComboBoxValues { get; set; }
 
-        public void SaveSettings(string filePath) {
-            using var writer = new StreamWriter(filePath);
+        [JsonProperty("textBoxValues")]
+        public Dictionary<string, string> TextBoxValues { get; set; }
 
-            var serializer = new XmlSerializer(typeof(Settings));
-            serializer.Serialize(writer, this);
+        [JsonProperty("checkBoxValues")]
+        public Dictionary<string, bool> CheckBoxValues { get; set; }
+
+        public Settings() {
+            ComboBoxValues = new Dictionary<string, int>();
+            TextBoxValues = new Dictionary<string, string>();
+            CheckBoxValues = new Dictionary<string, bool>();
         }
 
-        public static Settings? LoadSettings(string filePath) {
-            if (File.Exists(filePath)) {
-                using var reader = new StreamReader(filePath);
+        public void Save(string filePath) {
+            string json = JsonConvert.SerializeObject(this, Formatting.Indented);
+            File.WriteAllText(filePath, json);
+        }
 
-                var serializer = new XmlSerializer(typeof(Settings));
-                return serializer.Deserialize(reader) as Settings;
+        public static Settings? Load(string filePath) {
+            if (File.Exists(filePath)) {
+                string json = File.ReadAllText(filePath);
+
+                Console.WriteLine(json);
+
+                return JsonConvert.DeserializeObject<Settings>(json);
             } else {
                 return new Settings();
             }
-        }
-
-        public void UpdateFromControls(CheckBox checkBox) {
-            SaveLogs = checkBox.IsChecked ?? false;
-        }
-
-        public void ApplyToControls(CheckBox checkBox) {
-            checkBox.IsChecked = SaveLogs;
         }
     }
 }

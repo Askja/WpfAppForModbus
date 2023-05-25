@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.IO.Ports;
 using System.Linq;
 using System.Text.Json.Serialization;
@@ -9,6 +10,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
@@ -29,21 +31,33 @@ namespace WpfAppForModbus {
         public CancellationTokenSource? AsyncTimerToken { get; set; }
         public Logger? AppLog { get; set; } = null;
         public Logger? PortsLog { get; set; } = null;
-        private Settings? AppSettings { get; set; } = null;
+        private Settings? appSettings { get; set; } = null;
         private ISensorDataList SensorDataListDb { get; set; } = null!;
-        private string[] Senders { get; set; } = null!;
+        private Dictionary<string, string> Senders { get; set; } = null!;
+        private string? CurrentSensor { get; set; } = null;
         private int SendCount { get; set; } = 0;
         private int GetCount { get; set; } = 0;
-        private string AppSettingsFile { get; set; } = "settings.xml";
+        private string AppSettingsFile { get; set; } = "settings.json";
         private Dispatcher GetCurrentDispatcher () => Application.Current.Dispatcher;
 
         public MainWindow() {
             InitializeComponent();
-            InitializeSettings();
             InitializeUI();
+            InitializeSettings();
+            InitializeBinders();
+            InitializeContexts();
+        }
 
-            ApplicationContext Context = new();
-            SensorDataListDb = new SensorDataList(Context);
+        public void InitializeContexts() {
+            SensorDataListDb = new SensorDataList(new());
+        }
+
+        public void InitializeBinders() {
+            comboBoxParity.SelectionChanged += SaveSettings;
+            comboBoxDataBits.SelectionChanged += SaveSettings;
+            comboBoxStopBit.SelectionChanged += SaveSettings;
+            comboBoxHandshake.SelectionChanged += SaveSettings;
+            comboBoxBaudRate.SelectionChanged += SaveSettings;
         }
 
         public void InitializeSettings() {
@@ -51,9 +65,27 @@ namespace WpfAppForModbus {
             PortsLog = new(GetCurrentDispatcher(), PortsLogBox);
 
             AppLog?.AddDatedLog(LoadResource("SettingsLoading"));
-            AppSettings = Settings.LoadSettings("settings.xml");
+            appSettings = Settings.Load(AppSettingsFile);
 
-            AppSettings?.ApplyToControls(SaveLogsToFile);
+            TemperatureLimit.Text = DictionaryHelper.GetValueOrDefault(appSettings.TextBoxValues, "TemperatureLimit", "55");
+            WaterLimit.Text = DictionaryHelper.GetValueOrDefault(appSettings.TextBoxValues, "WaterLimit", "50");
+            VoltageLimit.Text = DictionaryHelper.GetValueOrDefault(appSettings.TextBoxValues, "VoltageLimit", "500");
+            BarLimit.Text = DictionaryHelper.GetValueOrDefault(appSettings.TextBoxValues, "BarLimit", "700");
+            SendInterval.Text = DictionaryHelper.GetValueOrDefault(appSettings.TextBoxValues, "SendInterval", "5000");
+
+            SaveLogsToFile.IsChecked = DictionaryHelper.GetValueOrDefault(appSettings.CheckBoxValues, "SaveLogsToFile", false);
+
+            comboBoxParity.SelectedIndex = DictionaryHelper.GetValueOrDefault(appSettings.ComboBoxValues, "comboBoxParity", -1);
+            comboBoxDataBits.SelectedIndex = DictionaryHelper.GetValueOrDefault(appSettings.ComboBoxValues, "comboBoxDataBits", -1);
+            comboBoxStopBit.SelectedIndex = DictionaryHelper.GetValueOrDefault(appSettings.ComboBoxValues, "comboBoxStopBit", -1);
+            comboBoxHandshake.SelectedIndex = DictionaryHelper.GetValueOrDefault(appSettings.ComboBoxValues, "comboBoxHandshake", -1);
+            comboBoxBaudRate.SelectedIndex = DictionaryHelper.GetValueOrDefault(appSettings.ComboBoxValues, "comboBoxBaudRate", -1);
+
+            SensorTemperature.IsChecked = DictionaryHelper.GetValueOrDefault(appSettings.CheckBoxValues, "SensorTemperature", false);
+            SensorWater.IsChecked = DictionaryHelper.GetValueOrDefault(appSettings.CheckBoxValues, "SensorWater", false);
+            SensorBar.IsChecked = DictionaryHelper.GetValueOrDefault(appSettings.CheckBoxValues, "SensorBar", false);
+            SensorLight.IsChecked = DictionaryHelper.GetValueOrDefault(appSettings.CheckBoxValues, "SensorLight", false);
+
             AppLog?.AddDatedLog(LoadResource("SettingsLoaded"));
         }
 
@@ -79,9 +111,9 @@ namespace WpfAppForModbus {
             AppLog?.AddDatedLog(LoadResource("LoadedData"));
         }
 
-        private void AddCommand(CheckBox Sensor, string Command) {
+        private void AddCommand(ToggleButton Sensor, string Key, string Command) {
             if (Sensor != null && Sensor.IsChecked == true) {
-                Senders = Senders.Append(Command).ToArray();
+                Senders.Add(Key, Command);
             }
         }
 
@@ -174,21 +206,33 @@ namespace WpfAppForModbus {
                 if (IsConnected(ActivePort)) {
                     AppAndPortsLog(LoadResource("SuccessfulConnected"));
 
-                    Senders = Array.Empty<string>();
+                    Senders = new();
 
-                    AddCommand(SensorBar, "01 0F 00 10 00 1F 00 00 8E C2");
-                    AddCommand(SensorLight, "01 0F 00 10 00 1F FF FF 8F 72");
-                    AddCommand(SensorTemperature, "01 0F 00 10 00 1F 00 00 8E C2");
-                    AddCommand(SensorWater, "01 05 00 11 00 00 0E 07");
+                    AddCommand(SensorBar, "Bar", "01 0F 00 10 00 1F 00 00 8E C2");
+                    AddCommand(SensorLight, "Light", "01 04 00 03 00 01 C1 CA");
+                    AddCommand(SensorTemperature, "Temperature", "01 03 00 02 00 0A 64 0D");
+                    AddCommand(SensorWater, "Water", "01 0F 00 10 00 1F 00 00 8E C2");
 
                     if (Senders.Any()) {
                         AsyncTimerToken = new();
+
+                        int Interval = int.Parse(SendInterval.Text);
+
+                        if (Interval < 100) {
+                            Interval = 100;
+                        }
+
+                        if (Interval > int.MaxValue) {
+                            Interval = int.MaxValue;
+                        }
+
+                        AppAndPortsLog(LoadResource("StartConnectionWithInterval") + Interval.ToString() + " мс");
 
                         AsyncTimer ??= RunPeriodicallyAsync(() => {
                             SendData();
 
                             return Task.CompletedTask;
-                        }, TimeSpan.FromMilliseconds(5000), AsyncTimerToken.Token);
+                        }, TimeSpan.FromMilliseconds(Interval), AsyncTimerToken.Token);
 
                         StartHandle.IsEnabled = false;
                         StopHandle.IsEnabled = true;
@@ -196,7 +240,7 @@ namespace WpfAppForModbus {
                         AsyncTimer = null;
                         AsyncTimerToken?.Cancel();
 
-                        throw new ArgumentException("Не выбрано ни единого датчика");
+                        throw new ArgumentException(LoadResource("NoSensors"));
                     }
                 }
             } catch (ArgumentException) {
@@ -210,35 +254,28 @@ namespace WpfAppForModbus {
         public void SendData() {
             UpdateStats();
 
-            OnlyPortsLog("Timer interval");
+            foreach (KeyValuePair<string, string> Sender in Senders) {
+                CurrentSensor = Sender.Key;
 
-            OnlyPortsLog("Before foreach statement");
+                ActivePort?.Write(Sender.Value);
 
-            foreach (string Command in Senders) {
-                ActivePort?.Write(Command);
-
-                Task.Delay(200);
-
-                OnlyPortsLog(LoadResource("SendingData") + ": " + Command);
+                OnlyPortsLog(LoadResource("SendingData") + ": " + Sender.Value);
 
                 IncrementSendStat();
-            }
-            
 
-            OnlyPortsLog("after foreach statement");
+                Task.Delay(200);
+            }
         }
 
         private void ReceivedData(object sender, SerialDataReceivedEventArgs e) {
-            //lock (this) {
             try {
-                AppAndPortsLog("Получено: " + ActivePort?.Read());
-
+                AppAndPortsLog("Sensor: " + CurrentSensor + ". Получено: " + ActivePort?.Read());
+                
                 IncrementGetStat();
             } catch (Exception ex) {
                 AppAndPortsLog("Exception in StopHandle: " + ex.Message);
                 OnlyPortsLog(!string.IsNullOrEmpty(ex.StackTrace) ? ex.StackTrace : "No StackTrace");
             }
-            //}
         }
 
         private void StopHandle_Click(object sender, RoutedEventArgs e) {
@@ -267,11 +304,15 @@ namespace WpfAppForModbus {
         }
 
         private void SaveLogsToFile_Checked(object sender, RoutedEventArgs e) {
-            AppSettings?.UpdateFromControls(SaveLogsToFile);
-            AppSettings?.SaveSettings(AppSettingsFile);
+            SaveSettings();
 
             OnlyAppLog(LoadResource("SettingsUpdated"));
         }
+
+        private void SaveSettings(object sender, RoutedEventArgs e) {
+            SaveSettings();
+        }
+
         public async Task RunPeriodicallyAsync(
             Func<Task> Callback,
             TimeSpan interval,
@@ -281,6 +322,33 @@ namespace WpfAppForModbus {
                 await Task.Delay(interval, cancellationToken);
                 await Callback();
             }
+        }
+
+        private void SaveSettings() {
+            appSettings.TextBoxValues["TemperatureLimit"] = TemperatureLimit.Text;
+            appSettings.TextBoxValues["WaterLimit"] = WaterLimit.Text;
+            appSettings.TextBoxValues["VoltageLimit"] = VoltageLimit.Text;
+            appSettings.TextBoxValues["BarLimit"] = BarLimit.Text;
+            appSettings.TextBoxValues["SendInterval"] = SendInterval.Text;
+
+            appSettings.CheckBoxValues["SaveLogsToFile"] = SaveLogsToFile.IsChecked ?? false;
+
+            appSettings.ComboBoxValues["comboBoxParity"] = comboBoxParity.SelectedIndex;
+            appSettings.ComboBoxValues["comboBoxDataBits"] = comboBoxDataBits.SelectedIndex;
+            appSettings.ComboBoxValues["comboBoxStopBit"] = comboBoxStopBit.SelectedIndex;
+            appSettings.ComboBoxValues["comboBoxHandshake"] = comboBoxHandshake.SelectedIndex;
+            appSettings.ComboBoxValues["comboBoxBaudRate"] = comboBoxBaudRate.SelectedIndex;
+
+            appSettings.CheckBoxValues["SensorTemperature"] = SensorTemperature.IsChecked ?? false;
+            appSettings.CheckBoxValues["SensorWater"] = SensorWater.IsChecked ?? false;
+            appSettings.CheckBoxValues["SensorBar"] = SensorBar.IsChecked ?? false;
+            appSettings.CheckBoxValues["SensorLight"] = SensorLight.IsChecked ?? false;
+
+            appSettings.Save(AppSettingsFile);
+        }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e) {
+            SaveSettings();
         }
     }
 }

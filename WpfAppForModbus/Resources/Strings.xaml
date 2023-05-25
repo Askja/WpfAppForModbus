@@ -11,5 +11,7 @@
     <system:String x:Key="SettingsUpdated">Настройки обновлены</system:String>
     <system:String x:Key="LoadedData">Данные успешно загружены</system:String>
     <system:String x:Key="SendingData">Отправляю посылку</system:String>
+    <system:String x:Key="NoSensors">Не выбран датчик(и) для общения</system:String>
+    <system:String x:Key="StartConnectionWithInterval">Начало общения с интервалом в: </system:String>
     <system:String x:Key="AppVersion">Версия: 1.1.2405</system:String>
 </ResourceDictionary>
