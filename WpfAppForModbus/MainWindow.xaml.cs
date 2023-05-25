@@ -226,7 +226,7 @@ namespace WpfAppForModbus {
                             Interval = int.MaxValue;
                         }
 
-                        AppAndPortsLog(LoadResource("StartConnectionWithInterval") + Interval.ToString() + " мс");
+                        AppAndPortsLog(LoadResource("StartConnectionWithInterval") + " " + Interval.ToString() + " мс");
 
                         AsyncTimer ??= RunPeriodicallyAsync(() => {
                             SendData();
@@ -264,14 +264,19 @@ namespace WpfAppForModbus {
                 IncrementSendStat();
 
                 Task.Delay(200);
+
+                AppAndPortsLog("Датчик: " + CurrentSensor + ". Прочитали: " + ActivePort?.Read());
+
+                IncrementGetStat();
             }
         }
 
         private void ReceivedData(object sender, SerialDataReceivedEventArgs e) {
             try {
-                AppAndPortsLog("Sensor: " + CurrentSensor + ". Получено: " + ActivePort?.Read());
-                
-                IncrementGetStat();
+                AppAndPortsLog("ReceivedData");
+                //AppAndPortsLog("Sensor: " + CurrentSensor + ". Получено: " + ActivePort?.Read());
+
+                //IncrementGetStat();
             } catch (Exception ex) {
                 AppAndPortsLog("Exception in StopHandle: " + ex.Message);
                 OnlyPortsLog(!string.IsNullOrEmpty(ex.StackTrace) ? ex.StackTrace : "No StackTrace");
