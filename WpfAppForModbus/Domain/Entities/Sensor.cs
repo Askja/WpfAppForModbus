@@ -2,7 +2,7 @@
 using System.Diagnostics.CodeAnalysis;
 
 namespace WpfAppForModbus.Domain.Entities {
-    public class Sensors {
+    public class Sensor {
         [Key]
         public int SensorId {
             get; set;

@@ -6,11 +6,11 @@ using System.Diagnostics.CodeAnalysis;
 namespace WpfAppForModbus.Domain.Entities {
     public class SensorsData {
         [Key]
-        public int RowId {
+        public Guid RowId {
             get; set;
         }
 
-        [ForeignKey(nameof(Sensors))]
+        [ForeignKey(nameof(Sensor))]
         public int SensorId {
             get; set;
         }

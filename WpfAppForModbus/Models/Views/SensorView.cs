@@ -2,7 +2,7 @@
 
 namespace WpfAppForModbus.Models.Views {
     public class SensorView {
-        public int RowId {
+        public Guid RowId {
             get; set;
         }
 

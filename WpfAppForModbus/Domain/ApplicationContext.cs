@@ -3,7 +3,7 @@ using WpfAppForModbus.Domain.Entities;
 
 namespace WpfAppForModbus.Domain {
     public class ApplicationContext : DbContext {
-        public DbSet<Sensors> Sensors => Set<Sensors>();
+        public DbSet<Sensor> Sensors => Set<Sensor>();
         public DbSet<SensorsData> SensorsData => Set<SensorsData>();
 
         public ApplicationContext() => Database.EnsureCreated();
