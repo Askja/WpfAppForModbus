@@ -11,6 +11,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Threading;
 using WpfAppForModbus.Const;
 using WpfAppForModbus.Domain;
 using WpfAppForModbus.Domain.Interfaces;
@@ -23,25 +24,18 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace WpfAppForModbus {
     public partial class MainWindow : Window {
-        public ComPort? ActivePort {
-            get; set;
-        }
-
+        public ComPort? ActivePort { get; set; }
         protected Task? AsyncTimer { get; set; }
-
         protected CancellationTokenSource? AsyncTimerToken { get; set; }
-
         private Logger? AppLog { get; set; } = null;
         private Logger? PortsLog { get; set; } = null;
-
         private Settings? AppSettings { get; set; } = null;
-
         private ISensorDataList SensorDataListDb { get; set; } = null!;
         private string[] Senders { get; set; } = null!;
         private int SendCount { get; set; } = 0;
         private int GetCount { get; set; } = 0;
-
         private string AppSettingsFile { get; set; } = "settings.xml";
+        private Dispatcher GetCurrentDispatcher () => Application.Current.Dispatcher;
 
         public MainWindow() {
             InitializeComponent();
@@ -53,8 +47,8 @@ namespace WpfAppForModbus {
         }
 
         public void InitializeSettings() {
-            AppLog = new(Log, SaveLogsToFile);
-            PortsLog = new(PortsLogBox);
+            AppLog = new(GetCurrentDispatcher(), Log, SaveLogsToFile);
+            PortsLog = new(GetCurrentDispatcher(), PortsLogBox);
 
             AppLog?.AddDatedLog(LoadResource("SettingsLoading"));
             AppSettings = Settings.LoadSettings("settings.xml");
@@ -209,7 +203,7 @@ namespace WpfAppForModbus {
                 AppAndPortsLog(LoadResource("IncorrectConnectionData"));
             } catch (Exception ex) {
                 AppAndPortsLog("Exception connect: " + ex.Message);
-                OnlyAppLog(ex.StackTrace);
+                OnlyAppLog(!string.IsNullOrEmpty(ex.StackTrace) ? ex.StackTrace : "No StackTrace");
             }
         }
 
