@@ -30,14 +30,14 @@ namespace WpfAppForModbus.Models {
             if (Options != null && Options.IsValid()) {
                 Port = new SerialPort(
                     Options.SelectedPort,
-                    (int)Options.SelectedBaudRate,
-                    (Parity)(Options.SelectedParity.Type),
-                    (int)Options.SelectedDataBits,
-                    (StopBits)(Options.SelectedStopBits.Type)
+                    Options.SelectedBaudRate,
+                    (Parity)(Options?.SelectedParity.Type),
+                    (int)(Options?.SelectedDataBits),
+                    (StopBits)(Options?.SelectedStopBits?.Type)
                 ) {
                     ReadTimeout = DefaultTimeout,
                     WriteTimeout = DefaultTimeout,
-                    Handshake = (Handshake)(Options.SelectedHandshake.Type)
+                    Handshake = (Handshake)(Options?.SelectedHandshake.Type)
                 };
 
                 Port.DataReceived += Options.Handler;
@@ -50,8 +50,8 @@ namespace WpfAppForModbus.Models {
             }
         }
 
-        public bool Open(ComPortOptions Options) {
-            this.Options = Options;
+        public bool Open(ComPortOptions options) {
+            Options = options;
 
             return Open();
         }
