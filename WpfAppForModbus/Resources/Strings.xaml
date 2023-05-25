@@ -12,6 +12,6 @@
     <system:String x:Key="LoadedData">Данные успешно загружены</system:String>
     <system:String x:Key="SendingData">Отправляю посылку</system:String>
     <system:String x:Key="NoSensors">Не выбран датчик(и) для общения</system:String>
-    <system:String x:Key="StartConnectionWithInterval">Начало общения с интервалом в: </system:String>
-    <system:String x:Key="AppVersion">Версия: 1.1.2405</system:String>
+    <system:String x:Key="StartConnection">Начало общения</system:String>
+    <system:String x:Key="AppVersion">Версия: 2.0.2505</system:String>
 </ResourceDictionary>
