@@ -34,6 +34,9 @@ namespace WpfAppForModbus {
         private Settings? AppSettings { get; set; } = null;
 
         private ISensorDataList SensorDataListDb { get; set; } = null!;
+        private string[] Senders { get; set; } = null!;
+        private int SendCount { get; set; } = 0;
+        private int GetCount { get; set; } = 0;
 
         private string AppSettingsFile { get; set; } = "settings.xml";
 
@@ -111,6 +114,11 @@ namespace WpfAppForModbus {
             }
         }
 
+        private void UpdateStats() {
+            StatCounterGet.Content = GetCount;
+            StatCounterSend.Content = SendCount;
+        }
+
         private void Button_Connect(object sender, RoutedEventArgs e) {
             try {
                 if (IsConnected(ActivePort)) {
@@ -140,13 +148,38 @@ namespace WpfAppForModbus {
                     PortsLog?.AddDatedLog(LoadResource("SuccessfulConnected"));
                     AppLog?.AddDatedLog(LoadResource("SuccessfulConnected"));
 
-                    AsyncTimerToken = new();
+                    Senders = Array.Empty<string>();
 
-                    AsyncTimer ??= RunPeriodicallyAsync(() => {
-                        SendData();
+                    /*if (SensorBar != null && SensorBar.IsChecked == true) {
+                        Senders.Append("01 0F 00 10 00 1F 00 00 8E C2");
+                    }*/
 
-                        return Task.CompletedTask;
-                    }, TimeSpan.FromMilliseconds(5000), AsyncTimerToken.Token);
+                    if (SensorLight != null && SensorLight.IsChecked == true) {
+                        Senders.Append("01 0F 00 10 00 1F FF FF 8F 72");
+                    }
+
+                    if (SensorTemperature != null && SensorTemperature.IsChecked == true) {
+                        Senders.Append("01 0F 00 10 00 1F 00 00 8E C2");
+                    }
+
+                    if (SensorWater != null && SensorWater.IsChecked == true) {
+                        Senders.Append("01 05 00 11 00 00 0E 07");
+                    }
+
+                    if (Senders.Any()) {
+                        AsyncTimerToken = new();
+
+                        AsyncTimer ??= RunPeriodicallyAsync(() => {
+                            SendData();
+
+                            return Task.CompletedTask;
+                        }, TimeSpan.FromMilliseconds(5000), AsyncTimerToken.Token);
+                    } else {
+                        AsyncTimer = null;
+                        AsyncTimerToken?.Cancel();
+
+                        throw new ArgumentException("Не выбрано ни единого датчика");
+                    }
                 }
 
                 StartHandle.IsEnabled = false;
@@ -162,48 +195,33 @@ namespace WpfAppForModbus {
         }
 
         public void SendData() {
+            UpdateStats();
+
             PortsLog?.AddDatedLog("Timer interval");
-            string[] Senders = Array.Empty<string>();
 
-            /*if (SensorBar != null && SensorBar.IsChecked == true) {
-                Senders.Append("01 0F 00 10 00 1F 00 00 8E C2");
-            }*/
+            PortsLog?.AddDatedLog("Before foreach statement");
 
-            if (SensorLight != null && SensorLight.IsChecked == true) {
-                Senders.Append("01 0F 00 10 00 1F FF FF 8F 72");
+            foreach (string Command in Senders) {
+                ActivePort?.Write(Command);
+
+                Task.Delay(400);
+
+                PortsLog?.AddDatedLog(LoadResource("SendingData") + ": " + Command);
+                AppLog?.AddDatedLog(LoadResource("SendingData") + ": " + Command);
+
+                SendCount++;
             }
+            
 
-            if (SensorTemperature != null && SensorTemperature.IsChecked == true) {
-                Senders.Append("01 0F 00 10 00 1F 00 00 8E C2");
-            }
-
-            if (SensorWater != null && SensorWater.IsChecked == true) {
-                Senders.Append("01 05 00 11 00 00 0E 07");
-            }
-
-            PortsLog?.AddDatedLog("Before IF statement");
-            if (Senders.Any()) {
-                foreach (string Command in Senders) {
-                    ActivePort?.Write(Command);
-
-                    Task.Delay(800);
-
-                    PortsLog?.AddDatedLog(LoadResource("SendingData") + ": " + Command);
-                    AppLog?.AddDatedLog(LoadResource("SendingData") + ": " + Command);
-                }
-            } else {
-                AsyncTimer = null;
-                AsyncTimerToken?.Cancel();
-
-                throw new ArgumentException("Не выбрано ни единого датчика");
-            }
-            PortsLog?.AddDatedLog("after IF statement");
+            PortsLog?.AddDatedLog("after foreach statement");
         }
 
         private void ReceivedData(object sender, SerialDataReceivedEventArgs e) {
             lock (this) {
                 PortsLog?.AddDatedLog("Получено: " + ActivePort?.Read());
                 AppLog?.AddDatedLog("Получено: " + ActivePort?.Read());
+
+                GetCount++;
             }
         }
 

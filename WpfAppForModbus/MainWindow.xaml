@@ -131,7 +131,7 @@
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
-                    <TextBox Name="Log" Grid.Row="0" Margin="10" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"/>
+                    <TextBox Name="Log" Grid.Row="0" Margin="10" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" IsEnabled="False"/>
 
                     <Grid Grid.Row="1" Margin="10">
                         <CheckBox Grid.Column="0" Content="Попутно сохранять журнал в файл" Name="SaveLogsToFile" IsChecked="False" Checked="SaveLogsToFile_Checked" />
