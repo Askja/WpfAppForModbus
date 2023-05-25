@@ -244,6 +244,9 @@ namespace WpfAppForModbus {
                     } else {
                         IsLaunched = false;
 
+                        ActivePort.Close();
+                        ActivePort = null;
+
                         throw new ArgumentException(LoadResource("NoSensors"));
                     }
                 }

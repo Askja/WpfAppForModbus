@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -15,33 +16,25 @@ namespace WpfAppForModbus.Handlers
         public static double CountTemperature(string Result) {
             string[] Registers = SplitCommand(Result);
 
-            byte Response = Convert.ToByte("4" + Registers[4]);
-
-            return 4095 / int.Parse(Convert.ToString(Response, 10));
+            return 4095 / Convert.ToInt32(Registers[4], 16);
         }
 
         public static double CountBar(string Result) {
             string[] Registers = SplitCommand(Result);
 
-            byte Response = Convert.ToByte("4" + Registers[4]);
-
-            return 4095 / int.Parse(Convert.ToString(Response, 10));
+            return 4095 / Convert.ToInt32(Registers[4], 16);
         }
 
         public static double CountWater(string Result) {
             string[] Registers = SplitCommand(Result);
 
-            byte Response = Convert.ToByte("4" + Registers[4]);
-
-            return 4095 / int.Parse(Convert.ToString(Response, 10));
+            return 4095 / Convert.ToInt32(Registers[4], 16);
         }
 
         public static double CountVoltage(string Result) {
             string[] Registers = SplitCommand(Result);
 
-            byte Response = Convert.ToByte("4" + Registers[4]);
-
-            return 4095 / int.Parse(Convert.ToString(Response, 10));
+            return 4095 / Convert.ToInt32(Registers[4], 16);
         }
     }
 }
