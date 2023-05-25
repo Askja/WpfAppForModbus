@@ -24,15 +24,15 @@ namespace WpfAppForModbus.Models {
             CurrentDispatcher.Invoke(() => {
                 LogElement.AppendText(text + "\r\n");
                 LogElement.ScrollToEnd();
-            });
 
-            if (SaveToFile != null && SaveToFile.IsChecked == true) {
-                if (!Directory.Exists("logs")) {
-                    Directory.CreateDirectory("logs");
+                if (SaveToFile != null && SaveToFile.IsChecked == true) {
+                    if (!Directory.Exists("logs")) {
+                        Directory.CreateDirectory("logs");
+                    }
+
+                    File.AppendAllTextAsync("logs/" + DateTime.Now.ToString("dd.MM.yyyy") + ".log", text + "\r\n");
                 }
-
-                File.AppendAllTextAsync("logs/" + DateTime.Now.ToString("dd.MM.yyyy") + ".log", text + "\r\n");
-            }
+            });
 
             return this;
         }
