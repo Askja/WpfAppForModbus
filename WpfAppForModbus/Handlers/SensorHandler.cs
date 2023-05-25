@@ -16,25 +16,33 @@ namespace WpfAppForModbus.Handlers
         public static double CountTemperature(string Result) {
             string[] Registers = SplitCommand(Result);
 
-            return 4095 / Convert.ToInt32(Registers[4], 16);
+            int DecimalNumber = Convert.ToInt32(Registers[4], 16);
+
+            return DecimalNumber > 0 ? 4095 / DecimalNumber * 5 : 0;
         }
 
         public static double CountBar(string Result) {
             string[] Registers = SplitCommand(Result);
 
-            return 4095 / Convert.ToInt32(Registers[4], 16);
+            int DecimalNumber = Convert.ToInt32(Registers[4], 16);
+
+            return DecimalNumber > 0 ? 4095 / DecimalNumber * 5 : 0;
         }
 
         public static double CountWater(string Result) {
             string[] Registers = SplitCommand(Result);
 
-            return 4095 / Convert.ToInt32(Registers[4], 16);
+            int DecimalNumber = Convert.ToInt32(Registers[4], 16);
+
+            return DecimalNumber > 0 ? 4095 / DecimalNumber * 5 : 0;
         }
 
         public static double CountVoltage(string Result) {
             string[] Registers = SplitCommand(Result);
 
-            return 4095 / Convert.ToInt32(Registers[4], 16);
+            int DecimalNumber = Convert.ToInt32(Registers[4], 16);
+
+            return DecimalNumber > 0 ? 4095 / DecimalNumber * 5 : 0;
         }
     }
 }

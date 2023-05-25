@@ -244,7 +244,7 @@ namespace WpfAppForModbus {
                     } else {
                         IsLaunched = false;
 
-                        ActivePort.Close();
+                        ActivePort?.Close();
                         ActivePort = null;
 
                         throw new ArgumentException(LoadResource("NoSensors"));
@@ -273,12 +273,16 @@ namespace WpfAppForModbus {
 
         private void ReceivedData(object sender, SerialDataReceivedEventArgs e) {
             try {
-                string Answer = ActivePort.Read();
+                string? Answer = ActivePort?.Read();
 
-                AppAndPortsLog("Обработка данных: " + Answer);
-                AppAndPortsLog("В расшифрованном виде: " + Sensors.Current().Handler(Answer));
+                if (!string.IsNullOrEmpty(Answer)) {
+                    AppAndPortsLog("Обработка данных: " + Answer);
+                    AppAndPortsLog("В расшифрованном виде: " + Sensors.Current().Handler(Answer));
 
-                IncrementGetStat();
+                    IncrementGetStat();
+                } else {
+                    AppAndPortsLog("Пришёл пустой ответ с датчика...");
+                }
 
                 if (IsLaunched) {
                     Sensors.Next();
