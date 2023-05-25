@@ -11,6 +11,10 @@ namespace WpfAppForModbus.Models
         private List<SensorData> Sensors { get; set; } = null!;
         private int CurrentPosition { get; set; } = 0;
 
+        public SensorHandlers() {
+            Sensors = new List<SensorData>();
+        }
+
         public void AddSensor(SensorData sensor) {
             Sensors.Add(sensor);
         }
