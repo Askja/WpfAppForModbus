@@ -25,10 +25,10 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 namespace WpfAppForModbus {
     public partial class MainWindow : Window {
         public ComPort? ActivePort { get; set; }
-        protected Task? AsyncTimer { get; set; }
-        protected CancellationTokenSource? AsyncTimerToken { get; set; }
-        private Logger? AppLog { get; set; } = null;
-        private Logger? PortsLog { get; set; } = null;
+        public Task? AsyncTimer { get; set; }
+        public CancellationTokenSource? AsyncTimerToken { get; set; }
+        public Logger? AppLog { get; set; } = null;
+        public Logger? PortsLog { get; set; } = null;
         private Settings? AppSettings { get; set; } = null;
         private ISensorDataList SensorDataListDb { get; set; } = null!;
         private string[] Senders { get; set; } = null!;
