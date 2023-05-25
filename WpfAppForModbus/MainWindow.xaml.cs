@@ -3,6 +3,7 @@ using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.IO.Ports;
 using System.Linq;
 using System.Reflection;
@@ -17,6 +18,7 @@ using System.Windows.Media;
 using System.Windows.Threading;
 using WpfAppForModbus.Const;
 using WpfAppForModbus.Domain;
+using WpfAppForModbus.Domain.Entities;
 using WpfAppForModbus.Domain.Interfaces;
 using WpfAppForModbus.Domain.Models;
 using WpfAppForModbus.Enums;
@@ -46,6 +48,10 @@ namespace WpfAppForModbus {
             InitializeSettings();
             InitializeBinders();
             InitializeContexts();
+            File.WriteAllText("debag.json", JsonConvert.SerializeObject(SensorDataListDb.GetSensorData(), new JsonSerializerSettings()
+            {
+                Formatting = Formatting.Indented
+            }));
         }
 
         public void InitializeContexts() {
@@ -118,6 +124,8 @@ namespace WpfAppForModbus {
 
             if (!SensorDataListDb.SensorExist(sensorHandler.Id)) {
                 SensorDataListDb.AddSensor(sensorHandler.Id, sensorHandler.Name);
+                int values = SensorDataListDb.SaveAll();
+                AppAndPortsLog(values.ToString());
             }
         }
 
@@ -292,7 +300,8 @@ namespace WpfAppForModbus {
                     AppAndPortsLog(LoadResource("InDecryptedView") + ": " + Result);
 
                     SensorDataListDb.AddSensorData(Sensors.Current().Id, Result.ToString());
-                    SensorDataListDb.SaveAll();
+                    int values = SensorDataListDb.SaveAll();
+                    AppAndPortsLog(values.ToString());
 
                     IncrementGetStat();
                 } else {

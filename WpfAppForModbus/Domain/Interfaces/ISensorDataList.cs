@@ -6,7 +6,7 @@ namespace WpfAppForModbus.Domain.Interfaces {
         void AddSensor(int SensorId, string SensorName);
         void AddSensorData(int SensorId, string SensorData);
         IEnumerable<SensorView> GetSensorData();
-        void SaveAll();
+        int SaveAll();
         bool SensorExist(int SensorId);
     }
 }

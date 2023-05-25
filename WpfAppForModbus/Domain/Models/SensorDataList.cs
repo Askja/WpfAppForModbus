@@ -47,11 +47,13 @@ namespace WpfAppForModbus.Domain.Models {
         }
 
         public bool SensorExist(int SensorId) {
-            return context.Sensors.Select(x => x.SensorId == SensorId).Any();
+            var Sensor =  context.Sensors.Where(x => x.SensorId == SensorId).FirstOrDefault();
+            return Sensor != null;
+            
         }
 
-        public void SaveAll() {
-            context.SaveChanges();
+        public int SaveAll() {
+            return context.SaveChanges();
         }
     }
 }
