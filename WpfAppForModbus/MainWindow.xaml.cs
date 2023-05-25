@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.Extensions.Primitives;
+using Newtonsoft.Json;
 using System;
 using System.IO.Ports;
 using System.Linq;
@@ -83,6 +85,12 @@ namespace WpfAppForModbus {
             AppLog?.AddDatedLog(LoadResource("LoadedData"));
         }
 
+        private void AddCommand(CheckBox Sensor, string Command) {
+            if (Sensor != null && Sensor.IsChecked == true) {
+                Senders = Senders.Append(Command).ToArray();
+            }
+        }
+
         private string LoadResource(string Key) {
             return Shared.GetString(this, Key);
         }
@@ -116,15 +124,41 @@ namespace WpfAppForModbus {
         }
 
         private void UpdateStats() {
-            StatCounterGet.Content = GetCount;
-            StatCounterSend.Content = SendCount;
+            Dispatcher.Invoke(() => {
+                StatCounterGet.Content = GetCount;
+                StatCounterSend.Content = SendCount;
+            });
+        }
+
+        private void IncrementGetStat() {
+            Dispatcher.Invoke(() => {
+                GetCount++;
+            });
+        }
+
+        private void IncrementSendStat() {
+            Dispatcher.Invoke(() => {
+                SendCount++;
+            });
+        }
+
+        private void AppAndPortsLog(string Text) {
+            PortsLog?.AddDatedLog(Text);
+            AppLog?.AddDatedLog(Text);
+        }
+
+        private void OnlyAppLog(string Text) {
+            AppLog?.AddDatedLog(Text);
+        }
+
+        private void OnlyPortsLog(string Text) {
+            PortsLog?.AddDatedLog(Text);
         }
 
         private void Button_Connect(object sender, RoutedEventArgs e) {
             try {
                 if (IsConnected(ActivePort)) {
-                    PortsLog?.AddDatedLog(LoadResource("AlreadyConnected"));
-                    AppLog?.AddDatedLog(LoadResource("AlreadyConnected"));
+                    AppAndPortsLog(LoadResource("AlreadyConnected"));
 
                     return;
                 }
@@ -141,31 +175,17 @@ namespace WpfAppForModbus {
                     Handler = ReceivedData
                 };
 
-                //AppLog?.AddDatedLog(JsonConvert.SerializeObject(Options));
-
                 ActivePort?.Open(Options);
 
                 if (IsConnected(ActivePort)) {
-                    PortsLog?.AddDatedLog(LoadResource("SuccessfulConnected"));
-                    AppLog?.AddDatedLog(LoadResource("SuccessfulConnected"));
+                    AppAndPortsLog(LoadResource("SuccessfulConnected"));
 
                     Senders = Array.Empty<string>();
 
-                    /*if (SensorBar != null && SensorBar.IsChecked == true) {
-                        Senders = Senders.Append("01 0F 00 10 00 1F 00 00 8E C2").ToArray();
-                    }*/
-
-                    if (SensorLight != null && SensorLight.IsChecked == true) {
-                        Senders = Senders.Append("01 0F 00 10 00 1F FF FF 8F 72").ToArray();
-                    }
-
-                    if (SensorTemperature != null && SensorTemperature.IsChecked == true) {
-                        Senders = Senders.Append("01 0F 00 10 00 1F 00 00 8E C2").ToArray();
-                    }
-
-                    if (SensorWater != null && SensorWater.IsChecked == true) {
-                        Senders = Senders.Append("01 05 00 11 00 00 0E 07").ToArray();
-                    }
+                    AddCommand(SensorBar, "01 0F 00 10 00 1F 00 00 8E C2");
+                    AddCommand(SensorLight, "01 0F 00 10 00 1F FF FF 8F 72");
+                    AddCommand(SensorTemperature, "01 0F 00 10 00 1F 00 00 8E C2");
+                    AddCommand(SensorWater, "01 05 00 11 00 00 0E 07");
 
                     if (Senders.Any()) {
                         AsyncTimerToken = new();
@@ -186,43 +206,39 @@ namespace WpfAppForModbus {
                     }
                 }
             } catch (ArgumentException) {
-                PortsLog?.AddDatedLog(LoadResource("IncorrectConnectionData"));
-                AppLog?.AddDatedLog(LoadResource("IncorrectConnectionData"));
+                AppAndPortsLog(LoadResource("IncorrectConnectionData"));
             } catch (Exception ex) {
-                AppLog?.AddDatedLog("Exception connect: " + ex.Message);
-                AppLog?.AddDatedLog(ex.StackTrace);
-                PortsLog?.AddDatedLog("Exception connect: " + ex.Message);
+                AppAndPortsLog("Exception connect: " + ex.Message);
+                OnlyAppLog(ex.StackTrace);
             }
         }
 
         public void SendData() {
             UpdateStats();
 
-            PortsLog?.AddDatedLog("Timer interval");
+            OnlyPortsLog("Timer interval");
 
-            PortsLog?.AddDatedLog("Before foreach statement");
+            OnlyPortsLog("Before foreach statement");
 
             foreach (string Command in Senders) {
                 ActivePort?.Write(Command);
 
-                Task.Delay(400);
+                Task.Delay(200);
 
-                PortsLog?.AddDatedLog(LoadResource("SendingData") + ": " + Command);
-                AppLog?.AddDatedLog(LoadResource("SendingData") + ": " + Command);
+                OnlyPortsLog(LoadResource("SendingData") + ": " + Command);
 
-                SendCount++;
+                IncrementSendStat();
             }
             
 
-            PortsLog?.AddDatedLog("after foreach statement");
+            OnlyPortsLog("after foreach statement");
         }
 
         private void ReceivedData(object sender, SerialDataReceivedEventArgs e) {
             lock (this) {
-                PortsLog?.AddDatedLog("Получено: " + ActivePort?.Read());
-                AppLog?.AddDatedLog("Получено: " + ActivePort?.Read());
+                AppAndPortsLog("Получено: " + ActivePort?.Read());
 
-                GetCount++;
+                IncrementGetStat();
             }
         }
 
@@ -236,16 +252,14 @@ namespace WpfAppForModbus {
                 AsyncTimerToken?.Cancel();
 
                 if (!IsConnected(ActivePort)) {
-                    PortsLog?.AddDatedLog(LoadResource("SuccessfulStopped"));
-                    AppLog?.AddDatedLog(LoadResource("SuccessfulStopped"));
+                    AppAndPortsLog(LoadResource("SuccessfulStopped"));
 
                     StartHandle.IsEnabled = true;
                     StopHandle.IsEnabled = false;
                 }
             } catch (Exception ex) {
-                AppLog?.AddDatedLog("Exception in StopHandle: " + ex.Message);
-                AppLog?.AddDatedLog(!string.IsNullOrEmpty(ex.StackTrace) ? ex.StackTrace : "No StackTrace");
-                PortsLog?.AddDatedLog("Exception in StopHandle: " + ex.Message);
+                AppAndPortsLog("Exception in StopHandle: " + ex.Message);
+                OnlyPortsLog(!string.IsNullOrEmpty(ex.StackTrace) ? ex.StackTrace : "No StackTrace");
             }
         }
 
@@ -257,7 +271,7 @@ namespace WpfAppForModbus {
             AppSettings?.UpdateFromControls(SaveLogsToFile);
             AppSettings?.SaveSettings(AppSettingsFile);
 
-            AppLog?.AddDatedLog(LoadResource("SettingsUpdated"));
+            OnlyAppLog(LoadResource("SettingsUpdated"));
         }
         public async Task RunPeriodicallyAsync(
             Func<Task> Callback,
