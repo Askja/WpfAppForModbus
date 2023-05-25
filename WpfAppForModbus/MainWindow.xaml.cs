@@ -209,24 +209,28 @@ namespace WpfAppForModbus {
                     Sensors = new();
 
                     AddSensor(SensorBar, new SensorData {
+                        Id = 1,
                         Command = "01 0F 00 10 00 1F 00 00 8E C2",
                         Name = "Датчик давления",
                         Handler = SensorHandler.CountBar
                     });
 
                     AddSensor(SensorLight, new SensorData {
+                        Id = 2,
                         Command = "01 04 00 03 00 01 C1 CA",
                         Name = "Датчик напряжения",
                         Handler = SensorHandler.CountVoltage
                     });
 
                     AddSensor(SensorTemperature, new SensorData {
+                        Id = 3,
                         Command = "01 03 00 02 00 0A 64 0D",
                         Name = "Датчик температуры",
                         Handler = SensorHandler.CountTemperature
                     });
 
                     AddSensor(SensorWater, new SensorData {
+                        Id = 4,
                         Command = "01 0F 00 10 00 1F 00 00 8E C2",
                         Name = "Датчик влажности",
                         Handler = SensorHandler.CountWater
