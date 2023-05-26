@@ -564,7 +564,7 @@ namespace WpfAppForModbus {
                             Content = "Среднее значение = " + AnalyzeResult.Mean,
                             FontSize = 14.0,
                             FontWeight = FontWeights.SemiBold,
-                            Margin = new(5.0),
+                            Margin = new(3.0),
                             HorizontalAlignment = HorizontalAlignment.Left,
                             VerticalAlignment = VerticalAlignment.Center,
 
@@ -577,7 +577,7 @@ namespace WpfAppForModbus {
                             Content = "Минимальное значение = " + AnalyzeResult.Min,
                             FontSize = 14.0,
                             FontWeight = FontWeights.SemiBold,
-                            Margin = new(5.0),
+                            Margin = new(3.0),
                             HorizontalAlignment = HorizontalAlignment.Left,
                             VerticalAlignment = VerticalAlignment.Center,
 
@@ -590,7 +590,7 @@ namespace WpfAppForModbus {
                             Content = "Максимальное значение = " + AnalyzeResult.Max,
                             FontSize = 14.0,
                             FontWeight = FontWeights.SemiBold,
-                            Margin = new(5.0),
+                            Margin = new(3.0),
                             HorizontalAlignment = HorizontalAlignment.Left,
                             VerticalAlignment = VerticalAlignment.Center,
 
@@ -603,7 +603,7 @@ namespace WpfAppForModbus {
                             Content = "Средне-квадратичное отклонение = " + AnalyzeResult.StandardDeviation,
                             FontSize = 14.0,
                             FontWeight = FontWeights.SemiBold,
-                            Margin = new(5.0),
+                            Margin = new(3.0),
                             HorizontalAlignment = HorizontalAlignment.Left,
                             VerticalAlignment = VerticalAlignment.Center,
 
