@@ -1,9 +1,8 @@
 ﻿using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace WpfAppForModbus.Models {
+namespace WpfAppForModbus.Models.Core {
     public class Settings {
         [JsonProperty("comboBoxValues")]
         public Dictionary<string, int> ComboBoxValues { get; set; }
@@ -28,8 +27,6 @@ namespace WpfAppForModbus.Models {
         public static Settings? Load(string filePath) {
             if (File.Exists(filePath)) {
                 string json = File.ReadAllText(filePath);
-
-                Console.WriteLine(json);
 
                 return JsonConvert.DeserializeObject<Settings>(json);
             } else {

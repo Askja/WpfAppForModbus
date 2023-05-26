@@ -3,7 +3,7 @@ using System.IO;
 using System.Windows.Controls;
 using System.Windows.Threading;
 
-namespace WpfAppForModbus.Models {
+namespace WpfAppForModbus.Models.Core {
     public class Logger {
         private TextBox LogElement { get; set; }
         private CheckBox SaveToFile { get; set; } = null!;

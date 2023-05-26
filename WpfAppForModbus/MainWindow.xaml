@@ -2,199 +2,297 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-        Title="Монитор портов" Height="500" Width="900" ResizeMode="CanMinimize" Icon="/Resources/control-panel.png">
+        Title="Монитор портов" Height="500" Width="900" ResizeMode="CanMinimize" Icon="/Resources/control-panel.png" WindowStartupLocation="CenterScreen" WindowStyle="None">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <StackPanel Name="LeftMenuStackPanel" Width="170" Grid.Column="0" Background="#303030" VerticalAlignment="Stretch">
-            <TextBlock Cursor="Hand" Name="PortsMenuItemText" Text="Датчики" Padding="10"
-                       Foreground="White" FontWeight="Normal" TextDecorations="{x:Null}"
-                       MouseDown="MenuItem_Click"/>
-            <TextBlock Cursor="Hand" Name="LogMenuItemText" Text="Лог" Padding="10"
-                       Foreground="White" FontWeight="Normal" TextDecorations="{x:Null}"
-                       MouseDown="MenuItem_Click"/>
-            <TextBlock Cursor="Hand" Name="AnalyzeMenuItemText" Text="Анализ" Padding="10"
-                       Foreground="White" FontWeight="Normal" TextDecorations="{x:Null}"
-                       MouseDown="MenuItem_Click"/>
-            <TextBlock Cursor="Hand" Name="SettingsMenuItemText" Text="Настройки" Padding="10"
-                       Foreground="White" FontWeight="Normal" TextDecorations="{x:Null}"
-                       MouseDown="MenuItem_Click"/>
-        </StackPanel>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
 
-        <Label Content="{StaticResource AppVersion}" Padding="5,10"
+        <Border Grid.Row="0" Background="#303030" Padding="5">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <Grid Grid.Column="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock VerticalAlignment="Center" Grid.Column="0" Text="Монитор портов" Foreground="White" MouseDown="CustomBorder_MouseDown" MouseMove="CustomBorder_MouseMove" MouseLeftButtonDown="CustomBorder_MouseLeftButtonDown"/>
+
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                        <TextBlock MouseUp="AppHide" Padding="4" Cursor="Hand" Name="HideButton">
+                <materialDesign:PackIcon Kind="Minus" Margin="0,0,5,0" Foreground="AliceBlue"/>
+                        </TextBlock>
+                        <TextBlock MouseUp="AppClose" Padding="4" Cursor="Hand" Name="CloseButton">
+                <materialDesign:PackIcon Kind="Close" Margin="0,0,5,0" Foreground="IndianRed"/>
+                        </TextBlock>
+                    </StackPanel>
+                </Grid>
+            </Grid>
+        </Border>
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Name="LeftMenuStackPanel" Width="170" Grid.Column="0" Background="#303030" VerticalAlignment="Stretch">
+                <TextBlock Cursor="Hand" Name="PortsMenuItemText" Padding="10" Foreground="White"
+                       FontWeight="Normal" TextDecorations="{x:Null}" MouseDown="MenuItem_Click">
+                <StackPanel Orientation="Horizontal">
+                    <materialDesign:PackIcon Kind="Monitor" Margin="0,0,5,0"/>
+                    <TextBlock Text="Датчики"/>
+                </StackPanel>
+            </TextBlock>
+
+                <TextBlock Cursor="Hand" Name="LogMenuItemText" Padding="10" Foreground="White"
+                       FontWeight="Normal" TextDecorations="{x:Null}" MouseDown="MenuItem_Click">
+                <StackPanel Orientation="Horizontal">
+                    <materialDesign:PackIcon Kind="Book" Margin="0,0,5,0"/>
+                    <TextBlock Text="Лог"/>
+                </StackPanel>
+            </TextBlock>
+
+                <TextBlock Cursor="Hand" Name="AnalyzeMenuItemText" Padding="10" Foreground="White"
+                       FontWeight="Normal" TextDecorations="{x:Null}" MouseDown="MenuItem_Click">
+                <StackPanel Orientation="Horizontal">
+                    <materialDesign:PackIcon Kind="ChartScatterPlot" Margin="0,0,5,0"/>
+                    <TextBlock Text="Анализ"/>
+                </StackPanel>
+            </TextBlock>
+
+                <TextBlock Cursor="Hand" Name="SettingsMenuItemText" Padding="10" Foreground="White"
+                       FontWeight="Normal" TextDecorations="{x:Null}" MouseDown="MenuItem_Click">
+                <StackPanel Orientation="Horizontal">
+                    <materialDesign:PackIcon Kind="Settings" Margin="0,0,5,0"/>
+                    <TextBlock Text="Настройки"/>
+                </StackPanel>
+            </TextBlock>
+
+                <TextBlock Cursor="Hand" Name="NotificationsMenuItemText" Padding="10" Foreground="White"
+                       FontWeight="Normal" TextDecorations="{x:Null}" MouseDown="MenuItem_Click">
+                <StackPanel Orientation="Horizontal">
+                    <materialDesign:PackIcon Kind="Bell" Margin="0,0,5,0"/>
+                    <TextBlock Name="NotificationsMenuItemLabel" Text="Уведомления"/>
+                </StackPanel>
+            </TextBlock>
+            </StackPanel>
+
+            <Label Content="{StaticResource AppVersion}" Padding="5,10"
                    Foreground="#BDBDBD" FontWeight="Normal"
                    HorizontalAlignment="Center" VerticalAlignment="Bottom"/>
 
-        <Grid Grid.Column="1">
-            <Grid x:Name="PortsContent" Visibility="Collapsed">
-                <Border Padding="10">
-                    <StackPanel>
-                        <materialDesign:Card Margin="5" Background="WhiteSmoke">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
-
-                                <Label Padding="10" VerticalAlignment="Center" Grid.Column="0" FontSize="16" Content="Использовать датчики: "></Label>
-
-                                <StackPanel Margin="10" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right" Orientation="Horizontal">
-                                    <ToggleButton ToolTip="Датчик температуры" Cursor="Hand" Name="SensorTemperature" Checked="SaveSettings" Unchecked="SaveSettings" Margin="0,0,10,0" Style="{StaticResource MaterialDesignFlatPrimaryToggleButton}">
-                                        <materialDesign:PackIcon Width="21" Height="21" Kind="ThermometerCheck"  Foreground="IndianRed" />
-                                    </ToggleButton>
-
-                                    <ToggleButton ToolTip="Датчик влажности" Cursor="Hand" Name="SensorWater" Checked="SaveSettings" Unchecked="SaveSettings" Margin="0,0,10,0" Style="{StaticResource MaterialDesignFlatPrimaryToggleButton}">
-                                        <materialDesign:PackIcon Width="21" Height="21" Kind="ThermometerWater"  Foreground="Blue" />
-                                    </ToggleButton>
-
-                                    <ToggleButton ToolTip="Датчик давления" Cursor="Hand" Name="SensorBar" Checked="SaveSettings" Unchecked="SaveSettings" Margin="0,0,10,0" Style="{StaticResource MaterialDesignFlatPrimaryToggleButton}">
-                                        <materialDesign:PackIcon Width="21" Height="21" Kind="Gauge"  Foreground="Green" />
-                                    </ToggleButton>
-
-                                    <ToggleButton ToolTip="Датчик света" Cursor="Hand" Name="SensorLight" Checked="SaveSettings" Unchecked="SaveSettings" Style="{StaticResource MaterialDesignFlatPrimaryToggleButton}">
-                                        <materialDesign:PackIcon Width="21" Height="21" Kind="Brightness6"  Foreground="Coral" />
-                                    </ToggleButton>
-                                </StackPanel>
-                            </Grid>
-                        </materialDesign:Card>
-
-                        <Label Content="Настройки подключения" FontSize="20" FontWeight="DemiBold" />
-
-                        <materialDesign:Card Margin="5" Padding="10">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
-                                
-                                <Grid Grid.Column="0">
+            <Grid Grid.Column="1">
+                <Grid x:Name="PortsContent" Visibility="Collapsed">
+                    <Border Padding="10">
+                        <StackPanel>
+                            <materialDesign:Card Margin="5" Background="WhiteSmoke">
+                                <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*" />
                                         <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
 
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="*" />
-                                    </Grid.RowDefinitions>
+                                    <Label Padding="10" VerticalAlignment="Center" Grid.Column="0" FontSize="16" Content="Использовать датчики: "></Label>
 
-                                    <Label Margin="2" Grid.Column="0" Grid.Row="0" Content="Порт:" VerticalAlignment="Center" />
-                                    <ComboBox Margin="2" Grid.Column="1" Grid.Row="0" Name="comboBoxPorts" Width="100"></ComboBox>
+                                    <StackPanel Margin="10" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right" Orientation="Horizontal">
+                                        <ToggleButton ToolTip="Датчик температуры" Cursor="Hand" Name="SensorTemperature" Margin="0,0,10,0" Style="{StaticResource MaterialDesignFlatPrimaryToggleButton}">
+                                            <materialDesign:PackIcon Width="21" Height="21" Kind="ThermometerCheck"  Foreground="IndianRed" />
+                                        </ToggleButton>
 
-                                    <Label Margin="2" Grid.Column="0" Grid.Row="1" Content="Чётность:" VerticalAlignment="Center" />
-                                    <ComboBox Margin="2" Grid.Column="1" Grid.Row="1" Width="100" Name="comboBoxParity"></ComboBox>
+                                        <ToggleButton ToolTip="Датчик влажности" Cursor="Hand" Name="SensorWater" Margin="0,0,10,0" Style="{StaticResource MaterialDesignFlatPrimaryToggleButton}">
+                                            <materialDesign:PackIcon Width="21" Height="21" Kind="ThermometerWater"  Foreground="Blue" />
+                                        </ToggleButton>
 
-                                    <Label Margin="2" Grid.Column="0" Grid.Row="2" Content="Передаваемые биты:" VerticalAlignment="Center" />
-                                    <ComboBox Margin="2" Grid.Column="1" Grid.Row="2" Width="100" Name="comboBoxDataBits"></ComboBox>
+                                        <ToggleButton ToolTip="Датчик давления" Cursor="Hand" Name="SensorBar" Margin="0,0,10,0" Style="{StaticResource MaterialDesignFlatPrimaryToggleButton}">
+                                            <materialDesign:PackIcon Width="21" Height="21" Kind="Gauge" Foreground="Green" />
+                                        </ToggleButton>
 
-                                    <Label Margin="2" Grid.Column="0" Grid.Row="3" Content="Стоп-биты:" VerticalAlignment="Center" />
-                                    <ComboBox Margin="2" Grid.Column="1" Grid.Row="3" Width="100" Name="comboBoxStopBit"></ComboBox>
-
-                                    <Label Margin="2" Grid.Column="0" Grid.Row="4" Content="Тип рукопожатия:" VerticalAlignment="Center" />
-                                    <ComboBox Margin="2" Grid.Column="1" Grid.Row="4" Width="100" Name="comboBoxHandshake"></ComboBox>
-
-                                    <Label Margin="2" Grid.Column="0" Grid.Row="5" Content="Рейты:" VerticalAlignment="Center" />
-                                    <ComboBox Margin="2" Grid.Column="1" Grid.Row="5" Width="100" Name="comboBoxBaudRate"></ComboBox>
-
-                                    <Button Grid.Column="0" Margin="5" Grid.Row="6" Content="Запуск обработки" Name="StartHandle" Click="Button_Connect" Style="{DynamicResource MaterialDesignFlatButton}" Cursor="Hand" Foreground="{StaticResource Green}"/>
-                                    <Button Grid.Column="1" Margin="5" Grid.Row="6" Content="Остановить" IsEnabled="False" Name="StopHandle" Style="{DynamicResource MaterialDesignFlatButton}" Cursor="Hand" Foreground="{StaticResource Red}" Click="StopHandle_Click" />
+                                        <ToggleButton ToolTip="Датчик света" Cursor="Hand" Name="SensorLight" Style="{StaticResource MaterialDesignFlatPrimaryToggleButton}">
+                                            <materialDesign:PackIcon Width="21" Height="21" Kind="Brightness6"  Foreground="Coral" />
+                                        </ToggleButton>
+                                    </StackPanel>
                                 </Grid>
+                            </materialDesign:Card>
 
-                                <Grid Grid.Column="1">
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="*"/>
-                                    </Grid.RowDefinitions>
+                            <Label Content="Настройки подключения" FontSize="20" FontWeight="DemiBold" />
 
+                            <materialDesign:Card Margin="5" Padding="10">
+                                <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto" />
                                         <ColumnDefinition Width="*" />
                                     </Grid.ColumnDefinitions>
 
-                                    <Label Grid.Column="0" Grid.Row="0" Content="Отправлено:"/>
-                                    <Label Grid.Column="1" HorizontalAlignment="Right" Grid.Row="0" Content="0" Name="StatCounterSend"/>
+                                    <Grid Grid.Column="0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
 
-                                    <Label Grid.Column="0" Grid.Row="1" Content="Получено:"/>
-                                    <Label Grid.Column="1" HorizontalAlignment="Right" Grid.Row="1" Content="0" Name="StatCounterGet"/>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="*" />
+                                        </Grid.RowDefinitions>
 
-                                    <TextBox Grid.Row="2" Height="200" Grid.Column="0" Grid.ColumnSpan="2" IsEnabled="False" Name="PortsLogBox" Margin="10" TextWrapping="Wrap" VerticalScrollBarVisibility="Visible"/>
+                                        <Label Margin="2" Grid.Column="0" Grid.Row="0" Content="Порт:" VerticalAlignment="Center" />
+                                        <ComboBox Margin="2" Grid.Column="1" Grid.Row="0" Name="comboBoxPorts" Width="100"></ComboBox>
+
+                                        <Label Margin="2" Grid.Column="0" Grid.Row="1" Content="Чётность:" VerticalAlignment="Center" />
+                                        <ComboBox Margin="2" Grid.Column="1" Grid.Row="1" Width="100" Name="comboBoxParity"></ComboBox>
+
+                                        <Label Margin="2" Grid.Column="0" Grid.Row="2" Content="Передаваемые биты:" VerticalAlignment="Center" />
+                                        <ComboBox Margin="2" Grid.Column="1" Grid.Row="2" Width="100" Name="comboBoxDataBits"></ComboBox>
+
+                                        <Label Margin="2" Grid.Column="0" Grid.Row="3" Content="Стоп-биты:" VerticalAlignment="Center" />
+                                        <ComboBox Margin="2" Grid.Column="1" Grid.Row="3" Width="100" Name="comboBoxStopBit"></ComboBox>
+
+                                        <Label Margin="2" Grid.Column="0" Grid.Row="4" Content="Тип рукопожатия:" VerticalAlignment="Center" />
+                                        <ComboBox Margin="2" Grid.Column="1" Grid.Row="4" Width="100" Name="comboBoxHandshake"></ComboBox>
+
+                                        <Label Margin="2" Grid.Column="0" Grid.Row="5" Content="Рейты:" VerticalAlignment="Center" />
+                                        <ComboBox Margin="2" Grid.Column="1" Grid.Row="5" Width="100" Name="comboBoxBaudRate"></ComboBox>
+
+                                        <Button Grid.Column="0" Margin="5" Grid.Row="6" Content="Запуск обработки" Name="StartHandle" Click="Button_Connect" Style="{DynamicResource MaterialDesignFlatButton}" Cursor="Hand" Foreground="{StaticResource Green}"/>
+                                        <Button Grid.Column="1" Margin="5" Grid.Row="6" Content="Остановить" IsEnabled="False" Name="StopHandle" Style="{DynamicResource MaterialDesignFlatButton}" Cursor="Hand" Foreground="{StaticResource Red}" Click="StopHandle_Click" />
+                                    </Grid>
+
+                                    <Grid Grid.Column="1">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="*"/>
+                                        </Grid.RowDefinitions>
+
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <Label Grid.Column="0" Grid.Row="0" Content="Отправлено:"/>
+                                        <Label Grid.Column="1" HorizontalAlignment="Right" Grid.Row="0" Content="0" Name="StatCounterSend"/>
+
+                                        <Label Grid.Column="0" Grid.Row="1" Content="Получено:"/>
+                                        <Label Grid.Column="1" HorizontalAlignment="Right" Grid.Row="1" Content="0" Name="StatCounterGet"/>
+
+                                        <TextBox Grid.Row="2" Height="200" Grid.Column="0" Grid.ColumnSpan="2" IsEnabled="False" Name="PortsLogBox" Margin="10" TextWrapping="Wrap" VerticalScrollBarVisibility="Visible"/>
+                                    </Grid>
                                 </Grid>
-                            </Grid>
-                        </materialDesign:Card>
+                            </materialDesign:Card>
 
-                        
-                    </StackPanel>
-                </Border>
-            </Grid>
 
-            <Grid x:Name="LogContent" Visibility="Collapsed">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
+                        </StackPanel>
+                    </Border>
+                </Grid>
 
-                    <TextBox Name="Log" Grid.Row="0" Margin="10" TextWrapping="Wrap" VerticalScrollBarVisibility="Visible" IsEnabled="False"/>
+                <Grid x:Name="LogContent" Visibility="Collapsed">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
 
-                    <Grid Grid.Row="1" Margin="10">
-                        <CheckBox Grid.Column="0" Content="Попутно сохранять журнал в файл" Name="SaveLogsToFile" Checked="SaveSettings" Unchecked="SaveSettings" />
-                        <Button Grid.Column="1" HorizontalAlignment="Right" Content="Очистить лог" Style="{DynamicResource MaterialDesignToolButton}" Margin="10" Click="Button_Click"/>
+                        <TextBox Name="Log" Grid.Row="0" Margin="10" TextWrapping="Wrap" VerticalScrollBarVisibility="Visible" IsEnabled="False"/>
+
+                        <Grid Grid.Row="1" Margin="10">
+                            <CheckBox Grid.Column="0" Content="Попутно сохранять журнал в файл" Name="SaveLogsToFile" />
+                            <Button Grid.Column="1" HorizontalAlignment="Right" Content="Очистить лог" Style="{DynamicResource MaterialDesignToolButton}" Margin="10" Click="Button_Click"/>
+                        </Grid>
+                    </Grid>
+
+                </Grid>
+
+                <Grid x:Name="AnalyzeContent" Visibility="Collapsed">
+                    <Grid Margin="30">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <Label Grid.Row="0" Grid.Column="0" Content="Начальная дата" VerticalAlignment="Center" />
+                        <DatePicker Name="StartDate" Grid.Row="0" Grid.Column="1" Margin="5" />
+                        <Label Grid.Row="1" Grid.Column="0" Content="Начальная дата" VerticalAlignment="Center" />
+                        <DatePicker Name="EndDate" Grid.Row="1" Grid.Column="1" Margin="5" />
+
+                        <Button Grid.Row="2" Grid.Column="0" HorizontalAlignment="Left" Content="Загрузить" Style="{DynamicResource MaterialDesignFlatButton}" Margin="10" Click="StartAnalyze" />
+
+                        <StackPanel CanVerticallyScroll="True" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Name="AnalyzeResults"></StackPanel>
                     </Grid>
                 </Grid>
 
-            </Grid>
-
-            <Grid x:Name="AnalyzeContent" Visibility="Collapsed">
-                <Label Content="Контент для пункта 'Анализ'" HorizontalAlignment="Center"
-                       VerticalAlignment="Center"/>
-            </Grid>
-
-            <Grid x:Name="SettingsContent" Visibility="Collapsed">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="*" />
-                </Grid.RowDefinitions>
-
-                <Grid Grid.Row="0" Margin="15">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-
+                <Grid x:Name="SettingsContent" Visibility="Collapsed">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
 
-                    <Label Grid.Row="0" Grid.Column="0" Content="Интервал между посылками(мс):" VerticalAlignment="Center" />
-                    <TextBox Name="SendInterval" Grid.Row="0" TextAlignment="Center" Grid.Column="1" Width="100" Margin="5" />
+                    <Grid Grid.Row="0" Margin="15">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
 
-                    <Label Grid.Row="1" Grid.Column="0" Content="Порог температуры:" VerticalAlignment="Center" />
-                    <TextBox Name="TemperatureLimit" Grid.Row="1" TextAlignment="Center" Grid.Column="1" Width="100" Margin="5" />
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
 
-                    <Label Grid.Row="2" Grid.Column="0" Content="Порог давления(мм):" VerticalAlignment="Center" />
-                    <TextBox Name="BarLimit" Grid.Row="2" TextAlignment="Center" Grid.Column="1" Width="100" Margin="5" />
+                        <Label Grid.Row="0" Grid.Column="0" Content="Интервал между посылками(мс):" VerticalAlignment="Center" />
+                        <TextBox Name="SendInterval" Grid.Row="0" TextAlignment="Center" Grid.Column="1" Width="100" Margin="5" />
 
-                    <Label Grid.Row="3" Grid.Column="0" Content="Порог влажности(%):" VerticalAlignment="Center" />
-                    <TextBox Name="WaterLimit" Grid.Row="3" TextAlignment="Center" Grid.Column="1" Width="100" Margin="5" />
+                        <Label Grid.Row="1" Grid.Column="0" Content="Порог температуры:" VerticalAlignment="Center" />
+                        <TextBox Name="TemperatureLimit" Grid.Row="1" TextAlignment="Center" Grid.Column="1" Width="100" Margin="5" />
 
-                    <Label Grid.Row="4" Grid.Column="0" Content="Порог напряжения(Вт):" VerticalAlignment="Center" />
-                    <TextBox Name="VoltageLimit" Grid.Row="4" TextAlignment="Center" Grid.Column="1" Width="100" Margin="5" />
+                        <Label Grid.Row="2" Grid.Column="0" Content="Порог давления(мм):" VerticalAlignment="Center" />
+                        <TextBox Name="BarLimit" Grid.Row="2" TextAlignment="Center" Grid.Column="1" Width="100" Margin="5" />
+
+                        <Label Grid.Row="3" Grid.Column="0" Content="Порог влажности(%):" VerticalAlignment="Center" />
+                        <TextBox Name="WaterLimit" Grid.Row="3" TextAlignment="Center" Grid.Column="1" Width="100" Margin="5" />
+
+                        <Label Grid.Row="4" Grid.Column="0" Content="Порог напряжения(Вт):" VerticalAlignment="Center" />
+                        <TextBox Name="VoltageLimit" Grid.Row="4" TextAlignment="Center" Grid.Column="1" Width="100" Margin="5" />
+                    </Grid>
+
+                    <Button VerticalAlignment="Bottom" Cursor="Hand" Grid.Row="1" HorizontalAlignment="Right" Content="Сохранить настройки" Style="{DynamicResource MaterialDesignFlatButton}" Margin="10" Click="Button_Click_1"/>
                 </Grid>
 
-                <Button VerticalAlignment="Bottom" Cursor="Hand" Grid.Row="1" HorizontalAlignment="Right" Content="Сохранить настройки" Style="{DynamicResource MaterialDesignFlatButton}" Margin="10" Click="Button_Click_1"/>
+                <Grid x:Name="NotificationsContent">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <ScrollViewer MaxHeight="400" Grid.Row="0">
+                            <StackPanel Name="NotificationsList"></StackPanel>
+                        </ScrollViewer>
+
+                        <Button VerticalAlignment="Bottom" Cursor="Hand" Grid.Row="1" HorizontalAlignment="Right" Content="Удалить все уведомления" Style="{DynamicResource MaterialDesignFlatButton}" Margin="10" Click="ClearNotifications"/>
+                    </Grid>
+                </Grid>
             </Grid>
         </Grid>
     </Grid>
