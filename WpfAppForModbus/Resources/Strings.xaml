@@ -18,5 +18,5 @@
     <system:String x:Key="SendingData">Отправляю посылку</system:String>
     <system:String x:Key="NoSensors">Не выбран датчик(и) для общения</system:String>
     <system:String x:Key="StartConnection">Начало общения</system:String>
-    <system:String x:Key="AppVersion">Версия: 2.0.2505</system:String>
+    <system:String x:Key="AppVersion">Версия: 2.1.2605</system:String>
 </ResourceDictionary>

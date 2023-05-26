@@ -24,11 +24,11 @@ namespace WpfAppForModbus.Models.Core {
             File.WriteAllText(filePath, json);
         }
 
-        public static Settings? Load(string filePath) {
+        public static Settings Load(string filePath) {
             if (File.Exists(filePath)) {
                 string json = File.ReadAllText(filePath);
 
-                return JsonConvert.DeserializeObject<Settings>(json);
+                return JsonConvert.DeserializeObject<Settings>(json) ?? new();
             } else {
                 return new Settings();
             }

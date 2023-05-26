@@ -14,9 +14,11 @@ namespace WpfAppForModbus.Models.Views {
                 Background = new SolidColorBrush(cardColor)
             };
 
-            var stackPanel = new StackPanel {
-                Orientation = Orientation.Horizontal
-            };
+            var grid = new Grid();
+
+            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
+            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
+            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
 
             var icon = new PackIcon {
                 Kind = PackIconKind.Email,
@@ -26,7 +28,29 @@ namespace WpfAppForModbus.Models.Views {
                 Margin = new Thickness(0, 0, 10, 0)
             };
 
-            stackPanel.Children.Add(icon);
+            var closeButton = new Button {
+                Content = new PackIcon {
+                    Kind = PackIconKind.Close,
+                    Foreground = Brushes.White,
+                    Width = 24,
+                    Height = 24,
+                    VerticalAlignment = VerticalAlignment.Center
+                },
+                Background = Brushes.Transparent,
+                BorderBrush = Brushes.Transparent,
+                HorizontalAlignment = HorizontalAlignment.Right,
+                VerticalAlignment = VerticalAlignment.Center,
+                Padding = new Thickness(0),
+                Margin = new Thickness(0, 0, 0, 5)
+            };
+
+            closeButton.Click += (sender, e) =>
+            {
+                var parentBorderPanel = border;
+                var parentNotificationsList = VisualTreeHelper.GetParent(parentBorderPanel) as StackPanel;
+
+                parentNotificationsList?.Children.Remove(parentBorderPanel);
+            };
 
             var textBlock = new TextBlock {
                 Text = notificationText,
@@ -53,9 +77,15 @@ namespace WpfAppForModbus.Models.Views {
             notificationStackPanel.Children.Add(titleTextBlock);
             notificationStackPanel.Children.Add(textBlock);
 
-            stackPanel.Children.Add(notificationStackPanel);
+            grid.Children.Add(icon);
+            grid.Children.Add(notificationStackPanel);
+            grid.Children.Add(closeButton);
 
-            border.Child = stackPanel;
+            Grid.SetColumn(icon, 0);
+            Grid.SetColumn(notificationStackPanel, 1);
+            Grid.SetColumn(closeButton, 2);
+
+            border.Child = grid;
 
             return border;
         }
