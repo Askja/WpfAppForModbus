@@ -2,8 +2,9 @@
 using System.IO.Ports;
 using System.Text;
 using WpfAppForModbus.Models.Helpers;
+using WpfAppForModbus.Models.Views;
 
-namespace WpfAppForModbus.Models {
+namespace WpfAppForModbus.Models.Core {
     public class ComPort {
 
         protected SerialPort? Port { get; set; } = null;

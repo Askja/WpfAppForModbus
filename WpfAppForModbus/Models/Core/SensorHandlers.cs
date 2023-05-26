@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using WpfAppForModbus.Domain.Entities;
+using WpfAppForModbus.Models.Views;
 
-namespace WpfAppForModbus.Models
-{
+namespace WpfAppForModbus.Models.Core {
     public class SensorHandlers {
         private List<SensorData> Sensors { get; set; } = null!;
         private int CurrentPosition { get; set; } = 0;

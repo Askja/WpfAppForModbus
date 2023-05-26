@@ -1,7 +1,7 @@
 ﻿using System.IO.Ports;
 using WpfAppForModbus.Enums;
 
-namespace WpfAppForModbus.Models {
+namespace WpfAppForModbus.Models.Views {
     public class ComPortOptions {
         public ParityValues? SelectedParity { get; set; } = null;
         public StopBitsValues? SelectedStopBits { get; set; } = null;
