@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO.Ports;
-using System.Text;
 using WpfAppForModbus.Models.Helpers;
 using WpfAppForModbus.Models.Views;
 

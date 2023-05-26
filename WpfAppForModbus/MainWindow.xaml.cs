@@ -42,8 +42,6 @@ namespace WpfAppForModbus {
             InitializeSettings();
             InitializeBinders();
             InitializeContexts();
-
-            CheckNotifications();
         }
 
         public void InitializeContexts() {
@@ -476,8 +474,6 @@ namespace WpfAppForModbus {
             NotificationsMenuItemLabel.Text = "Уведомления";
 
             NotificationsList.Children.Clear();
-
-            CheckNotifications();
         }
 
         private void AddWarningNotification(string Text) {
