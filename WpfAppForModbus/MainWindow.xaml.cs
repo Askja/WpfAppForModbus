@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.IO.Ports;
 using System.Linq;
 using System.Threading.Tasks;
@@ -248,7 +250,7 @@ namespace WpfAppForModbus {
 
                     AddSensor(SensorBar, new SensorData {
                         Id = 1,
-                        Command = "01 0F 00 10 00 1F 00 00 8E C2",
+                        Command = "01 04 00 03 00 01 C1 CA",
                         Name = "Датчик давления",
                         Handler = SensorHandler.CountBar,
                         Max = MaxBar
@@ -264,7 +266,7 @@ namespace WpfAppForModbus {
 
                     AddSensor(SensorTemperature, new SensorData {
                         Id = 3,
-                        Command = "01 03 00 02 00 0A 64 0D",
+                        Command = "01 04 00 03 00 01 C1 CA",
                         Name = "Датчик температуры",
                         Handler = SensorHandler.CountTemperature,
                         Max = MaxTemperature
@@ -272,7 +274,7 @@ namespace WpfAppForModbus {
 
                     AddSensor(SensorWater, new SensorData {
                         Id = 4,
-                        Command = "01 0F 00 10 00 1F 00 00 8E C2",
+                        Command = "01 04 00 03 00 01 C1 CA",
                         Name = "Датчик влажности",
                         Handler = SensorHandler.CountWater,
                         Max = MaxWater
@@ -329,7 +331,7 @@ namespace WpfAppForModbus {
                     AppAndPortsLog(LoadResource("DataHandling") + ": " + Answer);
                     AppAndPortsLog(LoadResource("InDecryptedView") + ": " + Result);
 
-                    double Difference = Sensors.Current().Max - Result;
+                    double Difference = Result - Sensors.Current().Max;
 
                     if (Difference > 0) {
                         AddWarningNotification("Превышение допустимой нормы на " + Difference.ToString());
@@ -475,27 +477,33 @@ namespace WpfAppForModbus {
 
 
         private void AddNotification(string Text, Color Type) {
-            UnreadNotifications++;
+            GetCurrentDispatcher().Invoke(() => {
+                UnreadNotifications++;
 
-            NotificationsList.Children.Insert(0, Notification.Show(Text, Type));
+                NotificationsList.Children.Insert(0, Notification.Show(Text, Type));
 
-            CheckNotifications();
+                CheckNotifications();
+            });
         }
 
         private void AddErrorNotification(string Text) {
-            UnreadNotifications++;
+            GetCurrentDispatcher().Invoke(() => {
+                UnreadNotifications++;
 
-            NotificationsList.Children.Insert(0, Notification.ShowError(Text));
+                NotificationsList.Children.Insert(0, Notification.ShowError(Text));
 
-            CheckNotifications();
+                CheckNotifications();
+            });
         }
 
         private void AddWarningNotification(string Text) {
-            UnreadNotifications++;
+            GetCurrentDispatcher().Invoke(() => {
+                UnreadNotifications++;
 
-            NotificationsList.Children.Insert(0, Notification.ShowWarning(Text));
+                NotificationsList.Children.Insert(0, Notification.ShowWarning(Text));
 
-            CheckNotifications();
+                CheckNotifications();
+            });
         }
 
         private void CheckNotifications() {

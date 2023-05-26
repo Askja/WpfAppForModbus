@@ -231,7 +231,7 @@
 
                         <Label Grid.Row="0" Grid.Column="0" Content="Начальная дата" VerticalAlignment="Center" />
                         <DatePicker Name="StartDate" Grid.Row="0" Grid.Column="1" Margin="5" />
-                        <Label Grid.Row="1" Grid.Column="0" Content="Начальная дата" VerticalAlignment="Center" />
+                        <Label Grid.Row="1" Grid.Column="0" Content="Конечная дата" VerticalAlignment="Center" />
                         <DatePicker Name="EndDate" Grid.Row="1" Grid.Column="1" Margin="5" />
 
                         <Button Grid.Row="2" Grid.Column="0" HorizontalAlignment="Left" Content="Загрузить" Style="{DynamicResource MaterialDesignFlatButton}" Margin="10" Click="StartAnalyze" />
