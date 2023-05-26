@@ -9,7 +9,7 @@ namespace WpfAppForModbus.Models.Views {
         public SerialDataReceivedEventHandler Handler { get; set; } = null!;
         public int SelectedDataBits { get; set; } = -1;
         public int SelectedBaudRate { get; set; } = -1;
-        public string SelectedPort { get; set; } = string.Empty;
+        public string? SelectedPort { get; set; } = null;
 
         public bool IsValid() {
             return SelectedParity != null &&

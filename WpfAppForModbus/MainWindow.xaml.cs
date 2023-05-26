@@ -433,6 +433,11 @@ namespace WpfAppForModbus {
             Application.Current.Shutdown();
         }
 
+        private void FakeNoty(object sender, RoutedEventArgs e) {
+            AddErrorNotification("Test error");
+            AddWarningNotification("Test warning");
+        }
+
         private void AppHide(object sender, RoutedEventArgs e) {
             Window window = GetWindow(this);
 
@@ -476,11 +481,11 @@ namespace WpfAppForModbus {
         }
 
 
-        private void AddNotification(string Text, Color Type) {
+        private void AddNotification(string Title, string Text, Color Type) {
             GetCurrentDispatcher().Invoke(() => {
                 UnreadNotifications++;
 
-                NotificationsList.Children.Insert(0, Notification.Show(Text, Type));
+                NotificationsList.Children.Insert(0, Notification.Show(Title, Text, Type));
 
                 CheckNotifications();
             });
@@ -490,7 +495,7 @@ namespace WpfAppForModbus {
             GetCurrentDispatcher().Invoke(() => {
                 UnreadNotifications++;
 
-                NotificationsList.Children.Insert(0, Notification.ShowError(Text));
+                NotificationsList.Children.Insert(0, Notification.ShowError("Ошибка", Text));
 
                 CheckNotifications();
             });
@@ -500,7 +505,7 @@ namespace WpfAppForModbus {
             GetCurrentDispatcher().Invoke(() => {
                 UnreadNotifications++;
 
-                NotificationsList.Children.Insert(0, Notification.ShowWarning(Text));
+                NotificationsList.Children.Insert(0, Notification.ShowWarning("Предупреждение", Text));
 
                 CheckNotifications();
             });
@@ -533,7 +538,7 @@ namespace WpfAppForModbus {
                 return;
             }
 
-            IEnumerable<int> Ids = Data.Select(Row => Row.SensorId).Distinct();
+            IEnumerable<int> Ids = Data.Select(Row => Row.SensorId).AsEnumerable().Distinct();
 
             if (Ids.Any()) {
                 foreach (int Id in Ids) {
