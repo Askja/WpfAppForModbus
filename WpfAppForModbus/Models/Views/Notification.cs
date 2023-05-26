@@ -44,8 +44,7 @@ namespace WpfAppForModbus.Models.Views {
                 Margin = new Thickness(0, 0, 0, 5)
             };
 
-            closeButton.Click += (sender, e) =>
-            {
+            closeButton.Click += (sender, e) => {
                 var parentBorderPanel = border;
                 var parentNotificationsList = VisualTreeHelper.GetParent(parentBorderPanel) as StackPanel;
 
