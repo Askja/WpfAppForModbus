@@ -77,7 +77,7 @@
                 </StackPanel>
             </TextBlock>
 
-                <TextBlock Cursor="Hand" Name="NotificationsMenuItemText" Padding="10" Foreground="White"
+                <TextBlock Cursor="" Name="NotificationsMenuItemText" Padding="10" Foreground="White"
                        FontWeight="Normal" TextDecorations="{x:Null}" MouseDown="MenuItem_Click">
                 <StackPanel Orientation="Horizontal">
                     <materialDesign:PackIcon Kind="Bell" Margin="0,0,5,0"/>

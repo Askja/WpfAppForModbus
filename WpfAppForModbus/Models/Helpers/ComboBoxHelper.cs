@@ -20,7 +20,7 @@ namespace WpfAppForModbus.Models.Helpers {
                 return items[selectedIndex];
             }
 
-            return items.Length > 0 ? items[0] : default;
+            return default;
         }
     }
 }
