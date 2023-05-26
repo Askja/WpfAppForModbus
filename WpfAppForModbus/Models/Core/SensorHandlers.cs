@@ -29,6 +29,22 @@ namespace WpfAppForModbus.Models.Core {
             return Sensors[CurrentPosition];
         }
 
+        public int GetCurrentId() {
+            return Current().Id;
+        }
+
+        public string GetCurrentName() {
+            return Current().Name;
+        }
+
+        public string GetCurrentCommand() {
+            return Current().Command;
+        }
+
+        public string GetCurrentRecommendations() {
+            return Current().Recommendations;
+        }
+
         public double Handle(string Command) {
             return Current().Handler(Command);
         }

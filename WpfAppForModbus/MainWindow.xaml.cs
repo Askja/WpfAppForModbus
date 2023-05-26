@@ -1,7 +1,5 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.IO.Ports;
 using System.Linq;
 using System.Threading.Tasks;
@@ -29,7 +27,7 @@ namespace WpfAppForModbus {
         public bool IsLaunched { get; set; }
         public Logger? AppLog { get; set; } = null;
         public Logger? PortsLog { get; set; } = null;
-        private Settings? AppSettings { get; set; } = null;
+        private Settings AppSettings { get; set; } = null!;
         private ISensorDataList SensorDataListDb { get; set; } = null!;
         private SensorHandlers Sensors { get; set; } = null!;
         private int SendCount { get; set; } = 0;
@@ -145,8 +143,6 @@ namespace WpfAppForModbus {
 
         public bool IsConnected(ComPort? Port) => (Port != null && Port.IsOpened());
 
-        public void ShowMessage(string message) => MessageBox.Show(message);
-
         private void MenuItem_Click(object sender, MouseButtonEventArgs e) {
             PortsContent.Visibility = Visibility.Collapsed;
             LogContent.Visibility = Visibility.Collapsed;
@@ -253,7 +249,8 @@ namespace WpfAppForModbus {
                         Command = "01 04 00 03 00 01 C1 CA",
                         Name = "Датчик давления",
                         Handler = SensorHandler.CountBar,
-                        Max = MaxBar
+                        Max = MaxBar,
+                        Recommendations = "Рекомендуется наполнить бак"
                     });
 
                     AddSensor(SensorLight, new SensorData {
@@ -261,7 +258,8 @@ namespace WpfAppForModbus {
                         Command = "01 04 00 03 00 01 C1 CA",
                         Name = "Датчик напряжения",
                         Handler = SensorHandler.CountVoltage,
-                        Max = MaxVoltage
+                        Max = MaxVoltage,
+                        Recommendations = "Рекомендуется включить лампу"
                     });
 
                     AddSensor(SensorTemperature, new SensorData {
@@ -269,7 +267,8 @@ namespace WpfAppForModbus {
                         Command = "01 04 00 03 00 01 C1 CA",
                         Name = "Датчик температуры",
                         Handler = SensorHandler.CountTemperature,
-                        Max = MaxTemperature
+                        Max = MaxTemperature,
+                        Recommendations = "Рекомендуется открыть фрамугу"
                     });
 
                     AddSensor(SensorWater, new SensorData {
@@ -277,7 +276,8 @@ namespace WpfAppForModbus {
                         Command = "01 04 00 03 00 01 C1 CA",
                         Name = "Датчик влажности",
                         Handler = SensorHandler.CountWater,
-                        Max = MaxWater
+                        Max = MaxWater,
+                        Recommendations = "Рекомендуется включить полив"
                     });
 
                     if (Sensors.Any()) {
@@ -311,12 +311,10 @@ namespace WpfAppForModbus {
         public void SendData() {
             UpdateStats();
 
-            SensorData CurrentSensor = Sensors.Current();
+            AppAndPortsLog(LoadResource("CurrentSensor") + ": " + Sensors.GetCurrentName());
+            AppAndPortsLog(LoadResource("SendingData") + ": " + Sensors.GetCurrentCommand());
 
-            AppAndPortsLog(LoadResource("CurrentSensor") + ": " + CurrentSensor.Name);
-            AppAndPortsLog(LoadResource("SendingData") + ": " + CurrentSensor.Command);
-
-            ActivePort?.Write(CurrentSensor.Command);
+            ActivePort?.Write(Sensors.GetCurrentCommand());
 
             IncrementSendStat();
         }
@@ -334,10 +332,10 @@ namespace WpfAppForModbus {
                     double Difference = Result - Sensors.Current().Max;
 
                     if (Difference > 0) {
-                        AddWarningNotification("Превышение допустимой нормы на " + Difference.ToString());
+                        AddWarningNotification(Sensors.GetCurrentName() + ": превышение допустимой нормы на " + Difference.ToString() + Environment.NewLine + Sensors.GetCurrentRecommendations());
                     }
 
-                    SensorDataListDb.AddSensorData(Sensors.Current().Id, Result.ToString());
+                    SensorDataListDb.AddSensorData(Sensors.GetCurrentId(), Result.ToString());
                     SensorDataListDb.SaveAll();
 
                     IncrementGetStat();
@@ -387,6 +385,9 @@ namespace WpfAppForModbus {
                     StopHandle.IsEnabled = false;
                 }
             } catch (Exception ex) {
+                ActivePort = null;
+
+                IsLaunched = false;
                 AppAndPortsLog("Exception in StopHandle: " + ex.Message);
                 OnlyPortsLog(!string.IsNullOrEmpty(ex.StackTrace) ? ex.StackTrace : "No StackTrace");
             }
@@ -433,11 +434,6 @@ namespace WpfAppForModbus {
             Application.Current.Shutdown();
         }
 
-        private void FakeNoty(object sender, RoutedEventArgs e) {
-            AddErrorNotification("Test error");
-            AddWarningNotification("Test warning");
-        }
-
         private void AppHide(object sender, RoutedEventArgs e) {
             Window window = GetWindow(this);
 
@@ -478,27 +474,6 @@ namespace WpfAppForModbus {
             NotificationsMenuItemLabel.Text = "Уведомления";
 
             NotificationsList.Children.Clear();
-        }
-
-
-        private void AddNotification(string Title, string Text, Color Type) {
-            GetCurrentDispatcher().Invoke(() => {
-                UnreadNotifications++;
-
-                NotificationsList.Children.Insert(0, Notification.Show(Title, Text, Type));
-
-                CheckNotifications();
-            });
-        }
-
-        private void AddErrorNotification(string Text) {
-            GetCurrentDispatcher().Invoke(() => {
-                UnreadNotifications++;
-
-                NotificationsList.Children.Insert(0, Notification.ShowError("Ошибка", Text));
-
-                CheckNotifications();
-            });
         }
 
         private void AddWarningNotification(string Text) {
