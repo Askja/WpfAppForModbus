@@ -42,6 +42,8 @@ namespace WpfAppForModbus {
             InitializeSettings();
             InitializeBinders();
             InitializeContexts();
+
+            CheckNotifications();
         }
 
         public void InitializeContexts() {
@@ -474,6 +476,8 @@ namespace WpfAppForModbus {
             NotificationsMenuItemLabel.Text = "Уведомления";
 
             NotificationsList.Children.Clear();
+
+            CheckNotifications();
         }
 
         private void AddWarningNotification(string Text) {
@@ -494,7 +498,7 @@ namespace WpfAppForModbus {
         }
 
         private void StartAnalyze(object sender, RoutedEventArgs e) {
-            IEnumerable<SensorView> Data = SensorDataListDb.GetByDate(StartDate.SelectedDate ?? new(), EndDate.SelectedDate ?? DateTime.Now);
+            IEnumerable<SensorView> Data = SensorDataListDb.GetByDate(StartDate.SelectedDate ?? new(), (EndDate.SelectedDate ?? DateTime.Now).AddHours(23).AddMinutes(59));
 
             AnalyzeResults.Children.Clear();
 
