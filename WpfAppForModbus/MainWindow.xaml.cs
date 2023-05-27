@@ -604,7 +604,12 @@ namespace WpfAppForModbus {
         }
 
         private void LoadSensorDataClick(object sender, RoutedEventArgs e) {
+            LoadReviewData();
+        }
+
+        private void LoadReviewData() {
             ReviewResult.ItemsSource = null;
+            ReviewResult.Columns.Clear();
 
             if (ReviewSensor.SelectedIndex > -1 && ReviewSensor.HasItems) {
                 IEnumerable<SensorDataGridView> ReviewList = SensorDataListDb.GetSensorData((string)ReviewSensor.SelectedValue);
@@ -638,7 +643,7 @@ namespace WpfAppForModbus {
 
                     AppAndPortsLog(LoadResource("DeletedData"));
 
-                    UIHooks.ClickElement(ShowReviewData);
+                    LoadReviewData();
 
                     return;
                 }
