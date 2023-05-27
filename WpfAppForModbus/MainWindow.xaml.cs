@@ -50,7 +50,17 @@ namespace WpfAppForModbus {
         public void InitializeContexts() {
             SensorDataListDb = new SensorDataList(new());
 
+            LoadSensors();
+        }
+
+        private void LoadSensors() {
+            ReviewSensor.Items.Clear();
+
             ComboBoxHelper.AddRange(ReviewSensor, SensorDataListDb.GetSensors());
+        }
+
+        private void LoadSensors(object sender, RoutedEventArgs e) {
+            LoadSensors();
         }
 
         public void InitializeBinders() {
@@ -148,6 +158,8 @@ namespace WpfAppForModbus {
         }
 
         private void LoadPorts() {
+            comboBoxPorts.Items.Clear();
+
             IEnumerable<string> Ports = Shared.GetAvailablePorts();
 
             if (Ports.Any()) {
@@ -526,20 +538,27 @@ namespace WpfAppForModbus {
             GetCurrentDispatcher().Invoke(() => {
                 UnreadNotifications++;
 
-                NotificationsList.Children.Insert(0, Notification.ShowWarning("Предупреждение", Text));
+                NotificationsList.Children.Insert(0, Notification.ShowWarning("Предупреждение", Text, CheckNotifications));
 
                 CheckNotifications();
             });
         }
 
-        private void CheckNotifications() {
-            if (UnreadNotifications > 0) {
-                NotificationCount.Content = "Количество непрочитанных уведомлений: " + UnreadNotifications.ToString();
-                NotificationsMenuItemLabel.Foreground = Brushes.IndianRed;
-                NotificationsMenuItemLabel.Text = "Уведомления [+" + UnreadNotifications.ToString() + "]";
+        private bool CheckNotifications() {
+            int Notifications = NotificationsList.Children.Count;
+
+            if (Notifications > 0) {
+                NotificationCount.Content = "Количество уведомлений: " + Notifications.ToString();
             } else {
                 NotificationCount.Content = "Новых уведомлений нет";
             }
+
+            if (UnreadNotifications > 0) {
+                NotificationsMenuItemLabel.Foreground = Brushes.IndianRed;
+                NotificationsMenuItemLabel.Text = "Уведомления [+" + UnreadNotifications.ToString() + "]";
+            }
+
+            return true;
         }
 
         private void AddAnalyzeRow(string Text, double Size = 14.0, double Margin = 1.0) {
