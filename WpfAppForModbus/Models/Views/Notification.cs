@@ -1,11 +1,12 @@
 ﻿using MaterialDesignThemes.Wpf;
+using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 
 namespace WpfAppForModbus.Models.Views {
     public static class Notification {
-        public static Border Show(string notificationTitle, string notificationText, Color cardColor) {
+        public static Border Show(string notificationTitle, string notificationText, Color cardColor, Func<bool> Handle) {
             var border = new Border {
                 Margin = new Thickness(3),
                 Padding = new Thickness(12),
@@ -49,6 +50,8 @@ namespace WpfAppForModbus.Models.Views {
                 var parentNotificationsList = VisualTreeHelper.GetParent(parentBorderPanel) as StackPanel;
 
                 parentNotificationsList?.Children.Remove(parentBorderPanel);
+
+                Handle();
             };
 
             var textBlock = new TextBlock {
@@ -89,12 +92,12 @@ namespace WpfAppForModbus.Models.Views {
             return border;
         }
 
-        public static Border ShowWarning(string Title, string Text) {
-            return Show(Title, Text, Colors.CornflowerBlue);
+        public static Border ShowWarning(string Title, string Text, Func<bool> Handle) {
+            return Show(Title, Text, Colors.CornflowerBlue, Handle);
         }
 
-        public static Border ShowError(string Title, string Text) {
-            return Show(Title, Text, Colors.DarkRed);
+        public static Border ShowError(string Title, string Text, Func<bool> Handle) {
+            return Show(Title, Text, Colors.DarkRed, Handle);
         }
     }
 }

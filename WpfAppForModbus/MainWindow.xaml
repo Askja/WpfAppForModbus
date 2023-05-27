@@ -382,7 +382,7 @@
                     </Grid>
                 </Grid>
 
-                <Grid x:Name="ReviewContent" Visibility="Collapsed">
+                <Grid x:Name="ReviewContent">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*"/>
@@ -408,7 +408,13 @@
                                             <ColumnDefinition Width="Auto" />
                                         </Grid.ColumnDefinitions>
 
+
+                                        <StackPanel Orientation="Horizontal">
                                         <ComboBox materialDesign:HintAssist.Hint="Датчик" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="2" Grid.Column="1" Name="ReviewSensor" Width="150" />
+                                            <Button ToolTip="Обновить датчики" Click="LoadSensors" Cursor="Hand" Style="{StaticResource MaterialDesignToolButton}">
+                                                <materialDesign:PackIcon Width="21" Height="21" Kind="Refresh" Foreground="DarkBlue" Margin="9,0,10,0" />
+                                            </Button>
+                                        </StackPanel>
 
                                         <Button Margin="0,10,0,10" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="1" Style="{DynamicResource MaterialDesignFlatButton}" Cursor="Hand" Foreground="{StaticResource PrimaryHueLightBrush}" Click="LoadSensorDataClick" Name="ShowReviewData">
                                             <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
