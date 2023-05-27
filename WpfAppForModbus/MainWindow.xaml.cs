@@ -1,9 +1,9 @@
-﻿using System;
+﻿using MaterialDesignThemes.Wpf;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO.Ports;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -136,13 +136,25 @@ namespace WpfAppForModbus {
 
             AppLog?.AddDatedLog(LoadResource("StartLoadingPorts"));
 
-            ComboBoxHelper.AddRange<string>(comboBoxPorts, Shared.GetAvailablePorts());
             ComboBoxHelper.AddRange(comboBoxBaudRate, BaudRateList.BaudRate);
             ComboBoxHelper.AddRange(comboBoxDataBits, DataBitsList.DataBits);
 
-            ComboBoxHelper.AddRange(comboBoxDataBits, DataBitsList.DataBits);
-
             AppLog?.AddDatedLog(LoadResource("LoadedData"));
+        }
+
+        private void LoadPorts(object sender, RoutedEventArgs e) {
+            AppAndPortsLog(LoadResource("RefreshedPorts"));
+            LoadPorts();
+        }
+
+        private void LoadPorts() {
+            IEnumerable<string> Ports = Shared.GetAvailablePorts();
+
+            if (Ports.Any()) {
+                ComboBoxHelper.AddRange<string>(comboBoxPorts, Ports);
+            } else {
+                ModalDialogHelper.OpenModalWindow("Внимание", "Нет ни одного доступного порта для подключения", PackIconKind.Information, this);
+            }
         }
 
         private void AddSensor(ToggleButton Sensor, SensorData sensorHandler) {
@@ -347,11 +359,13 @@ namespace WpfAppForModbus {
                 if (!string.IsNullOrEmpty(Answer)) {
                     double Result = Sensors.Current().Handler(Answer);
 
-                    if (RoundNumbers.IsChecked == true) {
-                        int NumbersAfterPoint = (int)RoundNumbersCount.SelectedValue;
+                    GetCurrentDispatcher().Invoke(() => {
+                        if (RoundNumbers.IsChecked == true) {
+                            int NumbersAfterPoint = (int)RoundNumbersCount.SelectedValue;
 
-                        Result = Math.Round(Result, NumbersAfterPoint);
-                    }
+                            Result = Math.Round(Result, NumbersAfterPoint);
+                        }
+                    });
 
                     AppAndPortsLog(LoadResource("DataHandling") + ": " + Answer);
                     AppAndPortsLog(LoadResource("InDecryptedView") + ": " + Result);
@@ -528,6 +542,19 @@ namespace WpfAppForModbus {
             }
         }
 
+        private void AddAnalyzeRow(string Text, double Size = 14.0, double Margin = 1.0) {
+            AnalyzeResults.Children.Add(new Label() {
+                Content = Text,
+                FontSize = Size,
+                FontWeight = FontWeights.Bold,
+                Margin = new(Margin),
+                HorizontalAlignment = HorizontalAlignment.Left,
+                VerticalAlignment = VerticalAlignment.Center,
+
+                Width = double.NaN
+            });
+        }
+
         private void StartAnalyze(object sender, RoutedEventArgs e) {
             IEnumerable<SensorView> Data = SensorDataListDb.GetByDate(StartDate.SelectedDate ?? new(), (EndDate.SelectedDate ?? DateTime.Now).AddHours(23).AddMinutes(59));
 
@@ -557,115 +584,16 @@ namespace WpfAppForModbus {
                     if (AnalyzeResult != null) {
                         string Name = Data.Where(Row => Row.SensorId == Id).Select(Row => Row.SensorName).FirstOrDefault() ?? "Датчик";
 
-                        AnalyzeResults.Children.Add(new Label() {
-                            Content = Name,
-                            FontSize = 16.0,
-                            FontWeight = FontWeights.Bold,
-                            Margin = new(5.0),
-                            HorizontalAlignment = HorizontalAlignment.Left,
-                            VerticalAlignment = VerticalAlignment.Center,
-
-                            Width = double.NaN
-                        });
-
-                        AnalyzeResults.Children.Add(new Label() {
-                            Content = "Среднее значение = " + AnalyzeResult.Mean,
-                            FontSize = 14.0,
-                            FontWeight = FontWeights.SemiBold,
-                            Margin = new(3.0),
-                            HorizontalAlignment = HorizontalAlignment.Left,
-                            VerticalAlignment = VerticalAlignment.Center,
-
-                            Width = double.NaN
-                        });
-
-                        AnalyzeResults.Children.Add(new Label() {
-                            Content = "Минимальное значение = " + AnalyzeResult.Min,
-                            FontSize = 14.0,
-                            FontWeight = FontWeights.SemiBold,
-                            Margin = new(3.0),
-                            HorizontalAlignment = HorizontalAlignment.Left,
-                            VerticalAlignment = VerticalAlignment.Center,
-
-                            Width = double.NaN
-                        });
-
-                        AnalyzeResults.Children.Add(new Label() {
-                            Content = "Максимальное значение = " + AnalyzeResult.Max,
-                            FontSize = 14.0,
-                            FontWeight = FontWeights.SemiBold,
-                            Margin = new(3.0),
-                            HorizontalAlignment = HorizontalAlignment.Left,
-                            VerticalAlignment = VerticalAlignment.Center,
-
-                            Width = double.NaN
-                        });
-
-                        AnalyzeResults.Children.Add(new Label() {
-                            Content = "Средне-квадратичное отклонение = " + AnalyzeResult.StandardDeviation,
-                            FontSize = 14.0,
-                            FontWeight = FontWeights.SemiBold,
-                            Margin = new(3.0),
-                            HorizontalAlignment = HorizontalAlignment.Left,
-                            VerticalAlignment = VerticalAlignment.Center,
-
-                            Width = double.NaN
-                        });
-
-                        AnalyzeResults.Children.Add(new Label() {
-                            Content = "Медиана = " + AnalyzeResult.Median,
-                            FontSize = 14.0,
-                            FontWeight = FontWeights.SemiBold,
-                            Margin = new(3.0),
-                            HorizontalAlignment = HorizontalAlignment.Left,
-                            VerticalAlignment = VerticalAlignment.Center,
-
-                            Width = double.NaN
-                        });
-
-                        AnalyzeResults.Children.Add(new Label() {
-                            Content = "Мода = " + AnalyzeResult.Mode,
-                            FontSize = 14.0,
-                            FontWeight = FontWeights.SemiBold,
-                            Margin = new(3.0),
-                            HorizontalAlignment = HorizontalAlignment.Left,
-                            VerticalAlignment = VerticalAlignment.Center,
-
-                            Width = double.NaN
-                        });
-
-                        AnalyzeResults.Children.Add(new Label() {
-                            Content = "Интерквартильный размах = " + AnalyzeResult.InterquartileRange,
-                            FontSize = 14.0,
-                            FontWeight = FontWeights.SemiBold,
-                            Margin = new(3.0),
-                            HorizontalAlignment = HorizontalAlignment.Left,
-                            VerticalAlignment = VerticalAlignment.Center,
-
-                            Width = double.NaN
-                        });
-
-                        AnalyzeResults.Children.Add(new Label() {
-                            Content = "Коэффициент вариации = " + AnalyzeResult.CoefficientOfVariation,
-                            FontSize = 14.0,
-                            FontWeight = FontWeights.SemiBold,
-                            Margin = new(3.0),
-                            HorizontalAlignment = HorizontalAlignment.Left,
-                            VerticalAlignment = VerticalAlignment.Center,
-
-                            Width = double.NaN
-                        });
-
-                        AnalyzeResults.Children.Add(new Label() {
-                            Content = "Дисперсия = " + AnalyzeResult.Dispersion,
-                            FontSize = 14.0,
-                            FontWeight = FontWeights.SemiBold,
-                            Margin = new(3.0),
-                            HorizontalAlignment = HorizontalAlignment.Left,
-                            VerticalAlignment = VerticalAlignment.Center,
-
-                            Width = double.NaN
-                        });
+                        AddAnalyzeRow(Name, 16.0, 5.0);
+                        AddAnalyzeRow("Среднее значение = " + AnalyzeResult.Mean);
+                        AddAnalyzeRow("Минимальное значение = " + AnalyzeResult.Min);
+                        AddAnalyzeRow("Максимальное значение = " + AnalyzeResult.Max);
+                        AddAnalyzeRow("Средне-квадратичное отклонение = " + AnalyzeResult.StandardDeviation);
+                        AddAnalyzeRow("Медиана = " + AnalyzeResult.Median);
+                        AddAnalyzeRow("Мода = " + AnalyzeResult.Mode);
+                        AddAnalyzeRow("Интерквартильный размах = " + AnalyzeResult.InterquartileRange);
+                        AddAnalyzeRow("Коэффициент вариации = " + AnalyzeResult.CoefficientOfVariation);
+                        AddAnalyzeRow("Дисперсия = " + AnalyzeResult.Dispersion);
 
                         AnalyzeResults.Children.Add(new Border() {
                             Margin = new(10.0)
@@ -676,17 +604,19 @@ namespace WpfAppForModbus {
         }
 
         private void LoadSensorDataClick(object sender, RoutedEventArgs e) {
+            ReviewResult.ItemsSource = null;
+
             if (ReviewSensor.SelectedIndex > -1 && ReviewSensor.HasItems) {
                 IEnumerable<SensorDataGridView> ReviewList = SensorDataListDb.GetSensorData((string)ReviewSensor.SelectedValue);
 
                 if (ReviewList.Any()) {
-                    ReviewResult.Columns.Add(new DataGridTextColumn() {
+                    ReviewResult.Columns.Add(new MaterialDesignThemes.Wpf.DataGridTextColumn() {
                         Header = "Данные",
                         Binding = new Binding("SensorData"),
                         Width = 200
                     });
 
-                    ReviewResult.Columns.Add(new DataGridTextColumn() {
+                    ReviewResult.Columns.Add(new MaterialDesignThemes.Wpf.DataGridTextColumn() {
                         Header = "Дата записи",
                         Binding = new Binding("RowDate")
                     });
@@ -694,6 +624,27 @@ namespace WpfAppForModbus {
                     ReviewResult.ItemsSource = new ObservableCollection<SensorDataGridView>(ReviewList);
                 }
             }
+        }
+
+        private void DeleteDataClick(object sender, RoutedEventArgs e) {
+            if (ReviewSensor.SelectedIndex > -1 && ReviewSensor.HasItems) {
+                DateTime? Start = StartDeleteDate.SelectedDate;
+                DateTime? End = EndDeleteDate.SelectedDate;
+
+                int SensorId = SensorDataListDb.GetSensorId((string)ReviewSensor.SelectedValue);
+
+                if (SensorId > 0 && Start != null && End != null) {
+                    SensorDataListDb.DeleteByDate(SensorId, (DateTime)Start, (DateTime)End);
+
+                    AppAndPortsLog(LoadResource("DeletedData"));
+
+                    UIHooks.ClickElement(ShowReviewData);
+
+                    return;
+                }
+            }
+
+            ModalDialogHelper.OpenModalWindow("Ошибка", "Неверные параметры, возможно не выбран датчик, или не установлен период", PackIconKind.Error);
         }
     }
 }

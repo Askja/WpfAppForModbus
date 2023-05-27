@@ -2,7 +2,7 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-        Title="Монитор портов" Height="500" Width="900" ResizeMode="CanMinimize" Icon="/Resources/Images/control-panel.png" WindowStartupLocation="CenterScreen" WindowStyle="None">
+        Title="Монитор портов" Height="500" Width="900" ResizeMode="CanMinimize" Icon="/Resources/Images/control-panel.png" WindowStartupLocation="CenterScreen" WindowStyle="None" Loaded="LoadPorts">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
@@ -157,7 +157,12 @@
                                         </Grid.RowDefinitions>
 
                                         <Label FontSize="14" FontWeight="Bold" Margin="2" Grid.Column="0" Grid.Row="0" Content="Порт:" VerticalAlignment="Center" />
-                                        <ComboBox Margin="2" Grid.Column="1" Grid.Row="0" Name="comboBoxPorts" Width="100"></ComboBox>
+                                        <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Grid.Column="1" Grid.Row="0">
+                                            <ComboBox Margin="2" Name="comboBoxPorts" Width="70"></ComboBox>
+                                            <Button ToolTip="Обновить порты" Click="LoadPorts" Cursor="Hand" Style="{StaticResource MaterialDesignToolButton}">
+                                                <materialDesign:PackIcon Width="21" Height="21" Kind="Refresh"  Foreground="DarkBlue" Margin="9,0,10,0" />
+                                            </Button>
+                                        </StackPanel>
 
                                         <Label FontSize="14" FontWeight="Bold" Margin="2" Grid.Column="0" Grid.Row="1" Content="Чётность:" VerticalAlignment="Center" />
                                         <ComboBox Margin="2" Grid.Column="1" Grid.Row="1" Width="100" Name="comboBoxParity"></ComboBox>
@@ -380,35 +385,70 @@
                 <Grid x:Name="ReviewContent" Visibility="Collapsed">
                     <Grid>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
 
-                        <Grid Grid.Row="0" Margin="30">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
 
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
-                            
-                            <Label FontSize="14" FontWeight="Bold" VerticalAlignment="Center" Grid.Column="0" Content="Датчик:"/>
-                            <ComboBox VerticalAlignment="Center" HorizontalAlignment="Center" Margin="2" Grid.Column="1" Name="ReviewSensor" Width="200" />
+                        <DataGrid AutoGenerateColumns="False" Name="ReviewResult" Grid.Column="0" Margin="0,20,0,10"/>
 
-                            <Button HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="3" Grid.Row="0" Style="{DynamicResource MaterialDesignFlatButton}" Cursor="Hand" Foreground="{StaticResource Red}" Click="LoadSensorDataClick">
-                                <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
-                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                        <materialDesign:PackIcon VerticalAlignment="Center" Kind="Download" Margin="0 1 5 0"/>
-                                        <TextBlock Text="Показать данные" VerticalAlignment="Center"/>
-                                    </StackPanel>
+                        <Grid Grid.Column="1">
+                            <materialDesign:Card Margin="20" Padding="10">
+                                <StackPanel>
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <ComboBox materialDesign:HintAssist.Hint="Датчик" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="2" Grid.Column="1" Name="ReviewSensor" Width="150" />
+
+                                        <Button Margin="0,10,0,10" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="1" Style="{DynamicResource MaterialDesignFlatButton}" Cursor="Hand" Foreground="{StaticResource PrimaryHueLightBrush}" Click="LoadSensorDataClick" Name="ShowReviewData">
+                                            <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
+                                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                                    <materialDesign:PackIcon VerticalAlignment="Center" Kind="Eye" Margin="0 1 5 0"/>
+                                                    <TextBlock Text="Показать данные" VerticalAlignment="Center"/>
+                                                </StackPanel>
+                                            </StackPanel>
+                                        </Button>
+                                    </Grid>
+
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <Label Margin="0,40,0,10" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Content="Выберите период для удаления" />
+
+                                        <DatePicker materialDesign:HintAssist.Hint="Начало" Name="StartDeleteDate" Margin="5" Grid.Row="1" Grid.Column="0" />
+                                        <DatePicker materialDesign:HintAssist.Hint="Конец" Name="EndDeleteDate" Margin="5" Grid.Row="1" Grid.Column="1" />
+
+                                        <Button Margin="0,10,0,10" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Style="{DynamicResource MaterialDesignFlatButton}" Cursor="Hand" Foreground="{StaticResource Red}" Click="DeleteDataClick">
+                                            <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
+                                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                                    <materialDesign:PackIcon VerticalAlignment="Center" Kind="Delete" Margin="0 1 5 0"/>
+                                                    <TextBlock Text="Удалить данные" VerticalAlignment="Center"/>
+                                                </StackPanel>
+                                            </StackPanel>
+                                        </Button>
+                                    </Grid>
                                 </StackPanel>
-                            </Button>
+                            </materialDesign:Card>
                         </Grid>
-                        
-                        <DataGrid AutoGenerateColumns="False" Name="ReviewResult" Grid.Row="1"  Margin="0,20,0,10"/>
                     </Grid>
                 </Grid>
             </Grid>

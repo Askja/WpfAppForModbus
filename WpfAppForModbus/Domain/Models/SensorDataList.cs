@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using WpfAppForModbus.Domain.Entities;
@@ -64,6 +63,10 @@ namespace WpfAppForModbus.Domain.Models {
             });
         }
 
+        public int GetSensorId(string SensorName) {
+            return context.Sensors.Where(Sensor => Sensor.SensorName.Equals(SensorName)).Select(Sensor => Sensor.SensorId).FirstOrDefault();
+        }
+
         public IEnumerable<string> GetSensors() {
             return context.Sensors.Select(Sensor => Sensor.SensorName);
         }
@@ -78,6 +81,15 @@ namespace WpfAppForModbus.Domain.Models {
             }
 
             return false;
+        }
+
+        public void DeleteByDate(int SensorId, DateTime Start, DateTime End) {
+            var List = context.SensorsData.Where(Sensor => Sensor.SensorId == SensorId && Sensor.RowDate >= Start && Sensor.RowDate <= End);
+
+            if (List.Any()) {
+                context.SensorsData.RemoveRange(List);
+                context.SaveChanges();
+            }
         }
 
         public IEnumerable<SensorDataGridView> GetSensorData(string SensorName) {

@@ -1,13 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace WpfAppForModbus.Models.Views
-{
-    public class SensorDataGridView
-    {
+namespace WpfAppForModbus.Models.Views {
+    public class SensorDataGridView {
         public Guid RowId {
             get; set;
         }
