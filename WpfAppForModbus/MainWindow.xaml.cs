@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO.Ports;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
@@ -46,6 +49,8 @@ namespace WpfAppForModbus {
 
         public void InitializeContexts() {
             SensorDataListDb = new SensorDataList(new());
+
+            ComboBoxHelper.AddRange(ReviewSensor, SensorDataListDb.GetSensors());
         }
 
         public void InitializeBinders() {
@@ -54,6 +59,7 @@ namespace WpfAppForModbus {
             BindComboBox(comboBoxHandshake);
             BindComboBox(comboBoxParity);
             BindComboBox(comboBoxStopBit);
+            BindComboBox(RoundNumbersCount);
 
             BindCheckBox(SensorBar);
             BindCheckBox(SensorTemperature);
@@ -61,6 +67,8 @@ namespace WpfAppForModbus {
             BindCheckBox(SensorLight);
 
             BindCheckBox(SaveLogsToFile);
+
+            BindCheckBox(RoundNumbers);
         }
 
         private void BindComboBox(ComboBox comboBox) {
@@ -88,16 +96,24 @@ namespace WpfAppForModbus {
 
             SaveLogsToFile.IsChecked = DictionaryHelper.GetValueOrDefault(AppSettings.CheckBoxValues, "SaveLogsToFile", false);
 
+            string LastPort = DictionaryHelper.GetValueOrDefault<string, string>(AppSettings.TextBoxValues, "comboBoxPorts", string.Empty);
+
+            if (comboBoxPorts.Items.Contains(LastPort)) {
+                comboBoxPorts.SelectedValue = LastPort;
+            }
+
             comboBoxParity.SelectedIndex = DictionaryHelper.GetValueOrDefault(AppSettings.ComboBoxValues, "comboBoxParity", -1);
             comboBoxDataBits.SelectedIndex = DictionaryHelper.GetValueOrDefault(AppSettings.ComboBoxValues, "comboBoxDataBits", -1);
             comboBoxStopBit.SelectedIndex = DictionaryHelper.GetValueOrDefault(AppSettings.ComboBoxValues, "comboBoxStopBit", -1);
             comboBoxHandshake.SelectedIndex = DictionaryHelper.GetValueOrDefault(AppSettings.ComboBoxValues, "comboBoxHandshake", -1);
             comboBoxBaudRate.SelectedIndex = DictionaryHelper.GetValueOrDefault(AppSettings.ComboBoxValues, "comboBoxBaudRate", -1);
+            RoundNumbersCount.SelectedIndex = DictionaryHelper.GetValueOrDefault(AppSettings.ComboBoxValues, "RoundNumbersCount", -1);
 
             SensorTemperature.IsChecked = DictionaryHelper.GetValueOrDefault(AppSettings.CheckBoxValues, "SensorTemperature", false);
             SensorWater.IsChecked = DictionaryHelper.GetValueOrDefault(AppSettings.CheckBoxValues, "SensorWater", false);
             SensorBar.IsChecked = DictionaryHelper.GetValueOrDefault(AppSettings.CheckBoxValues, "SensorBar", false);
             SensorLight.IsChecked = DictionaryHelper.GetValueOrDefault(AppSettings.CheckBoxValues, "SensorLight", false);
+            RoundNumbers.IsChecked = DictionaryHelper.GetValueOrDefault(AppSettings.CheckBoxValues, "RoundNumbers", false);
 
             AppLog?.AddDatedLog(LoadResource("SettingsLoaded"));
         }
@@ -124,6 +140,8 @@ namespace WpfAppForModbus {
             ComboBoxHelper.AddRange(comboBoxBaudRate, BaudRateList.BaudRate);
             ComboBoxHelper.AddRange(comboBoxDataBits, DataBitsList.DataBits);
 
+            ComboBoxHelper.AddRange(comboBoxDataBits, DataBitsList.DataBits);
+
             AppLog?.AddDatedLog(LoadResource("LoadedData"));
         }
 
@@ -145,6 +163,7 @@ namespace WpfAppForModbus {
 
         private void MenuItem_Click(object sender, MouseButtonEventArgs e) {
             PortsContent.Visibility = Visibility.Collapsed;
+            ReviewContent.Visibility = Visibility.Collapsed;
             LogContent.Visibility = Visibility.Collapsed;
             AnalyzeContent.Visibility = Visibility.Collapsed;
             SettingsContent.Visibility = Visibility.Collapsed;
@@ -154,6 +173,8 @@ namespace WpfAppForModbus {
 
             if (selectedMenuItem == PortsMenuItemText) {
                 PortsContent.Visibility = Visibility.Visible;
+            } else if (selectedMenuItem == ReviewMenuItemText) {
+                ReviewContent.Visibility = Visibility.Visible;
             } else if (selectedMenuItem == LogMenuItemText) {
                 LogContent.Visibility = Visibility.Visible;
             } else if (selectedMenuItem == AnalyzeMenuItemText) {
@@ -326,6 +347,12 @@ namespace WpfAppForModbus {
                 if (!string.IsNullOrEmpty(Answer)) {
                     double Result = Sensors.Current().Handler(Answer);
 
+                    if (RoundNumbers.IsChecked == true) {
+                        int NumbersAfterPoint = (int)RoundNumbersCount.SelectedValue;
+
+                        Result = Math.Round(Result, NumbersAfterPoint);
+                    }
+
                     AppAndPortsLog(LoadResource("DataHandling") + ": " + Answer);
                     AppAndPortsLog(LoadResource("InDecryptedView") + ": " + Result);
 
@@ -409,12 +436,15 @@ namespace WpfAppForModbus {
             DictionaryHelper.UpdateDictionaryValue<string, string>(AppSettings.TextBoxValues, "SendInterval", SendInterval.Text);
 
             DictionaryHelper.UpdateDictionaryValue<string, bool>(AppSettings.CheckBoxValues, "SaveLogsToFile", SaveLogsToFile.IsChecked ?? false);
+            DictionaryHelper.UpdateDictionaryValue<string, bool>(AppSettings.CheckBoxValues, "RoundNumbers", RoundNumbers.IsChecked ?? false);
 
             DictionaryHelper.UpdateDictionaryValue<string, int>(AppSettings.ComboBoxValues, "comboBoxParity", comboBoxParity.SelectedIndex);
+            DictionaryHelper.UpdateDictionaryValue<string, string>(AppSettings.TextBoxValues, "comboBoxPorts", (string)comboBoxPorts.SelectedValue);
             DictionaryHelper.UpdateDictionaryValue<string, int>(AppSettings.ComboBoxValues, "comboBoxDataBits", comboBoxDataBits.SelectedIndex);
             DictionaryHelper.UpdateDictionaryValue<string, int>(AppSettings.ComboBoxValues, "comboBoxStopBit", comboBoxStopBit.SelectedIndex);
             DictionaryHelper.UpdateDictionaryValue<string, int>(AppSettings.ComboBoxValues, "comboBoxHandshake", comboBoxHandshake.SelectedIndex);
             DictionaryHelper.UpdateDictionaryValue<string, int>(AppSettings.ComboBoxValues, "comboBoxBaudRate", comboBoxBaudRate.SelectedIndex);
+            DictionaryHelper.UpdateDictionaryValue<string, int>(AppSettings.ComboBoxValues, "RoundNumbersCount", RoundNumbersCount.SelectedIndex);
 
             DictionaryHelper.UpdateDictionaryValue<string, bool>(AppSettings.CheckBoxValues, "SensorTemperature", SensorTemperature.IsChecked ?? false);
             DictionaryHelper.UpdateDictionaryValue<string, bool>(AppSettings.CheckBoxValues, "SensorWater", SensorWater.IsChecked ?? false);
@@ -474,6 +504,8 @@ namespace WpfAppForModbus {
             NotificationsMenuItemLabel.Text = "Уведомления";
 
             NotificationsList.Children.Clear();
+
+            CheckNotifications();
         }
 
         private void AddWarningNotification(string Text) {
@@ -488,8 +520,11 @@ namespace WpfAppForModbus {
 
         private void CheckNotifications() {
             if (UnreadNotifications > 0) {
+                NotificationCount.Content = "Количество непрочитанных уведомлений: " + UnreadNotifications.ToString();
                 NotificationsMenuItemLabel.Foreground = Brushes.IndianRed;
                 NotificationsMenuItemLabel.Text = "Уведомления [+" + UnreadNotifications.ToString() + "]";
+            } else {
+                NotificationCount.Content = "Новых уведомлений нет";
             }
         }
 
@@ -522,7 +557,7 @@ namespace WpfAppForModbus {
                     if (AnalyzeResult != null) {
                         string Name = Data.Where(Row => Row.SensorId == Id).Select(Row => Row.SensorName).FirstOrDefault() ?? "Датчик";
 
-                        Label label = new() {
+                        AnalyzeResults.Children.Add(new Label() {
                             Content = Name,
                             FontSize = 16.0,
                             FontWeight = FontWeights.Bold,
@@ -531,11 +566,9 @@ namespace WpfAppForModbus {
                             VerticalAlignment = VerticalAlignment.Center,
 
                             Width = double.NaN
-                        };
+                        });
 
-                        AnalyzeResults.Children.Add(label);
-
-                        Label mean = new() {
+                        AnalyzeResults.Children.Add(new Label() {
                             Content = "Среднее значение = " + AnalyzeResult.Mean,
                             FontSize = 14.0,
                             FontWeight = FontWeights.SemiBold,
@@ -544,11 +577,9 @@ namespace WpfAppForModbus {
                             VerticalAlignment = VerticalAlignment.Center,
 
                             Width = double.NaN
-                        };
+                        });
 
-                        AnalyzeResults.Children.Add(mean);
-
-                        Label min = new() {
+                        AnalyzeResults.Children.Add(new Label() {
                             Content = "Минимальное значение = " + AnalyzeResult.Min,
                             FontSize = 14.0,
                             FontWeight = FontWeights.SemiBold,
@@ -557,11 +588,9 @@ namespace WpfAppForModbus {
                             VerticalAlignment = VerticalAlignment.Center,
 
                             Width = double.NaN
-                        };
+                        });
 
-                        AnalyzeResults.Children.Add(min);
-
-                        Label max = new() {
+                        AnalyzeResults.Children.Add(new Label() {
                             Content = "Максимальное значение = " + AnalyzeResult.Max,
                             FontSize = 14.0,
                             FontWeight = FontWeights.SemiBold,
@@ -570,11 +599,9 @@ namespace WpfAppForModbus {
                             VerticalAlignment = VerticalAlignment.Center,
 
                             Width = double.NaN
-                        };
+                        });
 
-                        AnalyzeResults.Children.Add(max);
-
-                        Label deviation = new() {
+                        AnalyzeResults.Children.Add(new Label() {
                             Content = "Средне-квадратичное отклонение = " + AnalyzeResult.StandardDeviation,
                             FontSize = 14.0,
                             FontWeight = FontWeights.SemiBold,
@@ -583,14 +610,88 @@ namespace WpfAppForModbus {
                             VerticalAlignment = VerticalAlignment.Center,
 
                             Width = double.NaN
-                        };
+                        });
 
-                        AnalyzeResults.Children.Add(deviation);
+                        AnalyzeResults.Children.Add(new Label() {
+                            Content = "Медиана = " + AnalyzeResult.Median,
+                            FontSize = 14.0,
+                            FontWeight = FontWeights.SemiBold,
+                            Margin = new(3.0),
+                            HorizontalAlignment = HorizontalAlignment.Left,
+                            VerticalAlignment = VerticalAlignment.Center,
+
+                            Width = double.NaN
+                        });
+
+                        AnalyzeResults.Children.Add(new Label() {
+                            Content = "Мода = " + AnalyzeResult.Mode,
+                            FontSize = 14.0,
+                            FontWeight = FontWeights.SemiBold,
+                            Margin = new(3.0),
+                            HorizontalAlignment = HorizontalAlignment.Left,
+                            VerticalAlignment = VerticalAlignment.Center,
+
+                            Width = double.NaN
+                        });
+
+                        AnalyzeResults.Children.Add(new Label() {
+                            Content = "Интерквартильный размах = " + AnalyzeResult.InterquartileRange,
+                            FontSize = 14.0,
+                            FontWeight = FontWeights.SemiBold,
+                            Margin = new(3.0),
+                            HorizontalAlignment = HorizontalAlignment.Left,
+                            VerticalAlignment = VerticalAlignment.Center,
+
+                            Width = double.NaN
+                        });
+
+                        AnalyzeResults.Children.Add(new Label() {
+                            Content = "Коэффициент вариации = " + AnalyzeResult.CoefficientOfVariation,
+                            FontSize = 14.0,
+                            FontWeight = FontWeights.SemiBold,
+                            Margin = new(3.0),
+                            HorizontalAlignment = HorizontalAlignment.Left,
+                            VerticalAlignment = VerticalAlignment.Center,
+
+                            Width = double.NaN
+                        });
+
+                        AnalyzeResults.Children.Add(new Label() {
+                            Content = "Дисперсия = " + AnalyzeResult.Dispersion,
+                            FontSize = 14.0,
+                            FontWeight = FontWeights.SemiBold,
+                            Margin = new(3.0),
+                            HorizontalAlignment = HorizontalAlignment.Left,
+                            VerticalAlignment = VerticalAlignment.Center,
+
+                            Width = double.NaN
+                        });
 
                         AnalyzeResults.Children.Add(new Border() {
                             Margin = new(10.0)
                         });
                     }
+                }
+            }
+        }
+
+        private void LoadSensorDataClick(object sender, RoutedEventArgs e) {
+            if (ReviewSensor.SelectedIndex > -1 && ReviewSensor.HasItems) {
+                IEnumerable<SensorDataGridView> ReviewList = SensorDataListDb.GetSensorData((string)ReviewSensor.SelectedValue);
+
+                if (ReviewList.Any()) {
+                    ReviewResult.Columns.Add(new DataGridTextColumn() {
+                        Header = "Данные",
+                        Binding = new Binding("SensorData"),
+                        Width = 200
+                    });
+
+                    ReviewResult.Columns.Add(new DataGridTextColumn() {
+                        Header = "Дата записи",
+                        Binding = new Binding("RowDate")
+                    });
+
+                    ReviewResult.ItemsSource = new ObservableCollection<SensorDataGridView>(ReviewList);
                 }
             }
         }
