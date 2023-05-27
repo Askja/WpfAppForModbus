@@ -382,7 +382,7 @@
                     </Grid>
                 </Grid>
 
-                <Grid x:Name="ReviewContent">
+                <Grid x:Name="ReviewContent" Visibility="Collapsed">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*"/>
