@@ -1,12 +1,13 @@
 ﻿using System;
 using System.IO;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Threading;
 
 namespace WpfAppForModbus.Models.Core {
     public class Logger {
         private TextBox LogElement { get; set; }
-        private CheckBox SaveToFile { get; set; } = null!;
+        private ToggleButton SaveToFile { get; set; } = null!;
         private Dispatcher CurrentDispatcher { get; set; } = null!;
 
         public Logger(Dispatcher currentDispatcher, TextBox element) {
@@ -14,7 +15,7 @@ namespace WpfAppForModbus.Models.Core {
             CurrentDispatcher = currentDispatcher;
         }
 
-        public Logger(Dispatcher currentDispatcher, TextBox element, CheckBox saveToFile) {
+        public Logger(Dispatcher currentDispatcher, TextBox element, ToggleButton saveToFile) {
             LogElement = element;
             SaveToFile = saveToFile;
             CurrentDispatcher = currentDispatcher;

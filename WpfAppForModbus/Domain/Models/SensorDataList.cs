@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using WpfAppForModbus.Domain.Entities;
@@ -61,6 +62,37 @@ namespace WpfAppForModbus.Domain.Models {
                 SensorId = SensorId,
                 SensorName = SensorName
             });
+        }
+
+        public IEnumerable<string> GetSensors() {
+            return context.Sensors.Select(Sensor => Sensor.SensorName);
+        }
+
+        public bool DeleteRow(Guid RowId) {
+            var Row = context.SensorsData.Where(Sensor => Sensor.RowId.Equals(RowId)).FirstOrDefault();
+
+            if (Row != null) {
+                context.SensorsData.Remove(Row);
+
+                return true;
+            }
+
+            return false;
+        }
+
+        public IEnumerable<SensorDataGridView> GetSensorData(string SensorName) {
+            return context.Sensors
+                .Where(Sensor => Sensor.SensorName.Equals(SensorName))
+                .Join(
+                    context.SensorsData,
+                    sensor => sensor.SensorId,
+                    sensorData => sensorData.SensorId,
+                    (sensorData, sensor) => new SensorDataGridView() {
+                        RowId = sensor.RowId,
+                        SensorData = sensor.SensorData,
+                        RowDate = sensor.RowDate
+                    }
+                ).AsNoTracking().AsEnumerable();
         }
 
         public bool SensorExist(int SensorId) {

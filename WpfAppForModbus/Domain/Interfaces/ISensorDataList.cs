@@ -8,6 +8,8 @@ namespace WpfAppForModbus.Domain.Interfaces {
         void AddSensorData(int SensorId, string SensorData);
         IEnumerable<SensorView> GetByDate(DateTime Start, DateTime End);
         IEnumerable<SensorView> GetSensorData();
+        IEnumerable<SensorDataGridView> GetSensorData(string SensorName);
+        IEnumerable<string> GetSensors();
         void SaveAll();
         bool SensorExist(int SensorId);
     }
