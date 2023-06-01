@@ -1,41 +1,37 @@
-﻿using System;
+﻿namespace WpfAppForModBus.Handlers;
 
-namespace WpfAppForModbus.Handlers {
-    public static class SensorHandler {
-        public static string[] SplitCommand(string Command) {
-            return Command.Split(" ");
-        }
+public static class SensorHandler {
+    public static string[] SplitCommand(string command) => command.Split(separator: " ");
 
-        public static double CountTemperature(string Result) {
-            string[] Registers = SplitCommand(Result);
+    public static double CountTemperature(string result) {
+        string[] registers = SplitCommand(command: result);
 
-            int DecimalNumber = Convert.ToInt32(Registers[3] + Registers[4], 16);
+        int decimalNumber = System.Convert.ToInt32(value: registers[3] + registers[4], fromBase: 16);
 
-            return DecimalNumber > 0 ? DecimalNumber / 205.0 : 0;
-        }
+        return decimalNumber > 0 ? decimalNumber / 205.0 : 0;
+    }
 
-        public static double CountBar(string Result) {
-            string[] Registers = SplitCommand(Result);
+    public static double CountBar(string result) {
+        string[] registers = SplitCommand(command: result);
 
-            int DecimalNumber = Convert.ToInt32(Registers[3] + Registers[4], 16);
+        int decimalNumber = System.Convert.ToInt32(value: registers[3] + registers[4], fromBase: 16);
 
-            return DecimalNumber > 0 ? DecimalNumber / 205.0 : 0;
-        }
+        return decimalNumber > 0 ? decimalNumber / 205.0 : 0;
+    }
 
-        public static double CountWater(string Result) {
-            string[] Registers = SplitCommand(Result);
+    public static double CountWater(string result) {
+        string[] registers = SplitCommand(command: result);
 
-            int DecimalNumber = Convert.ToInt32(Registers[3] + Registers[4], 16);
+        int decimalNumber = System.Convert.ToInt32(value: registers[3] + registers[4], fromBase: 16);
 
-            return DecimalNumber > 0 ? DecimalNumber / 205.0 : 0;
-        }
+        return decimalNumber > 0 ? decimalNumber / 205.0 : 0;
+    }
 
-        public static double CountVoltage(string Result) {
-            string[] Registers = SplitCommand(Result);
+    public static double CountVoltage(string result) {
+        string[] registers = SplitCommand(command: result);
 
-            int DecimalNumber = Convert.ToInt32(Registers[3] + Registers[4], 16);
+        int decimalNumber = System.Convert.ToInt32(value: registers[3] + registers[4], fromBase: 16);
 
-            return DecimalNumber > 0 ? DecimalNumber / 205.0 : 0;
-        }
+        return decimalNumber > 0 ? decimalNumber / 205.0 : 0;
     }
 }

@@ -1,15 +1,18 @@
-﻿using Microsoft.EntityFrameworkCore;
-using WpfAppForModbus.Domain.Entities;
+﻿namespace WpfAppForModBus.Domain;
 
-namespace WpfAppForModbus.Domain {
-    public class ApplicationContext : DbContext {
-        public DbSet<Sensor> Sensors => Set<Sensor>();
-        public DbSet<SensorsData> SensorsData => Set<SensorsData>();
+public sealed class ApplicationContext : Microsoft.EntityFrameworkCore.DbContext {
+    public ApplicationContext() {
+        Database.EnsureCreated();
+    }
 
-        public ApplicationContext() => Database.EnsureCreated();
+    public Microsoft.EntityFrameworkCore.DbSet<WpfAppForModBus.Domain.Entities.Sensor> Sensors =>
+        Set<WpfAppForModBus.Domain.Entities.Sensor>();
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {
-            optionsBuilder.UseSqlite("Data Source=SensorsData.db");
-        }
+    public Microsoft.EntityFrameworkCore.DbSet<WpfAppForModBus.Domain.Entities.SensorsData> SensorsData =>
+        Set<WpfAppForModBus.Domain.Entities.SensorsData>();
+
+    protected override void OnConfiguring(Microsoft.EntityFrameworkCore.DbContextOptionsBuilder optionsBuilder) {
+        Microsoft.EntityFrameworkCore.SqliteDbContextOptionsBuilderExtensions.UseSqlite(optionsBuilder: optionsBuilder,
+            connectionString: "Data Source=SensorsData.db");
     }
 }

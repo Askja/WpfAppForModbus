@@ -1,103 +1,100 @@
-﻿using MaterialDesignThemes.Wpf;
-using System;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Media;
+﻿namespace WpfAppForModBus.Models.Views;
 
-namespace WpfAppForModbus.Models.Views {
-    public static class Notification {
-        public static Border Show(string notificationTitle, string notificationText, Color cardColor, Func<bool> Handle) {
-            var border = new Border {
-                Margin = new Thickness(3),
-                Padding = new Thickness(12),
-                CornerRadius = new CornerRadius(3),
-                BorderBrush = Brushes.DarkGray,
-                Background = new SolidColorBrush(cardColor)
-            };
+public static class Notification {
+    public static System.Windows.Controls.Border Show(string notificationTitle, string notificationText,
+        System.Windows.Media.Color cardColor, System.Func<bool> handle) {
+        System.Windows.Controls.Border border = new() {
+            Margin = new(uniformLength: 3),
+            Padding = new(uniformLength: 12),
+            CornerRadius = new(uniformRadius: 3),
+            BorderBrush = System.Windows.Media.Brushes.DarkGray,
+            Background = new System.Windows.Media.SolidColorBrush(color: cardColor)
+        };
 
-            var grid = new Grid();
+        System.Windows.Controls.Grid grid = new();
 
-            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
-            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
-            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+        grid.ColumnDefinitions.Add(value: new() { Width = new(value: 1, type: System.Windows.GridUnitType.Auto) });
+        grid.ColumnDefinitions.Add(value: new() { Width = new(value: 1, type: System.Windows.GridUnitType.Auto) });
+        grid.ColumnDefinitions.Add(value: new() { Width = new(value: 1, type: System.Windows.GridUnitType.Star) });
 
-            var icon = new PackIcon {
-                Kind = PackIconKind.Email,
-                Foreground = Brushes.White,
+        MaterialDesignThemes.Wpf.PackIcon icon = new() {
+            Kind = MaterialDesignThemes.Wpf.PackIconKind.Email,
+            Foreground = System.Windows.Media.Brushes.White,
+            Width = 24,
+            Height = 24,
+            Margin = new(left: 0, top: 0, right: 10, bottom: 0)
+        };
+
+        System.Windows.Controls.Button closeButton = new() {
+            Content = new MaterialDesignThemes.Wpf.PackIcon {
+                Kind = MaterialDesignThemes.Wpf.PackIconKind.Close,
+                Foreground = System.Windows.Media.Brushes.White,
                 Width = 24,
                 Height = 24,
-                Margin = new Thickness(0, 0, 10, 0)
-            };
+                VerticalAlignment = System.Windows.VerticalAlignment.Center
+            },
+            Background = System.Windows.Media.Brushes.Transparent,
+            BorderBrush = System.Windows.Media.Brushes.Transparent,
+            HorizontalAlignment = System.Windows.HorizontalAlignment.Right,
+            VerticalAlignment = System.Windows.VerticalAlignment.Center,
+            Padding = new(uniformLength: 0),
+            Margin = new(left: 0, top: 0, right: 0, bottom: 5)
+        };
 
-            var closeButton = new Button {
-                Content = new PackIcon {
-                    Kind = PackIconKind.Close,
-                    Foreground = Brushes.White,
-                    Width = 24,
-                    Height = 24,
-                    VerticalAlignment = VerticalAlignment.Center
-                },
-                Background = Brushes.Transparent,
-                BorderBrush = Brushes.Transparent,
-                HorizontalAlignment = HorizontalAlignment.Right,
-                VerticalAlignment = VerticalAlignment.Center,
-                Padding = new Thickness(0),
-                Margin = new Thickness(0, 0, 0, 5)
-            };
+        closeButton.Click += (sender, e) => {
+            System.Windows.Controls.Border parentBorderPanel = border;
+            System.Windows.Controls.StackPanel? parentNotificationsList =
+                System.Windows.Media.VisualTreeHelper.GetParent(reference: parentBorderPanel) as
+                    System.Windows.Controls.StackPanel;
 
-            closeButton.Click += (sender, e) => {
-                var parentBorderPanel = border;
-                var parentNotificationsList = VisualTreeHelper.GetParent(parentBorderPanel) as StackPanel;
+            parentNotificationsList?.Children.Remove(element: parentBorderPanel);
 
-                parentNotificationsList?.Children.Remove(parentBorderPanel);
+            handle();
+        };
 
-                Handle();
-            };
+        System.Windows.Controls.TextBlock textBlock = new() {
+            Text = notificationText,
+            FontSize = 14,
+            Foreground = System.Windows.Media.Brushes.White
+        };
 
-            var textBlock = new TextBlock {
-                Text = notificationText,
-                FontSize = 14,
-                Foreground = Brushes.White
-            };
+        System.Windows.Controls.TextBlock titleTextBlock = new() {
+            Text = notificationTitle,
+            FontSize = 16,
+            FontWeight = System.Windows.FontWeights.Bold,
+            Foreground = System.Windows.Media.Brushes.White,
+            Margin = new(left: 0, top: 0, right: 0, bottom: 5)
+        };
 
-            var titleTextBlock = new TextBlock {
-                Text = notificationTitle,
-                FontSize = 16,
-                FontWeight = FontWeights.Bold,
-                Foreground = Brushes.White,
-                Margin = new Thickness(0, 0, 0, 5)
-            };
+        System.Windows.Controls.StackPanel notificationStackPanel = new() {
+            Orientation = System.Windows.Controls.Orientation.Vertical,
+            Background = new System.Windows.Media.SolidColorBrush(color: cardColor),
+            Margin = new(left: 0, top: 0, right: 20, bottom: 5),
+            HorizontalAlignment = System.Windows.HorizontalAlignment.Left,
+            VerticalAlignment = System.Windows.VerticalAlignment.Bottom
+        };
 
-            var notificationStackPanel = new StackPanel {
-                Orientation = Orientation.Vertical,
-                Background = new SolidColorBrush(cardColor),
-                Margin = new Thickness(0, 0, 20, 5),
-                HorizontalAlignment = HorizontalAlignment.Left,
-                VerticalAlignment = VerticalAlignment.Bottom
-            };
+        notificationStackPanel.Children.Add(element: titleTextBlock);
+        notificationStackPanel.Children.Add(element: textBlock);
 
-            notificationStackPanel.Children.Add(titleTextBlock);
-            notificationStackPanel.Children.Add(textBlock);
+        grid.Children.Add(element: icon);
+        grid.Children.Add(element: notificationStackPanel);
+        grid.Children.Add(element: closeButton);
 
-            grid.Children.Add(icon);
-            grid.Children.Add(notificationStackPanel);
-            grid.Children.Add(closeButton);
+        System.Windows.Controls.Grid.SetColumn(element: icon, value: 0);
+        System.Windows.Controls.Grid.SetColumn(element: notificationStackPanel, value: 1);
+        System.Windows.Controls.Grid.SetColumn(element: closeButton, value: 2);
 
-            Grid.SetColumn(icon, 0);
-            Grid.SetColumn(notificationStackPanel, 1);
-            Grid.SetColumn(closeButton, 2);
+        border.Child = grid;
 
-            border.Child = grid;
-
-            return border;
-        }
-
-        public static Border ShowWarning(string Title, string Text, Func<bool> Handle) {
-            return Show(Title, Text, Colors.CornflowerBlue, Handle);
-        }
-
-        public static Border ShowError(string Title, string Text, Func<bool> Handle) {
-            return Show(Title, Text, Colors.DarkRed, Handle);
-        }
+        return border;
     }
+
+    public static System.Windows.Controls.Border ShowWarning(string title, string text, System.Func<bool> handle) =>
+        Show(notificationTitle: title, notificationText: text, cardColor: System.Windows.Media.Colors.CornflowerBlue,
+            handle: handle);
+
+    public static System.Windows.Controls.Border ShowError(string title, string text, System.Func<bool> handle) => Show(
+        notificationTitle: title, notificationText: text, cardColor: System.Windows.Media.Colors.DarkRed,
+        handle: handle);
 }

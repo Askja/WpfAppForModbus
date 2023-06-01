@@ -1,13 +1,7 @@
-﻿using System.IO.Ports;
-using WpfAppForModbus.Interfaces;
+﻿namespace WpfAppForModBus.Enums;
 
-namespace WpfAppForModbus.Enums {
-    public class HandshakeValues : IComboBoxObjects {
-        public required string Name {
-            get; set;
-        }
-        public Handshake Type {
-            get; set;
-        }
-    }
+public class HandshakeValues : WpfAppForModBus.Interfaces.IComboBoxObjects {
+    public System.IO.Ports.Handshake Type { get; set; }
+
+    public required string Name { get; set; }
 }

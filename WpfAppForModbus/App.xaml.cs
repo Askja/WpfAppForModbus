@@ -1,12 +1,8 @@
-﻿using System.Windows;
+﻿namespace WpfAppForModBus;
 
-namespace WpfAppForModbus {
-    /// <summary>
-    /// Interaction logic for App.xaml
-    /// </summary>
-    public partial class App : Application {
-        public void OnStartup() {
-
-        }
-    }
+/// <summary>
+///     Interaction logic for App.xaml
+/// </summary>
+public class App : System.Windows.Application {
+    public void OnStartup() { }
 }

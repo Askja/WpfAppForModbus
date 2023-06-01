@@ -1,12 +1,9 @@
-﻿using System.IO.Ports;
-using WpfAppForModbus.Enums;
+﻿namespace WpfAppForModBus.Const;
 
-namespace WpfAppForModbus.Const {
-    public static class ParityList {
-        public static ParityValues[] Parities { get; } = new ParityValues[] {
-            new ParityValues { Name = "None", Type = Parity.None },
-            new ParityValues { Name = "Odd", Type = Parity.Odd },
-            new ParityValues { Name = "Even", Type = Parity.Even }
-        };
-    }
+public static class ParityList {
+    public static WpfAppForModBus.Enums.ParityValues[] Parities { get; } = {
+        new() { Name = "None", Type = System.IO.Ports.Parity.None },
+        new() { Name = "Odd", Type = System.IO.Ports.Parity.Odd },
+        new() { Name = "Even", Type = System.IO.Ports.Parity.Even }
+    };
 }

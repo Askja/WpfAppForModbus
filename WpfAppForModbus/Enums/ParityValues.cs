@@ -1,13 +1,7 @@
-﻿using System.IO.Ports;
-using WpfAppForModbus.Interfaces;
+﻿namespace WpfAppForModBus.Enums;
 
-namespace WpfAppForModbus.Enums {
-    public class ParityValues : IComboBoxObjects {
-        public required string Name {
-            get; set;
-        }
-        public Parity Type {
-            get; set;
-        }
-    }
+public class ParityValues : WpfAppForModBus.Interfaces.IComboBoxObjects {
+    public System.IO.Ports.Parity Type { get; set; }
+
+    public required string Name { get; set; }
 }

@@ -1,17 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.CodeAnalysis;
+﻿namespace WpfAppForModBus.Domain.Entities;
 
-namespace WpfAppForModbus.Domain.Entities {
-    public class Sensor {
-        [Key]
-        public int SensorId {
-            get; set;
-        }
+public class Sensor {
+    [System.ComponentModel.DataAnnotations.KeyAttribute]
+    public int SensorId { get; set; }
 
-        [NotNull]
-        [Required]
-        public required string SensorName {
-            get; set;
-        }
-    }
+    [System.Diagnostics.CodeAnalysis.NotNullAttribute, System.ComponentModel.DataAnnotations.RequiredAttribute]
+    public required string SensorName { get; set; }
 }

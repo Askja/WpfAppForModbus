@@ -1,118 +1,124 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using WpfAppForModbus.Domain.Entities;
-using WpfAppForModbus.Domain.Interfaces;
-using WpfAppForModbus.Models.Views;
+﻿namespace WpfAppForModBus.Domain.Models;
 
-namespace WpfAppForModbus.Domain.Models {
-    public class SensorDataList : ISensorDataList {
-        protected ApplicationContext context;
+public class SensorDataList : WpfAppForModBus.Domain.Interfaces.ISensorDataList {
+    protected ApplicationContext Context;
 
-        public SensorDataList(ApplicationContext context) {
-            this.context = context;
-        }
+    public SensorDataList(ApplicationContext context) => Context = context;
 
-        public IEnumerable<SensorView> GetSensorData() {
-            return context.SensorsData
-                .Join(
-                    context.Sensors,
-                    sensorData => sensorData.SensorId,
-                    sensor => sensor.SensorId,
-                    (sensorData, sensor) => new SensorView() {
+    public System.Collections.Generic.IEnumerable<WpfAppForModBus.Models.Views.SensorView> GetSensorData() {
+        return System.Linq.Enumerable.AsEnumerable(
+            source: Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.AsNoTracking(
+                source: System.Linq.Queryable.Join(
+                    outer: Context.SensorsData, inner: Context.Sensors,
+                    outerKeySelector: sensorData => sensorData.SensorId,
+                    innerKeySelector: sensor => sensor.SensorId,
+                    resultSelector: (sensorData, sensor) => new WpfAppForModBus.Models.Views.SensorView {
                         SensorId = sensor.SensorId,
                         SensorName = sensor.SensorName,
                         SensorData = sensorData.SensorData,
                         RowId = sensorData.RowId,
                         RowDate = sensorData.RowDate
                     }
-                ).AsNoTracking().AsEnumerable();
-        }
+                )));
+    }
 
-        public IEnumerable<SensorView> GetByDate(DateTime Start, DateTime End) {
-            return context.SensorsData
-                .Where(Row => Row.RowDate >= Start && Row.RowDate <= End)
-                .Join(
-                    context.Sensors,
-                    sensorData => sensorData.SensorId,
-                    sensor => sensor.SensorId,
-                    (sensorData, sensor) => new SensorView() {
+    public System.Collections.Generic.IEnumerable<WpfAppForModBus.Models.Views.SensorView> GetByDate(
+        System.DateTime start, System.DateTime end) {
+        return System.Linq.Enumerable.AsEnumerable(
+            source: Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.AsNoTracking(
+                source: System.Linq.Queryable.Join(
+                    outer: System.Linq.Queryable.Where(source: Context.SensorsData,
+                        predicate: row => row.RowDate >= start && row.RowDate <= end),
+                    inner: Context.Sensors,
+                    outerKeySelector: sensorData => sensorData.SensorId,
+                    innerKeySelector: sensor => sensor.SensorId,
+                    resultSelector: (sensorData, sensor) => new WpfAppForModBus.Models.Views.SensorView {
                         SensorId = sensor.SensorId,
                         SensorName = sensor.SensorName,
                         SensorData = sensorData.SensorData,
                         RowId = sensorData.RowId,
                         RowDate = sensorData.RowDate
                     }
-                ).AsNoTracking().AsEnumerable();
+                )));
+    }
+
+    public void AddSensorData(int sensorId, string sensorData) {
+        Context.SensorsData.Add(entity: new() {
+            RowId = System.Guid.NewGuid(),
+            RowDate = System.DateTime.Now,
+            SensorData = sensorData,
+            SensorId = sensorId
+        });
+    }
+
+    public void AddSensor(int sensorId, string sensorName) {
+        Context.Sensors.Add(entity: new() {
+            SensorId = sensorId,
+            SensorName = sensorName
+        });
+    }
+
+    public int GetSensorId(string sensorName) {
+        return System.Linq.Queryable.FirstOrDefault(source: System.Linq.Queryable.Select(
+            source: System.Linq.Queryable.Where(source: Context.Sensors,
+                predicate: sensor => sensor.SensorName.Equals(sensorName)),
+            selector: sensor => sensor.SensorId));
+    }
+
+    public System.Collections.Generic.IEnumerable<string> GetSensors() {
+        return System.Linq.Queryable.Select(source: Context.Sensors, selector: sensor => sensor.SensorName);
+    }
+
+    public void DeleteByDate(int sensorId, System.DateTime start, System.DateTime end) {
+        System.Linq.IQueryable<WpfAppForModBus.Domain.Entities.SensorsData> list = System.Linq.Queryable.Where(
+            source: Context.SensorsData,
+            predicate: sensor =>
+                sensor.SensorId == sensorId && sensor.RowDate >= start && sensor.RowDate <= end);
+
+        if (System.Linq.Queryable.Any(source: list)) {
+            Context.SensorsData.RemoveRange(entities: list);
+            Context.SaveChanges();
         }
+    }
 
-        public void AddSensorData(int SensorId, string SensorData) {
-            context.SensorsData.Add(new SensorsData() {
-                RowId = Guid.NewGuid(),
-                RowDate = DateTime.Now,
-                SensorData = SensorData,
-                SensorId = SensorId
-            });
-        }
-
-        public void AddSensor(int SensorId, string SensorName) {
-            context.Sensors.Add(new Sensor() {
-                SensorId = SensorId,
-                SensorName = SensorName
-            });
-        }
-
-        public int GetSensorId(string SensorName) {
-            return context.Sensors.Where(Sensor => Sensor.SensorName.Equals(SensorName)).Select(Sensor => Sensor.SensorId).FirstOrDefault();
-        }
-
-        public IEnumerable<string> GetSensors() {
-            return context.Sensors.Select(Sensor => Sensor.SensorName);
-        }
-
-        public bool DeleteRow(Guid RowId) {
-            var Row = context.SensorsData.Where(Sensor => Sensor.RowId.Equals(RowId)).FirstOrDefault();
-
-            if (Row != null) {
-                context.SensorsData.Remove(Row);
-
-                return true;
-            }
-
-            return false;
-        }
-
-        public void DeleteByDate(int SensorId, DateTime Start, DateTime End) {
-            var List = context.SensorsData.Where(Sensor => Sensor.SensorId == SensorId && Sensor.RowDate >= Start && Sensor.RowDate <= End);
-
-            if (List.Any()) {
-                context.SensorsData.RemoveRange(List);
-                context.SaveChanges();
-            }
-        }
-
-        public IEnumerable<SensorDataGridView> GetSensorData(string SensorName) {
-            return context.Sensors
-                .Where(Sensor => Sensor.SensorName.Equals(SensorName))
-                .Join(
-                    context.SensorsData,
-                    sensor => sensor.SensorId,
-                    sensorData => sensorData.SensorId,
-                    (sensorData, sensor) => new SensorDataGridView() {
+    public System.Collections.Generic.IEnumerable<WpfAppForModBus.Models.Views.SensorDataGridView> GetSensorData(
+        string sensorName) {
+        return System.Linq.Enumerable.AsEnumerable(
+            source: Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.AsNoTracking(
+                source: System.Linq.Queryable.Join(
+                    outer: System.Linq.Queryable.Where(source: Context.Sensors,
+                        predicate: sensor => sensor.SensorName.Equals(sensorName)),
+                    inner: Context.SensorsData,
+                    outerKeySelector: sensor => sensor.SensorId,
+                    innerKeySelector: sensorData => sensorData.SensorId,
+                    resultSelector: (sensorData, sensor) => new WpfAppForModBus.Models.Views.SensorDataGridView {
                         RowId = sensor.RowId,
                         SensorData = sensor.SensorData,
                         RowDate = sensor.RowDate
                     }
-                ).AsNoTracking().AsEnumerable();
+                )));
+    }
+
+    public bool SensorExist(int sensorId) {
+        return System.Linq.Queryable.Any(
+            source: System.Linq.Queryable.Select(source: Context.Sensors, selector: x => x.SensorId == sensorId));
+    }
+
+    public void SaveAll() {
+        Context.SaveChanges();
+    }
+
+    public bool DeleteRow(System.Guid rowId) {
+        WpfAppForModBus.Domain.Entities.SensorsData? row =
+            System.Linq.Queryable.FirstOrDefault(source: System.Linq.Queryable.Where(source: Context.SensorsData,
+                predicate: sensor => sensor.RowId.Equals(rowId)));
+
+        if (row != null) {
+            Context.SensorsData.Remove(entity: row);
+
+            return true;
         }
 
-        public bool SensorExist(int SensorId) {
-            return context.Sensors.Select(x => x.SensorId == SensorId).Any();
-        }
-
-        public void SaveAll() {
-            context.SaveChanges();
-        }
+        return false;
     }
 }

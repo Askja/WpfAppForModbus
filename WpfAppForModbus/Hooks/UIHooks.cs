@@ -1,14 +1,13 @@
-﻿using System.Windows;
-using System.Windows.Input;
+﻿namespace WpfAppForModBus.Hooks;
 
-namespace WpfAppForModbus.Hooks {
-    public class UIHooks {
-        public static void ClickElement<T>(T element) where T : UIElement {
-            MouseButtonEventArgs args = new MouseButtonEventArgs(Mouse.PrimaryDevice, 0, MouseButton.Left) {
-                RoutedEvent = Mouse.MouseDownEvent
+public class UiHooks {
+    public static void ClickElement<T>(T element) where T : System.Windows.UIElement {
+        System.Windows.Input.MouseButtonEventArgs args =
+            new(mouse: System.Windows.Input.Mouse.PrimaryDevice, timestamp: 0,
+                button: System.Windows.Input.MouseButton.Left) {
+                RoutedEvent = System.Windows.Input.Mouse.MouseDownEvent
             };
 
-            element.RaiseEvent(args);
-        }
+        element.RaiseEvent(e: args);
     }
 }

@@ -1,5 +1,5 @@
-﻿namespace WpfAppForModbus.Interfaces {
-    public interface IComboBoxObjects {
-        public string Name { get; }
-    }
+﻿namespace WpfAppForModBus.Interfaces;
+
+public interface IComboBoxObjects {
+    public string Name { get; }
 }

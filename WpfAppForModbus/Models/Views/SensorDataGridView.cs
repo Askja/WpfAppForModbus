@@ -1,17 +1,9 @@
-﻿using System;
+﻿namespace WpfAppForModBus.Models.Views;
 
-namespace WpfAppForModbus.Models.Views {
-    public class SensorDataGridView {
-        public Guid RowId {
-            get; set;
-        }
+public class SensorDataGridView {
+    public System.Guid RowId { get; set; }
 
-        public required string SensorData {
-            get; set;
-        }
+    public required string SensorData { get; set; }
 
-        public DateTime RowDate {
-            get; set;
-        }
-    }
+    public System.DateTime RowDate { get; set; }
 }

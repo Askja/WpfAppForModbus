@@ -1,26 +1,24 @@
-﻿using System.Collections.Generic;
-using System.Windows.Controls;
+﻿namespace WpfAppForModBus.Models.Helpers;
 
-namespace WpfAppForModbus.Models.Helpers {
-    public class ComboBoxHelper {
-        public static void AddRange<T>(ComboBox comboBox, IEnumerable<T> items) {
-            foreach (T item in items) {
-                comboBox.Items.Add(item);
-            }
+public class ComboBoxHelper {
+    public static void AddRange<T>(System.Windows.Controls.ComboBox comboBox,
+        System.Collections.Generic.IEnumerable<T> items) {
+        foreach (T item in items) {
+            comboBox.Items.Add(newItem: item);
+        }
+    }
+
+    public static void AddRange(System.Windows.Controls.ComboBox comboBox, int[] items) {
+        AddRange<int>(comboBox: comboBox, items: items);
+    }
+
+    public static T? GetSelectedItem<T>(System.Windows.Controls.ComboBox comboBox, T[] items) {
+        int selectedIndex = comboBox.SelectedIndex;
+
+        if (selectedIndex > -1) {
+            return items[selectedIndex];
         }
 
-        public static void AddRange(ComboBox comboBox, int[] items) {
-            AddRange<int>(comboBox, items);
-        }
-
-        public static T? GetSelectedItem<T>(ComboBox comboBox, T[] items) {
-            int selectedIndex = comboBox.SelectedIndex;
-
-            if (selectedIndex > -1) {
-                return items[selectedIndex];
-            }
-
-            return default;
-        }
+        return default;
     }
 }

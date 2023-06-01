@@ -1,103 +1,94 @@
-﻿using System;
-using System.IO.Ports;
-using WpfAppForModbus.Models.Helpers;
-using WpfAppForModbus.Models.Views;
+﻿namespace WpfAppForModBus.Models.Core;
 
-namespace WpfAppForModbus.Models.Core {
-    public class ComPort {
+public class ComPort {
+    protected int DefaultTimeout = 500;
 
-        protected SerialPort? Port { get; set; } = null;
+    public ComPort() { }
 
-        private ComPortOptions Options { get; set; } = null!;
+    public ComPort(WpfAppForModBus.Models.Views.ComPortOptions options) => Options = options;
 
-        protected int DefaultTimeout = 500;
+    protected System.IO.Ports.SerialPort? Port { get; set; }
 
-        public ComPort() { }
+    private WpfAppForModBus.Models.Views.ComPortOptions Options { get; set; } = null!;
 
-        public ComPort(ComPortOptions Options) {
-            this.Options = Options;
-        }
+    public bool IsOpened() => Port != null && Port.IsOpen;
 
-        public bool IsOpened() {
-            return Port != null && Port.IsOpen;
-        }
+    public bool IsClosed() => !IsOpened();
 
-        public bool IsClosed() {
-            return !IsOpened();
-        }
+    public bool Open() {
+        if (Options != null && Options.IsValid()) {
+            Port = new(
+                portName: Options.SelectedPort ?? string.Empty,
+                baudRate: Options.SelectedBaudRate,
+                parity: Options?.SelectedParity?.Type ?? new System.IO.Ports.Parity(),
+                dataBits: Options?.SelectedDataBits ?? new int(),
+                stopBits: Options?.SelectedStopBits?.Type ?? new System.IO.Ports.StopBits()
+            ) {
+                ReadTimeout = DefaultTimeout,
+                WriteTimeout = DefaultTimeout,
+                Handshake = Options?.SelectedHandshake?.Type ?? new System.IO.Ports.Handshake()
+            };
 
-        public bool Open() {
-            if (Options != null && Options.IsValid()) {
-                Port = new SerialPort(
-                    Options.SelectedPort ?? string.Empty,
-                    Options.SelectedBaudRate,
-                    Options?.SelectedParity?.Type ?? new(),
-                    Options?.SelectedDataBits ?? new(),
-                    Options?.SelectedStopBits?.Type ?? new()
-                ) {
-                    ReadTimeout = DefaultTimeout,
-                    WriteTimeout = DefaultTimeout,
-                    Handshake = Options?.SelectedHandshake?.Type ?? new()
-                };
-
-                if (Options != null) {
-                    Port.DataReceived += Options.Handler;
-                }
-
-                Port.Open();
-
-                return IsOpened();
-            } else {
-                throw new ArgumentNullException();
-            }
-        }
-
-        public bool Open(ComPortOptions options) {
-            Options = options;
-
-            return Open();
-        }
-
-        public bool Close() {
-            if (IsOpened()) {
-                try {
-                    Port?.Close();
-
-                    return true;
-                } catch (Exception) { }
-
-                return false;
+            if (Options != null) {
+                Port.DataReceived += Options.Handler;
             }
 
-            return true;
+            Port.Open();
+
+            return IsOpened();
         }
 
-        public string Read() {
-            if (IsOpened()) {
-                try {
-                    byte[] buffer = new byte[Port?.BytesToRead ?? 0];
+        throw new System.ArgumentNullException();
+    }
 
-                    Port?.Read(buffer, 0, buffer.Length);
+    public bool Open(WpfAppForModBus.Models.Views.ComPortOptions options) {
+        Options = options;
 
-                    return Shared.ByteToHex(buffer);
-                } catch (TimeoutException) { }
+        return Open();
+    }
+
+    public bool Close() {
+        if (IsOpened()) {
+            try {
+                Port?.Close();
+
+                return true;
             }
+            catch (System.Exception) { }
 
-            return "";
+            return false;
         }
 
-        public void Write(byte[] buffer, int offset, int count) {
-            if (IsOpened()) {
-                try {
-                    Port?.Write(buffer, offset, count);
-                } catch (Exception) { }
+        return true;
+    }
+
+    public string Read() {
+        if (IsOpened()) {
+            try {
+                byte[] buffer = new byte[Port?.BytesToRead ?? 0];
+
+                Port?.Read(buffer: buffer, offset: 0, count: buffer.Length);
+
+                return WpfAppForModBus.Models.Helpers.Shared.ByteToHex(comByte: buffer);
             }
+            catch (System.TimeoutException) { }
         }
 
-        public void Write(string buffer) {
-            byte[] bytes = Shared.HexToByte(buffer);
+        return "";
+    }
 
-            Write(bytes, 0, bytes.Length);
+    public void Write(byte[] buffer, int offset, int count) {
+        if (IsOpened()) {
+            try {
+                Port?.Write(buffer: buffer, offset: offset, count: count);
+            }
+            catch (System.Exception) { }
         }
+    }
+
+    public void Write(string buffer) {
+        byte[] bytes = WpfAppForModBus.Models.Helpers.Shared.HexToByte(message: buffer);
+
+        Write(buffer: bytes, offset: 0, count: bytes.Length);
     }
 }
