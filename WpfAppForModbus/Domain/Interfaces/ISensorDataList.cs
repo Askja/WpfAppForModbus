@@ -1,18 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using WpfAppForModbus.Models.Views;
+﻿namespace WpfAppForModBus.Domain.Interfaces;
 
-namespace WpfAppForModbus.Domain.Interfaces {
-    public interface ISensorDataList {
-        void AddSensor(int SensorId, string SensorName);
-        void AddSensorData(int SensorId, string SensorData);
-        void DeleteByDate(int SensorId, DateTime Start, DateTime End);
-        IEnumerable<SensorView> GetByDate(DateTime Start, DateTime End);
-        IEnumerable<SensorView> GetSensorData();
-        IEnumerable<SensorDataGridView> GetSensorData(string SensorName);
-        int GetSensorId(string SensorName);
-        IEnumerable<string> GetSensors();
-        void SaveAll();
-        bool SensorExist(int SensorId);
-    }
+public interface ISensorDataList {
+    void AddSensor(int sensorId, string sensorName);
+    void AddSensorData(int sensorId, string sensorData);
+    void DeleteByDate(int sensorId, System.DateTime start, System.DateTime end);
+
+    System.Collections.Generic.IEnumerable<WpfAppForModBus.Models.Views.SensorView> GetByDate(System.DateTime start,
+        System.DateTime end);
+
+    System.Collections.Generic.IEnumerable<WpfAppForModBus.Models.Views.SensorView> GetSensorData();
+
+    System.Collections.Generic.IEnumerable<WpfAppForModBus.Models.Views.SensorDataGridView> GetSensorData(
+        string sensorName);
+
+    int GetSensorId(string sensorName);
+    System.Collections.Generic.IEnumerable<string> GetSensors();
+    void SaveAll();
+    bool SensorExist(int sensorId);
 }

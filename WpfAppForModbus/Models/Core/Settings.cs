@@ -1,37 +1,34 @@
-﻿using Newtonsoft.Json;
-using System.Collections.Generic;
-using System.IO;
+﻿namespace WpfAppForModBus.Models.Core;
 
-namespace WpfAppForModbus.Models.Core {
-    public class Settings {
-        [JsonProperty("comboBoxValues")]
-        public Dictionary<string, int> ComboBoxValues { get; set; }
+public class Settings {
+    public Settings() {
+        ComboBoxValues = new();
+        TextBoxValues = new();
+        CheckBoxValues = new();
+    }
 
-        [JsonProperty("textBoxValues")]
-        public Dictionary<string, string> TextBoxValues { get; set; }
+    [Newtonsoft.Json.JsonPropertyAttribute(propertyName: "comboBoxValues")]
+    public System.Collections.Generic.Dictionary<string, int> ComboBoxValues { get; set; }
 
-        [JsonProperty("checkBoxValues")]
-        public Dictionary<string, bool> CheckBoxValues { get; set; }
+    [Newtonsoft.Json.JsonPropertyAttribute(propertyName: "textBoxValues")]
+    public System.Collections.Generic.Dictionary<string, string> TextBoxValues { get; set; }
 
-        public Settings() {
-            ComboBoxValues = new Dictionary<string, int>();
-            TextBoxValues = new Dictionary<string, string>();
-            CheckBoxValues = new Dictionary<string, bool>();
+    [Newtonsoft.Json.JsonPropertyAttribute(propertyName: "checkBoxValues")]
+    public System.Collections.Generic.Dictionary<string, bool> CheckBoxValues { get; set; }
+
+    public void Save(string filePath) {
+        string json =
+            Newtonsoft.Json.JsonConvert.SerializeObject(value: this, formatting: Newtonsoft.Json.Formatting.Indented);
+        System.IO.File.WriteAllText(path: filePath, contents: json);
+    }
+
+    public static Settings Load(string filePath) {
+        if (System.IO.File.Exists(path: filePath)) {
+            string json = System.IO.File.ReadAllText(path: filePath);
+
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<Settings>(value: json) ?? new Settings();
         }
 
-        public void Save(string filePath) {
-            string json = JsonConvert.SerializeObject(this, Formatting.Indented);
-            File.WriteAllText(filePath, json);
-        }
-
-        public static Settings Load(string filePath) {
-            if (File.Exists(filePath)) {
-                string json = File.ReadAllText(filePath);
-
-                return JsonConvert.DeserializeObject<Settings>(json) ?? new();
-            } else {
-                return new Settings();
-            }
-        }
+        return new();
     }
 }

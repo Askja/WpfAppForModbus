@@ -1,56 +1,36 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using WpfAppForModbus.Models.Views;
+﻿namespace WpfAppForModBus.Models.Core;
 
-namespace WpfAppForModbus.Models.Core {
-    public class SensorHandlers {
-        private List<SensorData> Sensors { get; set; } = null!;
-        private int CurrentPosition { get; set; } = 0;
+public class SensorHandlers {
+    public SensorHandlers() => Sensors = new();
 
-        public SensorHandlers() {
-            Sensors = new List<SensorData>();
-        }
+    private System.Collections.Generic.List<WpfAppForModBus.Models.Views.SensorData> Sensors { get; } = null!;
+    private int CurrentPosition { get; set; }
 
-        public void AddSensor(SensorData sensor) {
-            Sensors.Add(sensor);
-        }
+    public void AddSensor(WpfAppForModBus.Models.Views.SensorData sensor) {
+        Sensors.Add(item: sensor);
+    }
 
-        public SensorData Next() {
-            CurrentPosition = CurrentPosition < Sensors.Count - 1 ? CurrentPosition + 1 : 0;
+    public WpfAppForModBus.Models.Views.SensorData Next() {
+        CurrentPosition = CurrentPosition < Sensors.Count - 1 ? CurrentPosition + 1 : 0;
 
-            return Current();
-        }
+        return Current();
+    }
 
-        public bool Any() {
-            return Sensors.Any();
-        }
+    public bool Any() => System.Linq.Enumerable.Any(source: Sensors);
 
-        public SensorData Current() {
-            return Sensors[CurrentPosition];
-        }
+    public WpfAppForModBus.Models.Views.SensorData Current() => Sensors[index: CurrentPosition];
 
-        public int GetCurrentId() {
-            return Current().Id;
-        }
+    public int GetCurrentId() => Current().Id;
 
-        public string GetCurrentName() {
-            return Current().Name;
-        }
+    public string GetCurrentName() => Current().Name;
 
-        public string GetCurrentCommand() {
-            return Current().Command;
-        }
+    public string GetCurrentCommand() => Current().Command;
 
-        public string GetCurrentRecommendations() {
-            return Current().Recommendations;
-        }
+    public string GetCurrentRecommendations() => Current().Recommendations;
 
-        public double Handle(string Command) {
-            return Current().Handler(Command);
-        }
+    public double Handle(string command) => Current().Handler(arg: command);
 
-        public void FlushAll() {
-            Sensors.Clear();
-        }
+    public void FlushAll() {
+        Sensors.Clear();
     }
 }

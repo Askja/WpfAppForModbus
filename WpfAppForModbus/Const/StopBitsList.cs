@@ -1,14 +1,9 @@
-﻿using System.IO.Ports;
-using WpfAppForModbus.Enums;
+﻿namespace WpfAppForModBus.Const;
 
-namespace WpfAppForModbus.Const {
-    public static class StopBitsList {
-        public static StopBitsValues[] StopBitsTypes {
-            get;
-        } = new StopBitsValues[] {
-            new StopBitsValues { Name = "One", Type = StopBits.One },
-            new StopBitsValues { Name = "Two", Type = StopBits.Two },
-            new StopBitsValues { Name = "None", Type = StopBits.None }
-        };
-    }
+public static class StopBitsList {
+    public static WpfAppForModBus.Enums.StopBitsValues[] StopBitsTypes { get; } = {
+        new() { Name = "One", Type = System.IO.Ports.StopBits.One },
+        new() { Name = "Two", Type = System.IO.Ports.StopBits.Two },
+        new() { Name = "None", Type = System.IO.Ports.StopBits.None }
+    };
 }

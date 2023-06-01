@@ -1,55 +1,49 @@
-﻿using System;
-using System.IO;
-using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
-using System.Windows.Threading;
+﻿namespace WpfAppForModBus.Models.Core;
 
-namespace WpfAppForModbus.Models.Core {
-    public class Logger {
-        private TextBox LogElement { get; set; }
-        private ToggleButton SaveToFile { get; set; } = null!;
-        private Dispatcher CurrentDispatcher { get; set; } = null!;
+public class Logger {
+    public Logger(System.Windows.Threading.Dispatcher currentDispatcher, System.Windows.Controls.TextBox element) {
+        LogElement = element;
+        CurrentDispatcher = currentDispatcher;
+    }
 
-        public Logger(Dispatcher currentDispatcher, TextBox element) {
-            LogElement = element;
-            CurrentDispatcher = currentDispatcher;
-        }
+    public Logger(System.Windows.Threading.Dispatcher currentDispatcher, System.Windows.Controls.TextBox element,
+        System.Windows.Controls.Primitives.ToggleButton saveToFile) {
+        LogElement = element;
+        SaveToFile = saveToFile;
+        CurrentDispatcher = currentDispatcher;
+    }
 
-        public Logger(Dispatcher currentDispatcher, TextBox element, ToggleButton saveToFile) {
-            LogElement = element;
-            SaveToFile = saveToFile;
-            CurrentDispatcher = currentDispatcher;
-        }
+    private System.Windows.Controls.TextBox LogElement { get; }
+    private System.Windows.Controls.Primitives.ToggleButton SaveToFile { get; } = null!;
+    private System.Windows.Threading.Dispatcher CurrentDispatcher { get; } = null!;
 
-        public Logger AddLog(string text) {
-            CurrentDispatcher.Invoke(() => {
-                LogElement.AppendText(text + "\r\n");
-                LogElement.ScrollToEnd();
+    public Logger AddLog(string text) {
+        CurrentDispatcher.Invoke(callback: () => {
+            LogElement.AppendText(textData: text + "\r\n");
+            LogElement.ScrollToEnd();
 
-                if (SaveToFile != null && SaveToFile.IsChecked == true) {
-                    if (!Directory.Exists("logs")) {
-                        Directory.CreateDirectory("logs");
-                    }
-
-                    File.AppendAllTextAsync("logs/" + DateTime.Now.ToString("dd.MM.yyyy") + ".log", text + "\r\n");
+            if (SaveToFile != null && SaveToFile.IsChecked == true) {
+                if (!System.IO.Directory.Exists(path: "logs")) {
+                    System.IO.Directory.CreateDirectory(path: "logs");
                 }
-            });
 
-            return this;
-        }
+                System.IO.File.AppendAllTextAsync(
+                    path: "logs/" + System.DateTime.Now.ToString(format: "dd.MM.yyyy") + ".log",
+                    contents: text + "\r\n");
+            }
+        });
 
-        public Logger AddDatedLog(string text) {
-            return AddLog("[" + DateTime.Now.ToString("HH:mm:ss") + "] " + text);
-        }
+        return this;
+    }
 
-        public Logger AddCategorizedLog(string category, string text) {
-            return AddLog("[" + category + "] " + text);
-        }
+    public Logger AddDatedLog(string text) =>
+        AddLog(text: "[" + System.DateTime.Now.ToString(format: "HH:mm:ss") + "] " + text);
 
-        public Logger ClearLog() {
-            LogElement.Clear();
+    public Logger AddCategorizedLog(string category, string text) => AddLog(text: "[" + category + "] " + text);
 
-            return this;
-        }
+    public Logger ClearLog() {
+        LogElement.Clear();
+
+        return this;
     }
 }

@@ -1,12 +1,9 @@
-﻿using System.IO.Ports;
-using WpfAppForModbus.Enums;
+﻿namespace WpfAppForModBus.Const;
 
-namespace WpfAppForModbus.Const {
-    public static class HandshakeList {
-        public static HandshakeValues[] Handshakes { get; } = new HandshakeValues[] {
-            new HandshakeValues { Name = "RequestToSend", Type = Handshake.RequestToSend },
-            new HandshakeValues { Name = "RequestToSendXOnXOff", Type = Handshake.RequestToSendXOnXOff },
-            new HandshakeValues { Name = "XOnXOff", Type = Handshake.XOnXOff }
-        };
-    }
+public static class HandshakeList {
+    public static WpfAppForModBus.Enums.HandshakeValues[] Handshakes { get; } = {
+        new() { Name = "RequestToSend", Type = System.IO.Ports.Handshake.RequestToSend },
+        new() { Name = "RequestToSendXOnXOff", Type = System.IO.Ports.Handshake.RequestToSendXOnXOff },
+        new() { Name = "XOnXOff", Type = System.IO.Ports.Handshake.XOnXOff }
+    };
 }

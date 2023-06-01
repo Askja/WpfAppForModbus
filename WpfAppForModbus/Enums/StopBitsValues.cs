@@ -1,14 +1,7 @@
-﻿using System.IO.Ports;
-using WpfAppForModbus.Interfaces;
+﻿namespace WpfAppForModBus.Enums;
 
-namespace WpfAppForModbus.Enums {
-    public class StopBitsValues : IComboBoxObjects {
-        public required string Name {
-            get; set;
-        }
-        public StopBits Type {
-            get; set;
-        }
+public class StopBitsValues : WpfAppForModBus.Interfaces.IComboBoxObjects {
+    public System.IO.Ports.StopBits Type { get; set; }
 
-    }
+    public required string Name { get; set; }
 }
